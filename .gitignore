@@ -1,0 +1,11 @@
+.gradle/
+**/build/
+**/.cxx/
+.idea/
+local.properties
+app/src/main/assets/models/
+app/src/main/jniLibs/
+native-deps/
+.model-cache/
+*.jks
+*.keystore
