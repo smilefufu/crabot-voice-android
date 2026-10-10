@@ -68,4 +68,14 @@ class NativeModelsTest {
             raw.fill(0)
         } finally { secure.forget() }
     }
+    @Test fun rejectsInferenceAfterCloseWithoutDereferencingNativeHandle() {
+        val root = Models.prepare(InstrumentationRegistry.getInstrumentation().targetContext)
+        val native = NativeModels(root)
+        native.close(); native.close()
+        assertThrows(IllegalStateException::class.java) { native.reset("fixture") }
+        assertThrows(IllegalStateException::class.java) { native.feed(ShortArray(320), true, false) }
+        assertThrows(IllegalStateException::class.java) { native.segments(ShortArray(320)) }
+        assertThrows(IllegalStateException::class.java) { native.embedding(ShortArray(320)) }
+        assertThrows(IllegalStateException::class.java) { native.matches(FloatArray(1), emptyList()) }
+    }
 }

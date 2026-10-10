@@ -48,11 +48,12 @@ object Models {
 class NativeModels(root: String) : AutoCloseable {
     private var handle = create(root)
     init { check(handle != 0L) { "端侧模型加载失败" } }
-    @Synchronized fun reset(keyword: String) = reset(handle, keyword)
-    @Synchronized fun feed(samples: ShortArray, vad: Boolean, kws: Boolean): Int = feed(handle, samples, vad, kws) // bit 0 VAD; bit 1 KWS
-    @Synchronized fun embedding(samples: ShortArray): FloatArray = embedding(handle, samples)
-    @Synchronized fun segments(samples: ShortArray): FloatArray = segments(handle, samples)
-    @Synchronized fun matches(vector: FloatArray, candidates: List<FloatArray>): FloatArray = matches(handle, vector, candidates.toTypedArray())
+    private fun activeHandle(): Long { check(handle != 0L) { "端侧模型已关闭" }; return handle }
+    @Synchronized fun reset(keyword: String) = reset(activeHandle(), keyword)
+    @Synchronized fun feed(samples: ShortArray, vad: Boolean, kws: Boolean): Int = feed(activeHandle(), samples, vad, kws) // bit 0 VAD; bit 1 KWS
+    @Synchronized fun embedding(samples: ShortArray): FloatArray = embedding(activeHandle(), samples)
+    @Synchronized fun segments(samples: ShortArray): FloatArray = segments(activeHandle(), samples)
+    @Synchronized fun matches(vector: FloatArray, candidates: List<FloatArray>): FloatArray = matches(activeHandle(), vector, candidates.toTypedArray())
     @Synchronized override fun close() { if (handle != 0L) { destroy(handle); handle = 0 } }
     private external fun create(root: String): Long
     private external fun destroy(handle: Long)
