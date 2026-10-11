@@ -1,6 +1,6 @@
 # Android 语音终端一期实施计划
 
-2026-10-11 修订：身份与联系人 spec 已确认；接口唯一依据 `smilefufu/crabot-docs/protocols/protocol-voice.md` v0.2.0，终端版本 2。在 feat/android-voice-v1 与现有 PR #1 继续，不自行 merge。
+2026-10-11 修订：身份与联系人 spec 已确认；接口唯一依据 `smilefufu/crabot-docs/protocols/protocol-voice.md` v0.2.0，终端版本 2。实现分支 `feat/android-voice-v1`；本仓不走 PR，完成相关测试与本次 diff review 后直接提交、推送 main。Crabot 后端仍按主仓 PR 流程交付。
 
 | 步骤 | 实现范围 | 验证方式 |
 |---|---|---|
