@@ -3,7 +3,7 @@
 日期：2026-10-10
 状态：已于 2026-10-10 获用户书面确认；按正式语音协议进入实现
 
-本文件从原 Voice Channel 一期整合稿拆出客户端部分，承接原有行为与验收条件。安卓端相关 spec 从本稿起放在本仓库 `docs/superpowers/specs/`；[后端配套 spec](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-10-voice-channel-v1-design.md) 由 `crabot-docs` 维护。两份稿件共同描述第一期，不复制一份完整后端设计到客户端。
+本文件从原 Voice Channel 一期整合稿拆出客户端部分，承接原有行为与验收条件。安卓端相关 spec 从本稿起放在本仓库 `docs/specs/`；[后端配套 spec](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-10-voice-channel-v1-design.md) 由 `crabot-docs` 维护。两份稿件共同描述第一期，不复制一份完整后端设计到客户端。
 
 ## 1. 目标、约束与已确认行为
 
