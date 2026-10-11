@@ -6,12 +6,7 @@ import okhttp3.*
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import org.json.JSONObject
-import java.net.URI
-import java.security.MessageDigest
-import java.security.SecureRandom
-import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
-import javax.net.ssl.*
 
 class TerminalConnection(private val event: (JSONObject) -> Unit, private val audio: (ByteArray) -> Unit,
                          private val closed: (String) -> Unit) {
@@ -35,27 +30,11 @@ class TerminalConnection(private val event: (JSONObject) -> Unit, private val au
     fun connect(pairing: JSONObject, initial: JSONObject) {
         disconnect(null)
         val url = pairing.getString("url")
-        val uri = URI(url)
-        require(uri.scheme == "wss" && uri.host != null && uri.path == "/voice" && uri.userInfo == null && uri.query == null && uri.fragment == null) { "配对 URL 无效" }
-        val fingerprint = pairing.getString("tls_fingerprint_sha256").lowercase()
-        require(fingerprint.matches(Regex("[0-9a-f]{64}"))) { "证书指纹无效" }
-        val trust = object : X509TrustManager {
-            override fun getAcceptedIssuers(): Array<X509Certificate> = emptyArray()
-            override fun checkClientTrusted(chain: Array<out X509Certificate>, authType: String) = throw java.security.cert.CertificateException("Client auth unsupported")
-            override fun checkServerTrusted(chain: Array<out X509Certificate>, authType: String) {
-                if (chain.isEmpty()) throw java.security.cert.CertificateException("Missing certificate")
-                chain[0].checkValidity()
-                val actual = MessageDigest.getInstance("SHA-256").digest(chain[0].encoded).joinToString("") { "%02x".format(it) }
-                if (!MessageDigest.isEqual(actual.toByteArray(), fingerprint.toByteArray())) throw java.security.cert.CertificateException("Re-pair after certificate change")
-            }
-        }
-        val tls = SSLContext.getInstance("TLS").apply { init(null, arrayOf(trust), SecureRandom()) }
-        client = OkHttpClient.Builder().sslSocketFactory(tls.socketFactory, trust)
-            .hostnameVerifier { host, session -> host == uri.host && try {
-                val actual = MessageDigest.getInstance("SHA-256").digest(session.peerCertificates[0].encoded).joinToString("") { "%02x".format(it) }
-                actual == fingerprint
-            } catch (_: Exception) { false } }
-            .connectTimeout(5, TimeUnit.SECONDS).readTimeout(0, TimeUnit.SECONDS).retryOnConnectionFailure(false).followRedirects(false).build()
+        val endpoint = TerminalEndpoint.parse(url, pairing.getString("channel_id"))
+        require(pairing.getInt("protocol_version") == Wire.PROTOCOL_VERSION) { "请更新手机并扫描 v3 配对码" }
+        val fingerprint = if (pairing.has("tls_fingerprint_sha256")) pairing.getString("tls_fingerprint_sha256").lowercase() else null
+        client = TerminalTls.configure(OkHttpClient.Builder(), endpoint, fingerprint)
+            .connectTimeout(5, TimeUnit.SECONDS).readTimeout(0, TimeUnit.SECONDS).retryOnConnectionFailure(false).followRedirects(false).followSslRedirects(false).build()
         val current = ++generation
         socket = client!!.newWebSocket(Request.Builder().url(url).build(), object : WebSocketListener() {
             override fun onOpen(ws: WebSocket, response: Response) { main.post {
@@ -82,7 +61,7 @@ class TerminalConnection(private val event: (JSONObject) -> Unit, private val au
                 try { require(ready && data.size <= 981); audio(data) } catch (_: Exception) { disconnect("音频帧无效") }
                 finally { data.fill(0) }
             } }
-            override fun onFailure(ws: WebSocket, t: Throwable, response: Response?) { main.post { if (current == generation) disconnect("连接失败，请检查网络或重新配对") } }
+            override fun onFailure(ws: WebSocket, t: Throwable, response: Response?) { main.post { if (current == generation) disconnect("连接失败：请检查地址、协议和证书；不会自动切换 WS/WSS") } }
             override fun onClosed(ws: WebSocket, code: Int, reason: String) { main.post { if (current == generation) disconnect("连接已关闭") } }
         })
     }

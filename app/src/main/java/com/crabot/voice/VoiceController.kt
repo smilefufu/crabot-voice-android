@@ -84,7 +84,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
                     prepared = NativeModels(root)
                 }
                 models = prepared; prepared = null
-                status = if (store.compatible) "模型已加载；麦克风关闭。声纹和唤醒尚待真人校准验收。" else "旧 WIP 配对/声纹不兼容；原数据保留，请明确清除本机数据后重新配对"
+                status = if (store.needsRepair && store.compatible) "旧配对需重新扫码；同渠道声纹已保留，请先在 Admin 撤销旧终端。" else if (store.compatible) "模型已加载；麦克风关闭。声纹和唤醒尚待真人校准验收。" else "配对数据不兼容；原文件保留，请明确清除本机数据后重新配对"
                 if (foreground && !connected && store.pairing() != null) reconnect()
             } catch (e: CancellationException) { throw e }
             catch (_: Exception) { status = "端侧分段模型加载失败；麦克风关闭" }
@@ -105,9 +105,10 @@ class VoiceController(private val context: Context, private val changed: () -> U
             stop("开始配对；麦克风关闭", disableWake = true)
             check(store.compatible) { "旧 WIP 配对/声纹不兼容，请明确清除本机数据后重新配对" }
             val qr = JSONObject(raw)
-            require(qr.getInt("protocol_version") == Wire.PROTOCOL_VERSION) { "协议版本不兼容，需要 v2 配对码" }
+            require(qr.getInt("protocol_version") == Wire.PROTOCOL_VERSION) { "协议版本不兼容，需要 v3 配对码" }
             require(System.currentTimeMillis() < java.time.Instant.parse(qr.getString("expires_at")).toEpochMilli())
-            require(qr.getString("channel_id").isNotBlank())
+            store.checkChannel(qr.getString("channel_id"))
+            TerminalEndpoint.parse(qr.getString("url"), qr.getString("channel_id"))
             pairing = qr
             connectionEpoch = null
             connection.connect(qr, JSONObject().put("type", "pair").put("protocol_version", Wire.PROTOCOL_VERSION).put("nonce", qr.getString("nonce")))
@@ -120,11 +121,12 @@ class VoiceController(private val context: Context, private val changed: () -> U
         if (models == null) { status = "等待端侧模型加载；麦克风关闭"; changed(); return }
         try {
             check(store.compatible) { "旧 WIP 配对/声纹不兼容；原数据保留，请明确清除本机数据后重新配对" }
-            val saved = store.pairing() ?: error("请扫描 Admin 的 v2 配对二维码")
+            check(!store.needsRepair) { "旧配对需重新扫码；声纹保留，请先在 Admin 撤销旧终端后扫描同渠道 v3 配对码" }
+            val saved = store.pairing() ?: error("请扫描 Admin 的 v3 配对二维码")
             connectionEpoch = null
             connection.connect(saved, JSONObject().put("type", "hello").put("protocol_version", Wire.PROTOCOL_VERSION).put("credential", saved.getString("credential"))
                 .put("models", Models.versions()).put("aec_verified", false))
-        } catch (e: Exception) { status = e.message ?: "请扫描 Admin 的 v2 配对二维码" }
+        } catch (e: Exception) { status = e.message ?: "请扫描 Admin 的 v3 配对二维码" }
         changed()
     }
     fun forget() { stop("本机已清除配对和登记；请在 Admin 撤销旧终端后重新配对", true); connection.disconnect(null); connectionEpoch = null; store.forget(); changed() }
@@ -321,9 +323,14 @@ class VoiceController(private val context: Context, private val changed: () -> U
                 "pair_waiting" -> { require(c.getString("pairing_id") == pairing!!.getString("pairing_id") && c.getString("verification_code") == pairing!!.getString("verification_code")); status = "核对码：${c.getString("verification_code")}\n请在 Admin 确认；麦克风关闭"; detail = status }
                 "paired" -> {
                     val qr = pairing ?: error("无配对任务")
-                    val saved = JSONObject().put("url", qr.getString("url")).put("channel_id", qr.getString("channel_id"))
-                        .put("tls_fingerprint_sha256", qr.getString("tls_fingerprint_sha256")).put("credential", c.getString("credential"))
-                    store.savePairing(saved); pairing = null; reconnect()
+                    val saved = JSONObject().put("protocol_version", Wire.PROTOCOL_VERSION).put("url", qr.getString("url")).put("channel_id", qr.getString("channel_id")).put("credential", c.getString("credential"))
+                    if (qr.has("tls_fingerprint_sha256")) saved.put("tls_fingerprint_sha256", qr.getString("tls_fingerprint_sha256"))
+                    try { store.savePairing(saved) }
+                    catch (_: Exception) {
+                        pairing = null; stop("新凭据保存失败，旧配对和声纹保留。请在 Admin 撤销终端，再扫描同渠道新二维码。", true)
+                        connection.disconnect(null); connectionEpoch = null; changed(); return
+                    }
+                    pairing = null; reconnect()
                 }
                 "hello" -> {
                     val epoch = c.getString("connection_epoch")

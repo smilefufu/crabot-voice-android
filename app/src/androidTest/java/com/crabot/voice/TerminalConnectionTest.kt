@@ -36,7 +36,7 @@ class TerminalConnectionTest {
                 messages.incrementAndGet()
                 when (JSONObject(text).getString("type")) {
                     "pair" -> {
-                        assertEquals(2, JSONObject(text).getInt("protocol_version"))
+                        assertEquals(3, JSONObject(text).getInt("protocol_version"))
                         peer.set(ws)
                         ws.send(JSONObject().put("type", "pair_waiting").put("pairing_id", "fixture-id").put("verification_code", "123456").toString())
                     }
@@ -46,14 +46,14 @@ class TerminalConnectionTest {
             }
         }))
         server.start()
-        val url = server.url("/voice").toString().replace("https:", "wss:")
+        val url = server.url("/ws/voice/phone").toString().replace("https:", "wss:")
         val fingerprint = MessageDigest.getInstance("SHA-256").digest(cert.certificate.encoded).joinToString("") { "%02x".format(it) }
         var client: TerminalConnection? = null
         try {
             main {
                 client = TerminalConnection({ if (it.getString("type") == "pair_waiting") waiting.countDown() }, { fail("No audio while pairing") }, { fail("Pairing must remain open for human confirmation") })
                 client!!.heartbeat = { JSONObject().put("type", "heartbeat").put("foreground", true).put("microphone", "closed").put("playback", "idle") }
-                client!!.connect(JSONObject().put("url", url).put("tls_fingerprint_sha256", fingerprint),
+                client!!.connect(JSONObject().put("protocol_version", 3).put("channel_id", "phone").put("url", url).put("tls_fingerprint_sha256", fingerprint),
                     JSONObject().put("type", "pair").put("protocol_version", Wire.PROTOCOL_VERSION).put("nonce", "fixture-nonce"))
             }
             assertTrue(waiting.await(5, TimeUnit.SECONDS))
@@ -70,13 +70,13 @@ class TerminalConnectionTest {
         val tls = HandshakeCertificates.Builder().heldCertificate(cert).build()
         val server = MockWebServer(); server.useHttps(tls.sslSocketFactory(), false)
         server.enqueue(MockResponse().withWebSocketUpgrade(object : WebSocketListener() {})); server.start()
-        val url = server.url("/voice").toString().replace("https:", "wss:")
+        val url = server.url("/ws/voice/phone").toString().replace("https:", "wss:")
         val closed = CountDownLatch(1)
         var client: TerminalConnection? = null
         try {
             main {
                 client = TerminalConnection({ fail("Untrusted certificate must not authenticate") }, { fail("Unexpected audio") }, { closed.countDown() })
-                client!!.connect(JSONObject().put("url", url).put("tls_fingerprint_sha256", "0".repeat(64)),
+                client!!.connect(JSONObject().put("protocol_version", 3).put("channel_id", "phone").put("url", url).put("tls_fingerprint_sha256", "0".repeat(64)),
                     JSONObject().put("type", "hello").put("protocol_version", Wire.PROTOCOL_VERSION).put("credential", "fixture-only-credential"))
             }
             assertTrue(closed.await(5, TimeUnit.SECONDS))

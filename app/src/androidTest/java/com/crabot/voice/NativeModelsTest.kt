@@ -54,12 +54,38 @@ class NativeModelsTest {
         }
         pcm.fill(0); wave.fill(0)
     }
+    private fun pairing(credential: String, channel: String = "phone") = JSONObject().put("protocol_version", 3).put("url", "ws://localhost:3000/ws/voice/$channel").put("channel_id", channel).put("credential", credential)
+
+    @Test fun preservesSameChannelV2VectorsUntilSuccessfulV3Pairing() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val secure = SecureStore(context)
+        try {
+            secure.forget(); secure.savePairing(pairing("temporary"))
+            val ks = java.security.KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
+            val cipher = javax.crypto.Cipher.getInstance("AES/GCM/NoPadding")
+            cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, ks.getKey("crabot.voice.terminal.v1", null))
+            val vectors = JSONObject().put("old-registration", JSONObject().put("model_id", Models.EMBEDDING).put("values", org.json.JSONArray(listOf(.1, .2, .3))))
+            val old = JSONObject().put("protocol_version", 2).put("pairing", JSONObject().put("url", "wss://localhost:19010/voice").put("channel_id", "phone").put("tls_fingerprint_sha256", "a".repeat(64)).put("credential", "old-credential")).put("vectors", vectors)
+            val blob = cipher.iv + cipher.doFinal(old.toString().toByteArray())
+            val file = java.io.File(context.filesDir, "terminal.enc"); file.writeBytes(blob)
+            val restored = SecureStore(context)
+            assertTrue(restored.compatible); assertTrue(restored.needsRepair); assertNull(restored.pairing())
+            assertArrayEquals(blob, file.readBytes())
+            assertThrows(IllegalStateException::class.java) { restored.savePairing(pairing("new", "other-channel")) }
+            assertArrayEquals(blob, file.readBytes())
+            restored.savePairing(pairing("new-credential"))
+            assertFalse(restored.needsRepair)
+            assertEquals(vectors.toString(), SecureStore(context).vectors().toString())
+            assertEquals("new-credential", SecureStore(context).pairing()!!.getString("credential"))
+            blob.fill(0)
+        } finally { secure.forget() }
+    }
     @Test fun protectsCredentialAndVectorWithKeystoreRatherThanPlainFile() {
         // Run only on the disposable emulator: never point this fixture at a paired human device.
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val secure = SecureStore(context)
         try {
-            secure.savePairing(JSONObject().put("credential", "fixture-only-sensitive-marker"))
+            secure.savePairing(pairing("fixture-only-sensitive-marker"))
             secure.putVector("fixture-registration", floatArrayOf(.1f, .2f, .3f))
             val raw = java.io.File(context.filesDir, "terminal.enc").readBytes()
             assertFalse(String(raw).contains("fixture-only-sensitive-marker"))
@@ -76,7 +102,7 @@ class NativeModelsTest {
         val secure = SecureStore(context)
         try {
             secure.forget()
-            secure.savePairing(JSONObject().put("credential", "temporary-v2"))
+            secure.savePairing(pairing("temporary-v3"))
             val ks = java.security.KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
             val cipher = javax.crypto.Cipher.getInstance("AES/GCM/NoPadding")
             cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, ks.getKey("crabot.voice.terminal.v1", null))
@@ -86,7 +112,7 @@ class NativeModelsTest {
             val file = java.io.File(context.filesDir, "terminal.enc"); file.writeBytes(blob)
             val restored = SecureStore(context)
             assertFalse(restored.compatible); assertNull(restored.pairing())
-            assertThrows(IllegalStateException::class.java) { restored.savePairing(JSONObject().put("credential", "new")) }
+            assertThrows(IllegalStateException::class.java) { restored.savePairing(pairing("new")) }
             assertArrayEquals(blob, file.readBytes())
             restored.forget(); assertTrue(SecureStore(context).compatible)
             blob.fill(0)

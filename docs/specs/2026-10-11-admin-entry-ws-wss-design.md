@@ -1,7 +1,7 @@
 # Android 语音终端接入 Admin 共用端口与 WS/WSS
 
 日期：2026-10-11
-状态：定稿待用户书面确认；不授权实现
+状态：2026-10-11 已获用户书面确认，进入协议与实现阶段
 
 配套：[Crabot 创建向导与共用入口设计](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-11-voice-channel-creation-wizard-design.md)。本文只修订安卓连接、扫码展示及有效 v2 数据兼容；正式字段、控制和版本唯一见 [protocol-voice](https://github.com/smilefufu/crabot-docs/blob/main/protocols/protocol-voice.md)。目前正式协议仍为 v2，确认后由文档仓先更新为 v3，本文不维护另一份 wire schema。
 
@@ -68,6 +68,6 @@ JSON 校验、迁移或写盘失败不覆盖原有效文件，不清空向量或
 
 ## 7. 自审与确认
 
-本次边界限于新入口、WS/WSS 验证及同渠道有效数据兼容；UI 没有第二个协议决策，系统 CA 与 pin 不混淆，wire 升级不清声纹，旧业务/身份不重新设计。正式协议更新和实现都须在本稿与后端配套稿获得书面确认后进行。
+本次边界限于新入口、WS/WSS 验证及同渠道有效数据兼容；UI 没有第二个协议决策，系统 CA 与 pin 不混淆，wire 升级不清声纹，旧业务/身份不重新设计。本稿与后端配套稿已获书面确认，先更新正式协议，再按实施计划开发。
 
 外部依据：[Android 网络安全配置](https://developer.android.com/privacy-and-security/security-config) 说明系统信任与明文策略；[RFC 6455](https://www.rfc-editor.org/rfc/rfc6455) 定义 WS/WSS。扫码 pin 与系统 CA 的组合及 v2 数据保留是本项目设计。
