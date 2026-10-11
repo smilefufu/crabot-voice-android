@@ -2,7 +2,7 @@
 
 ## Spec 与协议归属
 
-- 安卓端相关 spec 必须放在本仓库 `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md`，实施计划放在 `docs/superpowers/plans/`。使用中文，工具/API/字段名保留原名。
+- 安卓端相关 spec 必须放在本仓库 `docs/specs/YYYY-MM-DD-<topic>-design.md`，实施计划放在 `docs/plans/`。使用中文，工具/API/字段名保留原名。
 - Crabot 后端 spec 与跨端正式协议在 `smilefufu/crabot-docs` 维护。正式协议是接口契约的唯一真相来源；本仓通过链接引用，不维护字段、状态或权限规则的第二份协议。
 - 新能力、接口/状态机/身份或存储变更先写 spec、自审并取得用户书面确认；确认前不实现产品代码。只读调查和文档归属整理可以先推进。
 - 实现前完整阅读相关正式协议；偏离已确认设计时先说明原因并重新确认。实现计划列出“步骤 → 验证方式”，真机验收与文件/模拟测试分别记录。
