@@ -1,5 +1,7 @@
 # Android 语音终端一期实施计划
 
+2026-10-11：本文件保留原一期实施记录。[身份与联系人修订稿](../specs/2026-10-11-android-voice-identity-revision-design.md)待书面确认；unknown/uncertain 整轮拒绝与音频分类展示的旧步骤暂停。新计划在两端修订确认、正式协议更新后重写，不继续执行相反规则。
+
 依据：已确认的本仓一期 spec；跨端接口以 `smilefufu/crabot-docs/protocols/protocol-voice.md` 为准。实现分支 `feat/android-voice-v1`，通过 PR 交付，不自行 merge。
 
 | 步骤 | 实现范围 | 验证方式 |

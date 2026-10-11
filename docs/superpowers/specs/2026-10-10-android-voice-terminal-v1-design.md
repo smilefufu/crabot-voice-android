@@ -3,6 +3,8 @@
 日期：2026-10-10
 状态：已于 2026-10-10 获用户书面确认；按正式语音协议进入实现
 
+2026-10-11 修订提示：[身份与联系人修订稿](2026-10-11-android-voice-identity-revision-design.md)待书面确认。本文的家庭成员命名、未知/身份不确定整轮拒绝、登记绑定以及自建/云展示是旧决定，不再继续按这些条款实现；其它一期边界保留。当前 APK 仍是旧规则，不代表修订已完成。
+
 本文件从原 Voice Channel 一期整合稿拆出客户端部分，承接原有行为与验收条件。安卓端相关 spec 从本稿起放在本仓库 `docs/superpowers/specs/`；[后端配套 spec](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-10-voice-channel-v1-design.md) 由 `crabot-docs` 维护。两份稿件共同描述第一期，不复制一份完整后端设计到客户端。
 
 ## 1. 目标、约束与已确认行为

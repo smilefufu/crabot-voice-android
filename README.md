@@ -6,6 +6,7 @@ Crabot 的原生 Android 语音终端，负责有限采音、播放、本地唤�
 
 设计与验收依据：
 
+- [身份与联系人修订 spec](docs/superpowers/specs/2026-10-11-android-voice-identity-revision-design.md)及[后端修订](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-11-voice-channel-contacts-and-group-revision-design.md)待书面确认：群内陌生人可发言、声纹关联稳定渠道联系人、移除云/自建分类。当前 APK 尚未实现这些修订，旧未知整轮拒绝规则停止继续开发。
 - [Android 语音终端第一期 spec](docs/superpowers/specs/2026-10-10-android-voice-terminal-v1-design.md)（已确认，进入实现）。
 - [Voice Channel 配套后端 spec](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-10-voice-channel-v1-design.md)（已确认，进入实现）。
 - [开发约定](AGENTS.md)：安卓端 spec 与实施计划在本仓维护。
