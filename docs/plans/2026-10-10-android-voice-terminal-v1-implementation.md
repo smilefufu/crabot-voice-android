@@ -1,6 +1,6 @@
 # Android 语音终端一期实施计划
 
-依据：已确认的本仓一期 spec；跨端接口以 `smilefufu/crabot-docs/protocols/protocol-voice.md` 为准。实现分支 `feat/android-voice-v1`，通过 PR 交付，不自行 merge。
+依据：已确认的本仓一期 spec；跨端接口以 `smilefufu/crabot-docs/protocols/protocol-voice.md` 为准。实现分支 `feat/android-voice-v1`；本仓不走 PR，完成相关测试与本次 diff review 后直接提交、推送 main。Crabot 后端仍按主仓 PR 流程交付。
 
 | 步骤 | 实现范围 | 验证方式 |
 |---|---|---|
@@ -11,6 +11,6 @@
 | 5 登记与撤销 | Admin 下发有限任务、现场确认录音、加密向量、metadata/revision 同步、删除及不兼容 | 注册未绑定不能使用；重连先清撤销；卸载/换模型重登；离线状态准确，向量不出终端 |
 | 6 唤醒与 VAD | 现场开启本地 KWS、1秒 RAM、有限前导/结束静音与8秒接话 | 完全静音无采样/网络；待机无ASR上传；短词原音频保留；电视/音乐误唤醒按 spec 记录 |
 | 7 播放与 AEC | ID/epoch 音频输出，真实 completed，按钮打断；真实回声验收后才开 AEC/KWS 语音打断 | 缓冲写入不算完成；断连/旧帧/打断无重播；确认打断到静音≤300ms；AEC失败显示按钮模式 |
-| 8 联调与交付 | 主仓 PR 模块与 APK 配套版本、全链延迟、30分钟功耗/温度/PSS，真机多人测试 | 按本仓 spec §9 与后端整链验收逐项记录；给出签名 APK/构建复现说明；review 仅本次 diff，附 PR |
+| 8 联调与交付 | 主仓 PR 模块与 APK 配套版本、全链延迟、30分钟功耗/温度/PSS，真机多人测试 | 按本仓 spec §9 与后端整链验收逐项记录；给出签名 APK/构建复现说明；review 仅本次 diff，测试通过后直接提交、推送 main |
 
 端侧库/公开文件能运行不表示真实客厅识别可用。真人条件不足时继续无需真人的验证并保留待测项；不默许后台录音、云 fallback 或不同身份算法。现在先按正式协议搭建可运行链路，最终验收以实际设备和业务状态为准。

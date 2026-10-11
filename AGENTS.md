@@ -11,5 +11,5 @@
 ## 修改与交付
 
 - 保持简单，只改当前需求必要的内容，保留无关工作。切分支、stash、reset 或 cherry-pick 前先将未提交工作落为 WIP commit。
-- 纯文档维护可在定向检查与 diff review 后直接提交、推送 main；产品设计型实现走分支与 PR，不自行合并。
+- 本仓不走 PR 流程。实现可使用隔离分支/worktree；完成相关测试与本次 diff review 后，直接提交、推送 main。纯文档维护经定向检查与 diff review 后可直接提交、推送 main。设计型任务仍遵守前述 spec 确认门禁。
 - 联调发布记录 APK、Voice Channel、协议及模型的实际版本；页面、设备生命周期和真实播放证据不能用单元测试替代。
