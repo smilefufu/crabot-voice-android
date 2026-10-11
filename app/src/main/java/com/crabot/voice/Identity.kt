@@ -14,15 +14,18 @@ object Identity {
         require(raw.size % 3 == 0 && raw.size in 3..96) { "没有有效分段或分段过多，请重说" }
         return raw.toList().chunked(3).map {
             require(it.all(Float::isFinite)) { "无效分段" }
-            val start = (it[0] * 16000).roundToInt().coerceIn(0, count)
-            val end = (it[1] * 16000).roundToInt().coerceIn(0, count)
-            require(end > start) { "无效分段" }
+            val start = (it[0] * 16000).roundToInt()
+            val end = (it[1] * 16000).roundToInt()
+            require(start >= 0 && end <= count && end > start && it[2] >= 0 && it[2] == it[2].roundToInt().toFloat()) { "无效分段" }
             Segment(start, end, it[2].roundToInt())
         }
     }
+    fun requireComplete(ranges: List<Segment>) {
+        require(ranges.zipWithNext().all { (a, b) -> b.start >= a.end }) { "分段重叠或无序，内容无法归属；整轮未提交，请轮流重说" }
+    }
     fun report(pcm: ShortArray, models: NativeModels, stored: JSONObject, registrations: JSONArray): JSONArray {
         val ranges = ranges(models.segments(pcm), pcm.size)
-        val overlap = ranges.zipWithNext().any { (a, b) -> b.start < a.end }
+        requireComplete(ranges)
         val candidates = (0 until registrations.length()).map { registrations.getJSONObject(it) }
             .filter { it.getString("status") == "active" && it.getString("model_id") == Models.EMBEDDING && stored.has(it.getString("registration_id")) }
         val vectors = candidates.map { r ->
@@ -35,9 +38,9 @@ object Identity {
                 val audio = ShortArray(segments.sumOf { it.end - it.start })
                 var offset = 0
                 segments.forEach { pcm.copyInto(audio, offset, it.start, it.end); offset += it.end - it.start }
-                val result = JSONObject().put("identity_status", "uncertain")
+                val result = JSONObject().put("identity_status", if (candidates.isEmpty()) "unknown" else "uncertain")
                 try {
-                    if (!overlap && audio.size >= MIN_CLUSTER_SAMPLES) {
+                    if (candidates.isNotEmpty() && audio.size >= MIN_CLUSTER_SAMPLES) {
                         val v = models.embedding(audio)
                         try {
                             if (v.isNotEmpty()) {

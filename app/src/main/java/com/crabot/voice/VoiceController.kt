@@ -84,10 +84,10 @@ class VoiceController(private val context: Context, private val changed: () -> U
                     prepared = NativeModels(root)
                 }
                 models = prepared; prepared = null
-                status = "模型已加载；麦克风关闭。声纹和唤醒尚待真人校准验收。"
+                status = if (store.compatible) "模型已加载；麦克风关闭。声纹和唤醒尚待真人校准验收。" else "旧 WIP 配对/声纹不兼容；原数据保留，请明确清除本机数据后重新配对"
                 if (foreground && !connected && store.pairing() != null) reconnect()
             } catch (e: CancellationException) { throw e }
-            catch (_: Exception) { status = "模型加载失败；不能绕过声纹开始业务录音" }
+            catch (_: Exception) { status = "端侧分段模型加载失败；麦克风关闭" }
             catch (_: LinkageError) { status = "本设备无法加载端侧推理组件；麦克风关闭" }
             finally { prepared?.close() }
             changed()
@@ -103,25 +103,28 @@ class VoiceController(private val context: Context, private val changed: () -> U
     fun scan(raw: String) {
         try {
             stop("开始配对；麦克风关闭", disableWake = true)
+            check(store.compatible) { "旧 WIP 配对/声纹不兼容，请明确清除本机数据后重新配对" }
             val qr = JSONObject(raw)
-            require(qr.getInt("protocol_version") == 1 && System.currentTimeMillis() < java.time.Instant.parse(qr.getString("expires_at")).toEpochMilli())
+            require(qr.getInt("protocol_version") == Wire.PROTOCOL_VERSION) { "协议版本不兼容，需要 v2 配对码" }
+            require(System.currentTimeMillis() < java.time.Instant.parse(qr.getString("expires_at")).toEpochMilli())
             require(qr.getString("channel_id").isNotBlank())
             pairing = qr
             connectionEpoch = null
-            connection.connect(qr, JSONObject().put("type", "pair").put("protocol_version", 1).put("nonce", qr.getString("nonce")))
+            connection.connect(qr, JSONObject().put("type", "pair").put("protocol_version", Wire.PROTOCOL_VERSION).put("nonce", qr.getString("nonce")))
             status = "正在配对；请在 Admin 核对手机显示的代码后确认"
-        } catch (_: Exception) { status = "二维码无效或已过期，请在 Admin 重新生成" }
+        } catch (e: Exception) { status = e.message ?: "二维码无效或已过期，请在 Admin 重新生成" }
         changed()
     }
     fun reconnect() {
         stop("正在连接；麦克风关闭", disableWake = true)
         if (models == null) { status = "等待端侧模型加载；麦克风关闭"; changed(); return }
         try {
-            val saved = store.pairing() ?: error("未配对")
+            check(store.compatible) { "旧 WIP 配对/声纹不兼容；原数据保留，请明确清除本机数据后重新配对" }
+            val saved = store.pairing() ?: error("请扫描 Admin 的 v2 配对二维码")
             connectionEpoch = null
-            connection.connect(saved, JSONObject().put("type", "hello").put("protocol_version", 1).put("credential", saved.getString("credential"))
+            connection.connect(saved, JSONObject().put("type", "hello").put("protocol_version", Wire.PROTOCOL_VERSION).put("credential", saved.getString("credential"))
                 .put("models", Models.versions()).put("aec_verified", false))
-        } catch (_: Exception) { status = "请扫描 Admin 的配对二维码" }
+        } catch (e: Exception) { status = e.message ?: "请扫描 Admin 的 v2 配对二维码" }
         changed()
     }
     fun forget() { stop("本机已清除配对和登记；请在 Admin 撤销旧终端后重新配对", true); connection.disconnect(null); connectionEpoch = null; store.forget(); changed() }
@@ -257,6 +260,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
     private suspend fun completeEnrollment(audio: ShortArray, token: Int): Boolean {
         val v = withContext(Dispatchers.Default) {
             val segments = Identity.ranges(models!!.segments(audio), audio.size)
+            Identity.requireComplete(segments)
             require(segments.map { it.speaker }.distinct().size == 1 && segments.sumOf { it.end - it.start } >= Identity.MIN_CLUSTER_SAMPLES) { "登记需一人清楚说话，请重新录这一段" }
             models!!.embedding(audio).also { require(it.isNotEmpty()) { "语音证据不足" } }
         }
@@ -269,7 +273,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
             enrollmentVectors.forEach { it.fill(0f) }; enrollmentVectors.clear()
             connection.send(JSONObject().put("type", "enrollment_done").put("registration_id", target.getString("registration_id"))
                 .put("model_id", Models.EMBEDDING).put("enrollment_revision", enrollmentRevision))
-            enrollment = null; mode = Mode.CLOSED; status = "登记完成，等待后台绑定；麦克风关闭"
+            enrollment = null; mode = Mode.CLOSED; status = "声纹样本完成，等待后台确认；麦克风关闭"
         } else { mode = Mode.CLOSED; status = "已录 ${enrollmentVectors.size}/3 段；点按录制下一段（不同内容，3–5 秒）" }
         return true
     }
@@ -279,10 +283,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         detail = (0 until segments.length()).joinToString("\n") { i ->
             val s = segments.getJSONObject(i)
             val r = (0 until registrations.length()).map { registrations.getJSONObject(it) }.find { it.getString("registration_id") == s.optString("registration_id") }
-            "${s.getInt("start_sample") / 16000.0}–${s.getInt("end_sample") / 16000.0}s  ${s.getString("anonymous_speaker")}: ${r?.getString("display_name") ?: s.getString("identity_status")}" }
-        if ((0 until segments.length()).any { segments.getJSONObject(it).getString("identity_status") == "uncertain" }) {
-            stop("身份证据不足或分段重叠；整轮未提交，请重说", false); standby(); return false
-        }
+            "${s.getInt("start_sample") / 16000.0}–${s.getInt("end_sample") / 16000.0}s  ${s.getString("anonymous_speaker")}: ${r?.getString("display_name") ?: if (s.getString("identity_status") == "uncertain") "身份未确认（陌生人）" else "陌生人"}" }
         connection.send(JSONObject().put("type", "turn_end").put("turn_id", currentTurn).put("audio_sample_count", audio.size).put("sample_rate", 16000)
             .put("models", Models.versions()).put("enrollment_revision", revision).put("segments", segments))
         mode = Mode.WAITING; status = "已提交，等待接纳；麦克风关闭"
@@ -329,12 +330,13 @@ class VoiceController(private val context: Context, private val changed: () -> U
                     if (previousEpoch != epoch) { stop("已连接；麦克风关闭", true); previousEpoch = epoch }
                     connectionEpoch = epoch
                     registrations = c.getJSONArray("registrations"); revision = c.getInt("enrollment_revision")
+                    (0 until registrations.length()).forEach { i -> val r = registrations.getJSONObject(i); require(r.getString("platform_user_id").isNotBlank() && !r.has("friend_id")) }
                     wakeWord = c.getJSONObject("config").getString("wake_word")
                     keyword = Models.keyword(wakeWord, tokens)
                     val revoked = (0 until registrations.length()).map { registrations.getJSONObject(it) }.filter { it.getString("status") == "revoked" }
                     revoked.forEach { clearRegistration(it.getString("registration_id"), revision) }
                     destinations = (0 until c.getJSONArray("destinations").length()).joinToString("\n") { i ->
-                        val d = c.getJSONArray("destinations").getJSONObject(i); "${d.getString("capability").uppercase()}: ${if (d.getString("kind") == "cloud") "云服务" else "自建服务"} ${d.getString("endpoint")}" }
+                        val d = c.getJSONArray("destinations").getJSONObject(i); "${d.getString("capability").uppercase()}: ${d.getString("endpoint")}" }
                     status = "已连接；麦克风关闭。声纹分数配置尚待真人校准。"; heartbeat()
                 }
                 "heartbeat" -> Unit
@@ -363,7 +365,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
                     status = "登记 ${enrollmentName}：请现场点按确认；3 段不同内容，每段 3–5 秒，60 秒内完成"
                     main.postDelayed({ if (enrollment != null && SystemClock.elapsedRealtime() >= enrollmentDeadline) stop("登记任务已过期，请从 Admin 重新开始", true) }, 60_000)
                 }
-                "clear_registration" -> { stop("成员登记已撤销；本轮已结束", true); clearRegistration(c.getString("registration_id"), c.getInt("enrollment_revision")) }
+                "clear_registration" -> { stop("联系人声纹已撤销；本轮已结束", true); clearRegistration(c.getString("registration_id"), c.getInt("enrollment_revision")) }
                 "error" -> stop("语音端错误：${c.getString("message")}", true)
                 else -> error("未知协议控制")
             }

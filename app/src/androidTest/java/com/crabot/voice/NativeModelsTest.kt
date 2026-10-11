@@ -42,6 +42,9 @@ class NativeModelsTest {
             assertTrue("Synthetic public speech should reach VAD", speech)
             val segments = Identity.ranges(native.segments(pcm), pcm.size)
             assertTrue(segments.isNotEmpty())
+            val unknown = Identity.report(pcm, native, JSONObject(), org.json.JSONArray())
+            assertTrue(unknown.length() > 0)
+            (0 until unknown.length()).forEach { i -> assertEquals("unknown", unknown.getJSONObject(i).getString("identity_status")); assertFalse(unknown.getJSONObject(i).has("registration_id")) }
             val vector = native.embedding(pcm)
             try {
                 assertTrue(vector.isNotEmpty() && vector.all { it.isFinite() })
@@ -66,6 +69,27 @@ class NativeModelsTest {
             restored.clearVector("fixture-registration")
             assertFalse(SecureStore(context).vectors().has("fixture-registration"))
             raw.fill(0)
+        } finally { secure.forget() }
+    }
+    @Test fun refusesOldEncryptedWipWithoutDeletingIt() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val secure = SecureStore(context)
+        try {
+            secure.forget()
+            secure.savePairing(JSONObject().put("credential", "temporary-v2"))
+            val ks = java.security.KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
+            val cipher = javax.crypto.Cipher.getInstance("AES/GCM/NoPadding")
+            cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, ks.getKey("crabot.voice.terminal.v1", null))
+            val old = JSONObject().put("pairing", JSONObject().put("credential", "old-wip"))
+                .put("vectors", JSONObject().put("old-registration", JSONObject()))
+            val blob = cipher.iv + cipher.doFinal(old.toString().toByteArray())
+            val file = java.io.File(context.filesDir, "terminal.enc"); file.writeBytes(blob)
+            val restored = SecureStore(context)
+            assertFalse(restored.compatible); assertNull(restored.pairing())
+            assertThrows(IllegalStateException::class.java) { restored.savePairing(JSONObject().put("credential", "new")) }
+            assertArrayEquals(blob, file.readBytes())
+            restored.forget(); assertTrue(SecureStore(context).compatible)
+            blob.fill(0)
         } finally { secure.forget() }
     }
     @Test fun rejectsInferenceAfterCloseWithoutDereferencingNativeHandle() {

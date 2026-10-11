@@ -1,7 +1,7 @@
 # Android 语音终端身份与联系人修订
 
 日期：2026-10-11
-状态：待用户书面确认；产品代码及已交付 APK 尚未按本稿修改
+状态：2026-10-11 已获用户书面确认；按修订后正式协议实施
 
 本稿修订 [Android Voice v1 设计](2026-10-10-android-voice-terminal-v1-design.md)中未知身份、登记对象及服务展示的旧规则。[后端修订](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-11-voice-channel-contacts-and-group-revision-design.md)负责联系人/Friend、唯一群和授权消息组；正式字段仅由 `crabot-docs/protocols/protocol-voice.md` 维护。本仓不复制一份 wire schema。
 
@@ -65,4 +65,4 @@ ASR/TTS 仍由 Crabot 通过外部 API 调用，手机仅展示实际 ASR/TTS �
 
 自审：手机知道声纹结果但不授予 Friend 权限；身份 unknown/uncertain 与内容无法归属已分开；不引入陌生人跨轮追踪或后台采样。模型故障不假造匿名结果，内容失败不丢片段后执行。真实条件不足仍标待验收。
 
-本稿与后端修订确认后，先更新正式协议，再修订本仓实施计划并实现。当前 APK/旧预览尚未具备新规则，不作为修订验收证据。
+本稿与后端修订已确认；实施以修订后的共同正式协议为准。旧 APK/旧预览不作为修订验收证据。

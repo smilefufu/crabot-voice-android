@@ -9,9 +9,11 @@ class IdentityTest {
         assertEquals(listOf(0, 1, 0), segments.map { it.speaker })
         assertEquals(960, segments[1].end - segments[1].start)
         assertTrue(segments[1].start < segments[0].end)
+        assertThrows(IllegalArgumentException::class.java) { Identity.requireComplete(segments) }
+        Identity.requireComplete(listOf(Identity.Segment(0, 16000, 0), Identity.Segment(16000, 16960, 1), Identity.Segment(16960, 32000, 0)))
     }
     @Test fun rejectsMissingNonfiniteOrExcessiveDiarization() {
-        listOf(floatArrayOf(), floatArrayOf(0f, Float.NaN, 0f), floatArrayOf(2f, 1f, 0f), FloatArray(99)).forEach {
+        listOf(floatArrayOf(), floatArrayOf(0f, Float.NaN, 0f), floatArrayOf(2f, 1f, 0f), floatArrayOf(-1f, 1f, 0f), floatArrayOf(0f, 3f, 0f), FloatArray(99)).forEach {
             try { Identity.ranges(it, 32000); fail("Accepted invalid diarization") } catch (_: IllegalArgumentException) {}
         }
     }

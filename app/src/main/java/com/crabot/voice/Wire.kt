@@ -5,6 +5,7 @@ import java.nio.ByteOrder
 import java.util.UUID
 
 object Wire {
+    const val PROTOCOL_VERSION = 2
     const val MAX_INPUT = 240_000
     const val MAX_OUTPUT = 480_000
     fun frame(kind: Int, id: String, sequence: Int, pcm: ShortArray): ByteArray {

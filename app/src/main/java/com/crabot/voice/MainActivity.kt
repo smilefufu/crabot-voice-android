@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
         }
         fun text(value: String, size: Float = 16f) = TextView(this).apply { text = value; textSize = size; setPadding(0, 8, 0, 8); root.addView(this) }
         fun button(label: String, action: () -> Unit) = Button(this).apply { text = label; isAllCaps = false; setOnClickListener { action() }; root.addView(this) }
-        text("Crabot 家庭语音", 26f)
+        text("Crabot 语音渠道", 26f)
         text("仅在前台工作。默认关闭麦克风，锁屏、退后台或断连立即停止。")
         state = text("正在准备…", 20f)
         destinations = text("尚未连接音频服务")
@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
         wake = button("开启本地唤醒待机") { if (controller.wakeEnabled) controller.toggleWake() else withMicrophone { controller.toggleWake() } }
         enrollment = button("现场确认并开始登记") { withMicrophone { controller.confirmEnrollment() } }
         button("完全静音 / 停止播放与等待") { controller.mute() }
-        text("播放中可点按录音键打断；AEC / 语音打断尚未验收，播放时不开麦。声纹只识别归属，不提升家庭群权限。")
+        text("播放中可点按录音键打断；AEC / 语音打断尚未验收，播放时不开麦。声纹只识别归属，不提升语音群权限。")
         text("模型已固定，但真人准确率、唤醒误触发、响应速度及功耗尚未验收。云音频留存取决于所选服务。")
         detail = text("")
         button("清除本机配对与声纹") {

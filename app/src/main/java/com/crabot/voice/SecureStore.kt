@@ -30,6 +30,7 @@ class SecureStore(context: Context) {
             }
         }
     }
+    val compatible get() = state.length() == 0 || state.optInt("protocol_version") == Wire.PROTOCOL_VERSION
     private fun key(): SecretKey {
         val ks = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
         (ks.getKey(alias, null) as? SecretKey)?.let { return it }
@@ -38,10 +39,11 @@ class SecureStore(context: Context) {
                 .setBlockModes(KeyProperties.BLOCK_MODE_GCM).setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE).build())
         }.generateKey()
     }
-    @Synchronized fun pairing(): JSONObject? = state.optJSONObject("pairing")?.let { JSONObject(it.toString()) }
-    @Synchronized fun savePairing(pairing: JSONObject) { state.put("pairing", pairing); persist() }
+    @Synchronized fun pairing(): JSONObject? = state.optJSONObject("pairing")?.takeIf { compatible }?.let { JSONObject(it.toString()) }
+    @Synchronized fun savePairing(pairing: JSONObject) { check(compatible) { "旧 WIP 配对/声纹不兼容，请先明确清除本机数据并重新配对" }; state.put("protocol_version", Wire.PROTOCOL_VERSION).put("pairing", pairing); persist() }
     @Synchronized fun vectors(): JSONObject = state.optJSONObject("vectors")?.let { JSONObject(it.toString()) } ?: JSONObject()
     @Synchronized fun putVector(id: String, vector: FloatArray) {
+        check(compatible) { "旧 WIP 声纹不兼容" }; state.put("protocol_version", Wire.PROTOCOL_VERSION)
         val vectors = vectors()
         vectors.put(id, JSONObject().put("model_id", Models.EMBEDDING).put("values", org.json.JSONArray(vector.toList())))
         state.put("vectors", vectors); persist()

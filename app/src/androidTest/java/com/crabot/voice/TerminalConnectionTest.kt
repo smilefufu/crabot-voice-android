@@ -36,6 +36,7 @@ class TerminalConnectionTest {
                 messages.incrementAndGet()
                 when (JSONObject(text).getString("type")) {
                     "pair" -> {
+                        assertEquals(2, JSONObject(text).getInt("protocol_version"))
                         peer.set(ws)
                         ws.send(JSONObject().put("type", "pair_waiting").put("pairing_id", "fixture-id").put("verification_code", "123456").toString())
                     }
@@ -53,7 +54,7 @@ class TerminalConnectionTest {
                 client = TerminalConnection({ if (it.getString("type") == "pair_waiting") waiting.countDown() }, { fail("No audio while pairing") }, { fail("Pairing must remain open for human confirmation") })
                 client!!.heartbeat = { JSONObject().put("type", "heartbeat").put("foreground", true).put("microphone", "closed").put("playback", "idle") }
                 client!!.connect(JSONObject().put("url", url).put("tls_fingerprint_sha256", fingerprint),
-                    JSONObject().put("type", "pair").put("protocol_version", 1).put("nonce", "fixture-nonce"))
+                    JSONObject().put("type", "pair").put("protocol_version", Wire.PROTOCOL_VERSION).put("nonce", "fixture-nonce"))
             }
             assertTrue(waiting.await(5, TimeUnit.SECONDS))
             Thread.sleep(5500) // Exceed the normal authenticated heartbeat-loss budget while human verification is pending.
@@ -76,7 +77,7 @@ class TerminalConnectionTest {
             main {
                 client = TerminalConnection({ fail("Untrusted certificate must not authenticate") }, { fail("Unexpected audio") }, { closed.countDown() })
                 client!!.connect(JSONObject().put("url", url).put("tls_fingerprint_sha256", "0".repeat(64)),
-                    JSONObject().put("type", "hello").put("protocol_version", 1).put("credential", "fixture-only-credential"))
+                    JSONObject().put("type", "hello").put("protocol_version", Wire.PROTOCOL_VERSION).put("credential", "fixture-only-credential"))
             }
             assertTrue(closed.await(5, TimeUnit.SECONDS))
             assertNull(server.takeRequest(200, TimeUnit.MILLISECONDS))

@@ -2,17 +2,17 @@
 
 Crabot 的原生 Android 语音终端，负责有限采音、播放、本地唤醒、说话人分段与端侧声纹匹配。
 
-已实现第一期客户端并构建 `0.1.0` 调试 APK，仍处于联调与验收阶段。仅支持 Android 10+、ARM64、内置麦克风/扬声器和 App 前台；默认关麦，播放时关麦、点按打断。真实客厅声纹、唤醒误触发、整体延迟、回声及功耗尚未验收。
+已实现第一期客户端并构建 `0.2.0` 调试 APK，仍处于联调与验收阶段。仅支持 Android 10+、ARM64、内置麦克风/扬声器和 App 前台；默认关麦，播放时关麦、点按打断。真实环境声纹、唤醒误触发、整体延迟、回声及功耗尚未验收。
 
 设计与验收依据：
 
-- [身份与联系人修订 spec](docs/specs/2026-10-11-android-voice-identity-revision-design.md)及[后端修订](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-11-voice-channel-contacts-and-group-revision-design.md)待书面确认：群内陌生人可发言、声纹关联稳定渠道联系人、移除云/自建分类。当前 APK 尚未实现这些修订，旧未知整轮拒绝规则停止继续开发。
+- [身份与联系人修订 spec](docs/specs/2026-10-11-android-voice-identity-revision-design.md)及[后端修订](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-11-voice-channel-contacts-and-group-revision-design.md)于 2026-10-11 确认并实现：群内陌生人可发言、声纹关联稳定渠道联系人、移除云/自建分类。身份 unknown/uncertain 保留全部内容；重叠或无效分段仍整轮失败。
 - [Android 语音终端第一期 spec](docs/specs/2026-10-10-android-voice-terminal-v1-design.md)（已确认，进入实现）。
 - [Voice Channel 配套后端 spec](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-10-voice-channel-v1-design.md)（已确认，进入实现）。
 - [开发约定](AGENTS.md)：安卓端 spec 与实施计划在本仓维护。
 - [跨端正式协议目录](https://github.com/smilefufu/crabot-docs/tree/main/protocols)：共同接口的唯一契约来源；语音契约见 `protocol-voice.md`。
 
-后端 Provider 配置、ASR/TTS 服务接入、身份准入和业务处理由 Crabot 负责。客户端不持有 Provider 或 Admin 凭据。当前实验与来源见[端侧研究记录](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/research/voice-scenario-b-poc/README.md)，实验工具不作为产品 APK。
+后端 Provider 配置、ASR/TTS 服务接入、联系人/Friend 解析、普通群权限和业务处理由 Crabot 负责。客户端不持有 Provider 或 Admin 凭据。当前实验与来源见[端侧研究记录](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/research/voice-scenario-b-poc/README.md)，实验工具不作为产品 APK。
 
 ## 构建
 
@@ -38,9 +38,9 @@ Gradle Wrapper 固定 8.11.1 并核验 distribution SHA-256；AGP 8.9.2、Kotlin
 "$ANDROID_HOME/platform-tools/adb" -s PHONE_SERIAL install -r app/build/outputs/apk/debug/app-debug.apk
 ```
 
-配套 Crabot 后端仍在实施分支，不能连接只有旧 Channel 的稳定版；[授权消息组来源补充设计](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-11-voice-authorized-batch-source-design.md)尚待书面确认，其实现和整链验收完成前不部署到当前运行实例。
+配套 Crabot 后端仍在实施分支，不能连接只有旧 Channel 的稳定版；[授权消息组来源补充设计](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-11-voice-authorized-batch-source-design.md)已确认并落实 exact-core 授权读取。两端整数协议版本为 `2`；旧 WIP 配对/声纹不兼容，原数据保留，需使用独立测试数据或由用户明确清除并重新配对。尚未部署到当前运行实例。
 
-配套后端就绪后，在 Admin 的 voice 实例配置页选择 ASR/TTS 并测试，再以手机可达的局域网地址生成配对二维码。App 扫码后核对两端代码，Admin 确认；配对和重连保持关麦。Admin 选择已有 Friend 发起登记，手机现场确认并录三段不同内容，每段 3–5 秒。实验 App 的 FuFu 声纹不自动迁移。
+配套后端就绪后，在 Admin 的 voice 实例配置页选择 ASR/TTS 并测试，再以手机可达的局域网地址生成配对二维码。App 扫码后核对两端代码，Admin 确认；配对和重连保持关麦。Admin 先创建渠道联系人，可从列表绑定已有 Friend，或选择已有权限模板创建普通 Friend；再按联系人发起声纹登记，手机现场确认并录三段不同内容，每段 3–5 秒。实验 App 的 FuFu 声纹不自动迁移。
 
 本地唤醒需现场显式开启，当前模型支持字典可表达的 2–32 个汉字。自建 ASR/TTS 以接口接入 Crabot；云服务的音频留存由对应服务规则决定。未知或争议片段不会被删除后只执行其它人的话。
 
@@ -57,4 +57,4 @@ JVM 测试执行有限 PCM frame 和分段负例检查。仪器测试含公开�
 
 只在新建的、无保留数据的禁音频模拟器运行上面的仪器流程：Keystore 测试会清除测试 App 的配对/登记数据，代码也要求模拟器与显式参数。不要把通用 `connectedAndroidTest` 指向已配对手机。
 
-实际验证与剩余验收分别记录在[一期验证记录](docs/verification/2026-10-11-android-voice-v1.md)。文件/模拟器测试不替代手机采音、真实扬声器输出或真人场景 B；真实标准沿用已确认 spec。
+实际验证与剩余验收见[协议 v2 验证记录](docs/verification/2026-10-11-android-voice-v2.md)；[0.1.0 历史记录](docs/verification/2026-10-11-android-voice-v1.md)保留旧构建证据。本次仪器包已编译，但专用模拟器启动失败，不能将旧版测试算作新版本通过。文件/模拟器测试不替代手机采音、真实扬声器输出或真人场景 B；真实标准沿用已确认 spec。
