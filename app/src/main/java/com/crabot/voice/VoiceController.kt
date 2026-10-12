@@ -333,7 +333,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
                         pairing = null; stop("新凭据保存失败，旧配对和声纹保留。请在 Admin 撤销终端，再扫描同渠道新二维码。", true)
                         connection.disconnect(null); connectionEpoch = null; changed(); return
                     }
-                    pairing = null; reconnect()
+                    pairing = null; detail = ""; reconnect()
                 }
                 "hello" -> {
                     val epoch = c.getString("connection_epoch")
