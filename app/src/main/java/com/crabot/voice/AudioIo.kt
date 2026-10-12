@@ -14,12 +14,16 @@ class Microphone(private val context: Context, private val failure: (String) -> 
     private var aec: AcousticEchoCanceler? = null
     private val running = AtomicBoolean(false)
     @SuppressLint("MissingPermission")
-    @Synchronized fun start(frame: (ShortArray) -> Unit) {
-        check(record == null) { "麦克风已经打开" }
+    internal fun createRecorder(): AudioRecord {
         val size = AudioRecord.getMinBufferSize(16000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT).coerceAtLeast(2048)
-        val rec = AudioRecord.Builder().setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION)
+        return AudioRecord.Builder().setAudioSource(MediaRecorder.AudioSource.MIC)
             .setAudioFormat(AudioFormat.Builder().setSampleRate(16000).setChannelMask(AudioFormat.CHANNEL_IN_MONO).setEncoding(AudioFormat.ENCODING_PCM_16BIT).build())
             .setBufferSizeInBytes(size).build()
+    }
+    @SuppressLint("MissingPermission")
+    @Synchronized fun start(frame: (ShortArray) -> Unit) {
+        check(record == null) { "麦克风已经打开" }
+        val rec = createRecorder()
         try {
             check(rec.state == AudioRecord.STATE_INITIALIZED) { "不能初始化麦克风" }
             val manager = context.getSystemService(AudioManager::class.java)
