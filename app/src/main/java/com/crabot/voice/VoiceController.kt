@@ -106,7 +106,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
             check(store.compatible) { "旧 WIP 配对/声纹不兼容，请明确清除本机数据后重新配对" }
             val qr = JSONObject(raw)
             require(qr.getInt("protocol_version") == Wire.PROTOCOL_VERSION) { "协议版本不兼容，需要 v3 配对码" }
-            require(System.currentTimeMillis() < java.time.Instant.parse(qr.getString("expires_at")).toEpochMilli())
+            require(System.currentTimeMillis() < java.time.Instant.parse(qr.getString("expires_at")).toEpochMilli()) { "二维码已过期，请在 Admin 重新生成后再扫描" }
             store.checkChannel(qr.getString("channel_id"))
             TerminalEndpoint.parse(qr.getString("url"), qr.getString("channel_id"))
             pairing = qr
