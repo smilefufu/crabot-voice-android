@@ -61,7 +61,12 @@ class TerminalConnection(private val event: (JSONObject) -> Unit, private val au
                 try { require(ready && data.size <= 981); audio(data) } catch (_: Exception) { disconnect("音频帧无效") }
                 finally { data.fill(0) }
             } }
-            override fun onFailure(ws: WebSocket, t: Throwable, response: Response?) { main.post { if (current == generation) disconnect("连接失败：请检查地址、协议和证书；不会自动切换 WS/WSS") } }
+            override fun onFailure(ws: WebSocket, t: Throwable, response: Response?) { main.post {
+                if (current == generation) {
+                    android.util.Log.w("CrabotPairing", "websocket_failure=${t.javaClass.simpleName} http_status=${response?.code ?: 0}")
+                    disconnect("连接失败：请检查地址、协议和证书；不会自动切换 WS/WSS")
+                }
+            } }
             override fun onClosed(ws: WebSocket, code: Int, reason: String) { main.post { if (current == generation) disconnect("连接已关闭") } }
         })
     }

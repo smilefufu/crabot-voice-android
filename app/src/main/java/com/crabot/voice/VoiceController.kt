@@ -113,7 +113,10 @@ class VoiceController(private val context: Context, private val changed: () -> U
             connectionEpoch = null
             connection.connect(qr, JSONObject().put("type", "pair").put("protocol_version", Wire.PROTOCOL_VERSION).put("nonce", qr.getString("nonce")))
             status = "正在配对；请在 Admin 核对手机显示的代码后确认"
-        } catch (e: Exception) { status = e.message ?: "二维码无效或已过期，请在 Admin 重新生成" }
+        } catch (e: Exception) {
+            android.util.Log.w("CrabotPairing", "scan_rejected=${e.javaClass.simpleName}")
+            status = e.message ?: "二维码无效或已过期，请在 Admin 重新生成"
+        }
         changed()
     }
     fun reconnect() {

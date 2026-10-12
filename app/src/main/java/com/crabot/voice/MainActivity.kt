@@ -24,7 +24,10 @@ class MainActivity : ComponentActivity() {
         val action = pendingMicAction; pendingMicAction = null
         if (granted && controller.foreground) action?.invoke() else controller.mute()
     }
-    private val scan = registerForActivityResult(ScanContract()) { result -> result.contents?.let { controller.scan(it) } }
+    private val scan = registerForActivityResult(ScanContract()) { result ->
+        android.util.Log.i("CrabotPairing", if (result.contents == null) "scan_cancelled" else "scan_result_received")
+        result.contents?.let { controller.scan(it) }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
