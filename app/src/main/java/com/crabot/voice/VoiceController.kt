@@ -242,6 +242,11 @@ class VoiceController(private val context: Context, private val changed: () -> U
     private fun finishCapture() {
         val enroll = mode == Mode.ENROLLING
         mic.stop(); captureGeneration++
+        var peak = 0
+        var energy = 0.0
+        for (i in 0 until count) { val sample = pcm[i].toInt(); peak = maxOf(peak, kotlin.math.abs(sample)); energy += sample.toDouble() * sample }
+        val rms = if (count == 0) 0 else kotlin.math.sqrt(energy / count).toInt()
+        android.util.Log.i("CrabotVoiceInput", "samples=$count peak=$peak rms=$rms vad_seen=$hasSpeech")
         if (!hasSpeech || count == 0) { stop("未检测到有效人声，请重说", false); standby(); return }
         if (enroll && count !in 48000..80000) { count = 0; pcm.fill(0); mode = Mode.CLOSED; status = "每段登记需 3–5 秒；请重新录这一段"; changed(); return }
         val audio = pcm.copyOf(count); pcm.fill(0)

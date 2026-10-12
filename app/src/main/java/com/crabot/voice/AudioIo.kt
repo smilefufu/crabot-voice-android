@@ -46,7 +46,10 @@ class Microphone(private val context: Context, private val failure: (String) -> 
     }
     @Synchronized fun stop() {
         running.set(false)
-        record?.let { try { it.stop() } catch (_: Exception) {} }
+        record?.let {
+            try { android.util.Log.i("CrabotVoiceInput", "source=${it.audioSource} silenced=${it.activeRecordingConfiguration?.isClientSilenced} route=${it.routedDevice?.type}") } catch (_: Exception) {}
+            try { it.stop() } catch (_: Exception) {}
+        }
         worker?.let { if (Thread.currentThread() != it) it.join(300) }
         record?.release(); record = null; worker = null; aec?.release(); aec = null
     }
