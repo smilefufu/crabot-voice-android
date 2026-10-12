@@ -12,7 +12,7 @@ Crabot 的原生 Android 语音终端，负责有限采音、播放、本地唤�
 - [开发约定](AGENTS.md)：安卓端 spec 与实施计划在本仓维护。
 - [跨端正式协议目录](https://github.com/smilefufu/crabot-docs/tree/main/protocols)：共同接口的唯一契约来源；语音契约见 `protocol-voice.md`。
 
-后端 Provider 配置、ASR/TTS 服务接入、联系人/Friend 解析、普通群权限和业务处理由 Crabot 负责。客户端不持有 Provider 或 Admin 凭据。当前实验与来源见[端侧研究记录](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/research/voice-scenario-b-poc/README.md)，实验工具不作为产品 APK。
+后端 Provider 配置、ASR/TTS 服务接入、联系人与好友解析、普通群权限和业务处理由 Crabot 负责。客户端不持有 Provider 或 Admin 凭据。当前实验与来源见[端侧研究记录](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/research/voice-scenario-b-poc/README.md)，实验工具不作为产品 APK。
 
 ## 构建
 
@@ -44,7 +44,7 @@ Gradle Wrapper 固定 8.11.1 并核验 distribution SHA-256；AGP 8.9.2、Kotlin
 
 有效 v2 配对升级时保留加密文件、Keystore 和同渠道声纹；旧地址不再自动重连。先在 Admin 撤销旧终端，再用同一渠道 v3 二维码扫码；只有新凭据原子写入成功后更新本机状态。跨渠道重配或未知/损坏存储明确拒绝并保留文件，清除必须由用户显式执行。实验 App 的 FuFu 声纹不自动迁移。
 
-Admin 创建渠道联系人并绑定已有 Friend；至少一个联系人绑定现有 Master，以满足普通群成员规则。登记声纹由手机现场确认，录三段不同内容，每段 3–5 秒；可稍后登记。陌生人和已登记者共用群权限，unknown/uncertain 片段不会被删除后只执行其它人的话。
+Admin 创建渠道联系人并绑定已有好友；至少一个联系人绑定现有 Master，以满足普通群成员规则。登记声纹由手机现场确认，录三段不同内容，每段 3–5 秒；可稍后登记。陌生人和已登记者共用群权限，unknown/uncertain 片段不会被删除后只执行其它人的话。
 本地唤醒需现场显式开启，当前模型支持字典可表达的 2–32 个汉字。自建 ASR/TTS 以接口接入 Crabot；云服务的音频留存由对应服务规则决定。未知或争议片段不会被删除后只执行其它人的话。
 
 ## 验证
