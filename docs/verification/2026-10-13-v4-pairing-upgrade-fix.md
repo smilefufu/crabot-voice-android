@@ -15,4 +15,4 @@ SecureStore 的 storage_version=1 读取校验和 TerminalConnection 的连接�
 - 产品/仪器 APK 构建通过，0.4.1 / versionCode 10 使用 install -r 覆盖安装。升级与指定测试前后，用户 terminal.enc SHA-256 相同；没有清数据、重新扫码、录音或运行完整 NativeModelsTest。
 - 当前接线被 OnePlus 报告为 AC powered，因此仅 USB 的常亮设置无效。按既有调试不锁屏要求调整插电常亮；系统密码锁仍需用户现场解锁。
 
-实际保存凭据到 Crabot 的重连及前台关麦状态在用户解锁后核验；回环握手不能代替真实网络连接。语音回答、整体延迟和打断继续单独验收。
+用户解锁后，本机真实网络重连已核验：App 显示“已连接 · 麦克风关闭”，开始说话按钮可用，后台 Voice capability 为 4；使用原有配对，没有重新扫码。语音回答、整体延迟和打断继续单独验收。
