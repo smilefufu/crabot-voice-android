@@ -43,7 +43,8 @@ class SecureStore(context: Context) {
             require(old.scheme == "wss" && old.host != null && old.path == "/voice" && old.userInfo == null && old.query == null && old.fragment == null)
             require(pairing.getString("tls_fingerprint_sha256").matches(Regex("[0-9a-f]{64}")))
         } else {
-            require(state.getInt("storage_version") == 1 && pairing.getInt("protocol_version") == Wire.PROTOCOL_VERSION)
+            require(state.getInt("storage_version") == 1)
+            Wire.requirePairingVersion(pairing.getInt("protocol_version"), saved = true)
             TerminalEndpoint.parse(pairing.getString("url"), pairing.getString("channel_id"))
             if (pairing.has("tls_fingerprint_sha256")) require(pairing.getString("tls_fingerprint_sha256").matches(Regex("[0-9a-f]{64}")))
         }

@@ -106,7 +106,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
             stop("开始配对；麦克风关闭", disableWake = true)
             check(store.compatible) { "旧 WIP 配对/声纹不兼容，请明确清除本机数据后重新配对" }
             val qr = JSONObject(raw)
-            require(qr.getInt("protocol_version") == Wire.PROTOCOL_VERSION) { "协议版本不兼容，需要 v3 配对码" }
+            require(qr.getInt("protocol_version") == Wire.PROTOCOL_VERSION) { "协议版本不兼容，需要 v${Wire.PROTOCOL_VERSION} 配对码" }
             require(System.currentTimeMillis() < java.time.Instant.parse(qr.getString("expires_at")).toEpochMilli()) { "二维码已过期，请在 Admin 重新生成后再扫描" }
             store.checkChannel(qr.getString("channel_id"))
             TerminalEndpoint.parse(qr.getString("url"), qr.getString("channel_id"))
@@ -125,12 +125,12 @@ class VoiceController(private val context: Context, private val changed: () -> U
         if (models == null) { status = "等待端侧模型加载；麦克风关闭"; changed(); return }
         try {
             check(store.compatible) { "旧 WIP 配对/声纹不兼容；原数据保留，请明确清除本机数据后重新配对" }
-            check(!store.needsRepair) { "旧配对需重新扫码；声纹保留，请先在 Admin 撤销旧终端后扫描同渠道 v3 配对码" }
-            val saved = store.pairing() ?: error("请扫描 Admin 的 v3 配对二维码")
+            check(!store.needsRepair) { "旧配对需重新扫码；声纹保留，请先在 Admin 撤销旧终端后扫描同渠道 v${Wire.PROTOCOL_VERSION} 配对码" }
+            val saved = store.pairing() ?: error("请扫描 Admin 的 v${Wire.PROTOCOL_VERSION} 配对二维码")
             connectionEpoch = null
             connection.connect(saved, JSONObject().put("type", "hello").put("protocol_version", Wire.PROTOCOL_VERSION).put("credential", saved.getString("credential"))
                 .put("models", Models.versions()).put("aec_verified", false))
-        } catch (e: Exception) { status = e.message ?: "请扫描 Admin 的 v3 配对二维码" }
+        } catch (e: Exception) { status = e.message ?: "请扫描 Admin 的 v${Wire.PROTOCOL_VERSION} 配对二维码" }
         changed()
     }
     fun forget() { stop("本机已清除配对和登记；请在 Admin 撤销旧终端后重新配对", true); connection.disconnect(null); connectionEpoch = null; store.forget(); changed() }

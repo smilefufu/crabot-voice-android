@@ -54,9 +54,9 @@ class NativeModelsTest {
         }
         pcm.fill(0); wave.fill(0)
     }
-    private fun pairing(credential: String, channel: String = "phone") = JSONObject().put("protocol_version", 3).put("url", "ws://localhost:3000/ws/voice/$channel").put("channel_id", channel).put("credential", credential)
+    private fun pairing(credential: String, channel: String = "phone") = JSONObject().put("protocol_version", Wire.PROTOCOL_VERSION).put("url", "ws://localhost:3000/ws/voice/$channel").put("channel_id", channel).put("credential", credential)
 
-    @Test fun preservesSameChannelV2VectorsUntilSuccessfulV3Pairing() {
+    @Test fun preservesSameChannelV2VectorsUntilSuccessfulCurrentPairing() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val secure = SecureStore(context)
         try {

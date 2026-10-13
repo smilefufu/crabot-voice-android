@@ -31,7 +31,8 @@ class TerminalConnection(private val event: (JSONObject) -> Unit, private val au
         disconnect(null)
         val url = pairing.getString("url")
         val endpoint = TerminalEndpoint.parse(url, pairing.getString("channel_id"))
-        require(pairing.getInt("protocol_version") == Wire.PROTOCOL_VERSION) { "请更新手机并扫描 v3 配对码" }
+        Wire.requirePairingVersion(pairing.getInt("protocol_version"), saved = initial.getString("type") == "hello")
+        require(initial.getInt("protocol_version") == Wire.PROTOCOL_VERSION) { "连接握手版本不兼容" }
         val fingerprint = if (pairing.has("tls_fingerprint_sha256")) pairing.getString("tls_fingerprint_sha256").lowercase() else null
         client = TerminalTls.configure(OkHttpClient.Builder(), endpoint, fingerprint)
             .connectTimeout(5, TimeUnit.SECONDS).readTimeout(0, TimeUnit.SECONDS).retryOnConnectionFailure(false).followRedirects(false).followSslRedirects(false).build()

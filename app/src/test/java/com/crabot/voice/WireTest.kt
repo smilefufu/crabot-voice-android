@@ -6,6 +6,16 @@ import java.nio.ByteBuffer
 import java.util.UUID
 
 class WireTest {
+    @Test fun wireUpgradeAcceptsSavedV3ButRequiresV4ForNewPairing() {
+        Wire.requirePairingVersion(3, saved = true)
+        Wire.requirePairingVersion(4, saved = true)
+        Wire.requirePairingVersion(4, saved = false)
+        assertThrows(IllegalArgumentException::class.java) { Wire.requirePairingVersion(3, saved = false) }
+        listOf(0, 1, 2, 5).forEach { version ->
+            assertThrows(IllegalArgumentException::class.java) { Wire.requirePairingVersion(version, saved = true) }
+            assertThrows(IllegalArgumentException::class.java) { Wire.requirePairingVersion(version, saved = false) }
+        }
+    }
     @Test fun preservesUuidLittleEndianSequenceAndPcm() {
         val id = UUID.randomUUID().toString()
         val pcm = shortArrayOf(-32768, 0, 32767)
