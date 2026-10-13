@@ -31,6 +31,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
     private val mic = Microphone(context) { reason -> main.post { stop(reason, disableWake = true) } }
     private var player: Playback? = null
     private var playbackId: String? = null
+    private var interactionHadPlayback = false
     private var pairing: JSONObject? = null
     private var currentTurn: String? = null
     private var readyTurn: String? = null
@@ -166,6 +167,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
             if (playback != null) cancel.put("playback_id", playback)
             connection.send(cancel)
         } catch (_: Exception) {}
+        interactionHadPlayback = false
         currentTurn = null; readyTurn = null; count = 0; sentSamples = 0; sequence = 0
         pcm.fill(0); preRoll.fill(0); preCount = 0
         if (disableWake) wakeEnabled = false
@@ -368,9 +370,10 @@ class VoiceController(private val context: Context, private val changed: () -> U
                     mic.stop(); captureGeneration++; mode = Mode.PLAYING
                     check(manager.requestAudioFocus(focus) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                     playbackId = c.getString("playback_id"); status = "播放中可点按打断"; detail += "\n回答：${c.getString("text")}"; heartbeat()
-                    player = Playback(context, playbackId!!, c.getInt("sample_count")) { id, receipt -> main.post { playbackReceipt(id, receipt) } }
+                    player = Playback(context, playbackId!!) { id, receipt, played -> main.post { playbackReceipt(id, receipt, played) } }
                 }
-                "playback_end" -> { if (c.getString("playback_id") == playbackId) player!!.finish() }
+                "playback_end" -> { if (c.getString("playback_id") == playbackId) { player!!.finish(c.getInt("sample_count")); detail += "\n完整回答：${c.getString("text")}" } }
+                "response_end" -> { if (c.getString("turn_id") == currentTurn && player == null) finishResponse() }
                 "playback_cancel" -> { if (c.getString("playback_id") == playbackId) stop("播报已取消；已接纳任务仍由 Crabot 负责", false) }
                 "enroll" -> {
                     stop("后台发起登记，请现场确认后录音", true)
@@ -397,19 +400,30 @@ class VoiceController(private val context: Context, private val changed: () -> U
         if (frame.id != playbackId) { frame.samples.fill(0); return }
         try { player!!.add(frame) } catch (e: Exception) { frame.samples.fill(0); throw e }
     }
-    private fun playbackReceipt(id: String, receipt: String) {
-        if (connected) try { connection.send(JSONObject().put("type", "playback").put("playback_id", id).put("status", receipt)) } catch (_: Exception) {}
+    private fun playbackReceipt(id: String, receipt: String, played: Int?) {
+        if (connected) try {
+            val control = JSONObject().put("type", "playback").put("playback_id", id).put("status", receipt)
+            if (played != null) control.put("played_samples", played)
+            connection.send(control)
+        } catch (_: Exception) {}
         if (id != playbackId) return
         if (receipt == "completed") {
-            player = null; playbackId = null; currentTurn = null
-            if (foreground && connected) try {
-                mode = Mode.FOLLOWUP; deadline = SystemClock.elapsedRealtime() + 8000; status = "播放完成；8 秒本地接话窗口"; startMic()
-                main.postDelayed({ if (mode == Mode.FOLLOWUP && SystemClock.elapsedRealtime() >= deadline) {
-                    mic.stop(); captureGeneration++
-                    try { standby() } catch (_: Exception) { stop("无法恢复本地唤醒；麦克风关闭", true) }
-                } }, 8000)
-            } catch (_: Exception) { stop("无法开启接话窗口；麦克风关闭", true) }
-        } else if (receipt != "started") { player = null; playbackId = null; mode = Mode.CLOSED; status = "播放${if (receipt == "failed") "失败" else "已打断"}，未自动重播" }
+            player = null; playbackId = null; interactionHadPlayback = true
+            mode = Mode.WAITING; status = "播报完成，等待后续答复；麦克风关闭"; heartbeat()
+        } else if (receipt != "started") { interactionHadPlayback = false; player = null; playbackId = null; mode = Mode.CLOSED; status = "播放${if (receipt == "failed") "失败" else "已打断"}，未自动重播" }
+        changed()
+    }
+    private fun finishResponse() {
+        currentTurn = null
+        if (!interactionHadPlayback) { mode = Mode.CLOSED; status = "本轮结束，没有可播回复；麦克风关闭"; heartbeat(); changed(); return }
+        interactionHadPlayback = false
+        if (foreground && connected) try {
+            mode = Mode.FOLLOWUP; deadline = SystemClock.elapsedRealtime() + 8000; status = "播放完成；8 秒本地接话窗口"; startMic()
+            main.postDelayed({ if (mode == Mode.FOLLOWUP && SystemClock.elapsedRealtime() >= deadline) {
+                mic.stop(); captureGeneration++
+                try { standby() } catch (_: Exception) { stop("无法恢复本地唤醒；麦克风关闭", true) }
+            } }, 8000)
+        } catch (_: Exception) { stop("无法开启接话窗口；麦克风关闭", true) }
         heartbeat(); changed()
     }
 }

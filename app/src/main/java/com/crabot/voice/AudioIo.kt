@@ -59,18 +59,17 @@ class Microphone(private val context: Context, private val failure: (String) -> 
     }
 }
 
-class Playback(private val context: Context, private val id: String, private val count: Int,
-               private val receipt: (String, String) -> Unit) {
+class Playback(private val context: Context, private val id: String,
+               private val receipt: (String, String, Int?) -> Unit) {
     // Queue is at most one second; PCM is cleared on consumption or cancellation.
     private val queue = ArrayBlockingQueue<ShortArray>(50)
     private val running = AtomicBoolean(true)
     @Volatile private var ended = false
-    private var received = 0
-    private var sequence = 0
+    private val progress = PlaybackProgress(id)
+    @Volatile private var playedSamples: Int? = null
     private val track: AudioTrack
     private val worker: Thread
     init {
-        require(count in 1..Wire.MAX_OUTPUT)
         val format = AudioFormat.Builder().setSampleRate(24000).setChannelMask(AudioFormat.CHANNEL_OUT_MONO).setEncoding(AudioFormat.ENCODING_PCM_16BIT).build()
         track = AudioTrack.Builder().setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ASSISTANT).setContentType(AudioAttributes.CONTENT_TYPE_SPEECH).build())
             .setAudioFormat(format).setTransferMode(AudioTrack.MODE_STREAM)
@@ -83,12 +82,11 @@ class Playback(private val context: Context, private val id: String, private val
         worker = Thread({ play() }, "voice-playback").apply { start() }
     }
     @Synchronized fun add(frame: Wire.AudioFrame) {
-        require(running.get() && !ended && frame.id == id && frame.sequence == sequence && received + frame.samples.size <= count) { "播放音频帧不完整" }
-        require(frame.samples.size == 480 || received + frame.samples.size == count) { "只有最后一帧可以不足 20ms" }
+        require(running.get() && !ended) { "播放已结束" }
+        progress.add(frame)
         require(queue.offer(frame.samples)) { "播放队列超过一秒" }
-        sequence++; received += frame.samples.size
     }
-    @Synchronized fun finish() { require(received == count && !ended) { "播放音频未完整收到" }; ended = true }
+    @Synchronized fun finish(count: Int) { progress.finish(count); ended = true }
     private fun play() {
         var started = false
         val timestamp = AudioTimestamp()
@@ -112,16 +110,17 @@ class Playback(private val context: Context, private val id: String, private val
                 val route = track.routedDevice
                 check(route == null || route.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER) { "播放路由已变化" }
                 val actualFrames = if (track.getTimestamp(timestamp)) timestamp.framePosition else track.playbackHeadPosition.toLong() and 0xffffffffL
+                playedSamples = actualFrames.toInt().coerceAtMost(progress.received)
                 if (!started && actualFrames > 0) {
                     check(route?.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER) { "无法确认内置扬声器路由" }
-                    started = true; receipt(id, "started")
+                    started = true; receipt(id, "started", playedSamples)
                 }
-                if (ended && queue.isEmpty() && actualFrames >= count) {
-                    if (running.compareAndSet(true, false)) receipt(id, "completed")
+                if (ended && queue.isEmpty() && progress.count != null && actualFrames >= progress.count!!) {
+                    if (running.compareAndSet(true, false)) receipt(id, "completed", progress.count)
                     break
                 }
             }
-        } catch (_: Exception) { if (running.compareAndSet(true, false)) receipt(id, "failed") }
+        } catch (_: Exception) { if (running.compareAndSet(true, false)) receipt(id, "failed", playedSamples) }
         finally {
             while (true) { val item = queue.poll() ?: break; item.fill(0) }
             try { track.pause(); track.flush() } catch (_: Exception) {}
@@ -131,7 +130,7 @@ class Playback(private val context: Context, private val id: String, private val
     fun stop(status: String = "interrupted") {
         if (running.compareAndSet(true, false)) {
             try { track.pause(); track.flush() } catch (_: Exception) {}
-            receipt(id, status)
+            receipt(id, status, playedSamples)
         }
         if (Thread.currentThread() != worker) worker.join(300)
     }

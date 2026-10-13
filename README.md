@@ -2,7 +2,7 @@
 
 Crabot 的原生 Android 语音终端，负责有限采音、播放、本地唤醒、说话人分段与端侧声纹匹配。
 
-已实现第一期客户端并构建 `0.3.5` 调试 APK，仍处于联调与验收阶段。仅支持 Android 10+、ARM64、内置麦克风/扬声器和 App 前台；默认关麦，播放时关麦、点按打断。真实环境声纹、唤醒误触发、整体延迟、回声及功耗尚未验收。
+已实现第一期客户端并构建 `0.4.0` 调试 APK（wire v4，增量连续播放），仍处于联调与验收阶段。仅支持 Android 10+、ARM64、内置麦克风/扬声器和 App 前台；默认关麦，播放时关麦、点按打断。真实环境声纹、唤醒误触发、整体延迟、回声及功耗尚未验收。
 
 设计与验收依据：
 
@@ -38,7 +38,7 @@ Gradle Wrapper 固定 8.11.1 并核验 distribution SHA-256；AGP 8.9.2、Kotlin
 "$ANDROID_HOME/platform-tools/adb" -s PHONE_SERIAL install -r app/build/outputs/apk/debug/app-debug.apk
 ```
 
-配套后端在 [PR #206](https://github.com/smilefufu/crabot/pull/206)，协议 v3。创建向导与接入设计于 2026-10-11 确认，见[Admin WS/WSS 接入 spec](docs/specs/2026-10-11-admin-entry-ws-wss-design.md)。后台从“新建语音渠道”依次配置 ASR/TTS API、手机连接、联系人与群权限，检查成功后启用；退出保留草稿，可继续原实例。
+配套后端在 [PR #206](https://github.com/smilefufu/crabot/pull/206)，当前协议 v4。创建向导与接入设计于 2026-10-11 确认，见[Admin WS/WSS 接入 spec](docs/specs/2026-10-11-admin-entry-ws-wss-design.md)。后台从“新建语音渠道”依次配置 ASR/TTS API、手机连接、联系人与群权限，检查成功后启用；退出保留草稿，可继续原实例。
 
 手机展开“连接与说明”，点“扫描配对二维码”，扫描向导中的一次性二维码，使用同一 Admin Web 端口上的 WS/WSS。地址默认使用 tmp-page BASE_URL 的完整 HTTP/HTTPS URL，允许局域网、有效端口和代理路径前缀。HTTP/HTTPS 推荐 WS/WSS，用户可显式选择；WS 为明文，WSS 支持有效二维码证书 pin 或系统 CA+hostname，失败不会自动切换协议。核对两端代码后在 Admin 确认，配对和重连保持关麦。
 
@@ -70,4 +70,4 @@ JVM 测试执行有限 PCM frame 和分段负例检查。仪器测试含公开�
 
 现场未检测到人声已定位到该手机的 VoIP 采音路径：同次真人对照中 VOICE_COMMUNICATION 无人声、MIC 有人声。0.3.5 改用 MIC；来源配置回归先失败后通过，11 项 JVM、公开音频 VAD 和构建/签名验证通过，手机保留数据升级。产品按钮录音到 ASR/回答播放仍需真实验收。见[采音修复记录](docs/verification/2026-10-12-android-input-diagnostics.md)。
 
-实际验证与剩余验收见[协议 v3 验证记录](docs/verification/2026-10-11-android-voice-v3.md)；[0.1.0 历史记录](docs/verification/2026-10-11-android-voice-v1.md)保留旧构建证据。本次仪器包已编译，但没有可用的专用测试设备，不能将旧版测试算作新版本通过。文件/模拟器测试不替代手机采音、真实扬声器输出或真人场景 B；真实标准沿用已确认 spec。
+v4 标签回复与增量播放见[本次验证记录](docs/verification/2026-10-13-incremental-playback-v4.md)，覆盖安装保留有效 v3 配对和本机声纹，无需重新扫码。实际验证与剩余验收另见[协议 v3 历史验证记录](docs/verification/2026-10-11-android-voice-v3.md)；[0.1.0 历史记录](docs/verification/2026-10-11-android-voice-v1.md)保留旧构建证据。本次仪器包已编译，但没有可用的专用测试设备，不能将旧版测试算作新版本通过。文件/模拟器测试不替代手机采音、真实扬声器输出或真人场景 B；真实标准沿用已确认 spec。
