@@ -2,7 +2,7 @@
 
 Crabot 的原生 Android 语音终端，负责有限采音、播放、本地唤醒、说话人分段与端侧声纹匹配。
 
-已实现第一期客户端并构建 `0.4.1` 调试 APK（wire v4，增量连续播放），仍处于联调与验收阶段。仅支持 Android 10+、ARM64、内置麦克风/扬声器和 App 前台；默认关麦，播放时关麦、点按打断。真实环境声纹、唤醒误触发、整体延迟、回声及功耗尚未验收。
+已实现第一期客户端，当前候选为 `0.5.2` 调试 APK（wire v5，手机声纹管理及短句实际比对），仍处于联调与验收阶段。仅支持 Android 10+、ARM64、内置麦克风/扬声器和 App 前台；默认关麦，播放时关麦、点按打断。FuFu 自然短句的识别、好友归属与播报已通过一轮真机复核；多人、陌生人误识率、唤醒误触发、整体延迟、回声及功耗尚未验收。
 
 设计与验收依据：
 
@@ -10,6 +10,7 @@ Crabot 的原生 Android 语音终端，负责有限采音、播放、本地唤�
 - [Android 语音终端第一期 spec](docs/specs/2026-10-10-android-voice-terminal-v1-design.md)（已确认，进入实现）。
 - [Voice Channel 配套后端 spec](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-10-voice-channel-v1-design.md)（已确认，进入实现）。
 - [开发约定](AGENTS.md)：安卓端 spec 与实施计划在本仓维护。
+- [短句声纹修订](docs/specs/2026-10-14-short-utterance-speaker-identification-design.md)已确认；取消日常提取的固定时长门槛，登记要求和匹配条件保持。设备验证见[0.5.2记录](docs/verification/2026-10-14-short-utterance-speaker-identification.md)。
 - [跨端正式协议目录](https://github.com/smilefufu/crabot-docs/tree/main/protocols)：共同接口的唯一契约来源；语音契约见 `protocol-voice.md`。
 
 后端 Provider 配置、ASR/TTS 服务接入、联系人与好友解析、普通群权限和业务处理由 Crabot 负责。客户端不持有 Provider 或 Admin 凭据。当前实验与来源见[端侧研究记录](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/research/voice-scenario-b-poc/README.md)，实验工具不作为产品 APK。
@@ -38,18 +39,18 @@ Gradle Wrapper 固定 8.11.1 并核验 distribution SHA-256；AGP 8.9.2、Kotlin
 "$ANDROID_HOME/platform-tools/adb" -s PHONE_SERIAL install -r app/build/outputs/apk/debug/app-debug.apk
 ```
 
-配套后端在 [PR #206](https://github.com/smilefufu/crabot/pull/206)，当前协议 v4。创建向导与接入设计于 2026-10-11 确认，见[Admin WS/WSS 接入 spec](docs/specs/2026-10-11-admin-entry-ws-wss-design.md)。后台从“新建语音渠道”依次配置 ASR/TTS API、手机连接、联系人与群权限，检查成功后启用；退出保留草稿，可继续原实例。
+配套后端在 [PR #206](https://github.com/smilefufu/crabot/pull/206)，当前协议 v5。创建向导与接入设计于 2026-10-11 确认，见[Admin WS/WSS 接入 spec](docs/specs/2026-10-11-admin-entry-ws-wss-design.md)。后台从“新建语音渠道”配置 ASR/TTS API、手机连接及现有群权限，检查成功后启用；退出保留草稿，可继续原实例。
 
-手机展开“连接与说明”，点“扫描配对二维码”，扫描向导中的一次性二维码，使用同一 Admin Web 端口上的 WS/WSS。地址默认使用 tmp-page BASE_URL 的完整 HTTP/HTTPS URL，允许局域网、有效端口和代理路径前缀。HTTP/HTTPS 推荐 WS/WSS，用户可显式选择；WS 为明文，WSS 支持有效二维码证书 pin 或系统 CA+hostname，失败不会自动切换协议。核对两端代码后在 Admin 确认，配对和重连保持关麦。
+手机设置页点“扫描配对二维码”，扫描向导中的一次性二维码，使用同一 Admin Web 端口上的 WS/WSS。地址默认使用 tmp-page BASE_URL 的完整 HTTP/HTTPS URL，允许局域网、有效端口和代理路径前缀。HTTP/HTTPS 推荐 WS/WSS，用户可显式选择；WS 为明文，WSS 支持有效二维码证书 pin 或系统 CA+hostname，失败不会自动切换协议。核对两端代码后在 Admin 确认，配对和重连保持关麦。
 
-有效 v2 配对升级时保留加密文件、Keystore 和同渠道声纹；旧地址不再自动重连。先在 Admin 撤销旧终端，再用同一渠道 v3 二维码扫码；只有新凭据原子写入成功后更新本机状态。跨渠道重配或未知/损坏存储明确拒绝并保留文件，清除必须由用户显式执行。实验 App 的 FuFu 声纹不自动迁移。
+有效保存的v3/v4配对可保留数据升级，用v5握手续连，无需重新扫码。历史v2配对保留加密文件、Keystore和同渠道声纹；旧地址不再自动重连，先在Admin撤销旧终端，再扫描同一渠道v5二维码。只有新凭据原子写入成功后更新状态；跨渠道重配或未知/损坏存储明确拒绝并保留文件，清除必须由用户显式执行。实验App的FuFu声纹不自动迁移。
 
-Admin 创建渠道联系人并绑定已有好友；至少一个联系人绑定现有 Master，以满足普通群成员规则。登记声纹由手机现场确认，录三段不同内容，每段 3–5 秒；可稍后登记。陌生人和已登记者共用群权限，unknown/uncertain 片段不会被删除后只执行其它人的话。
+手机或Admin可发起现场声纹登记，录三段不同内容、每段3–5秒；首次成功确认后才形成正式渠道联系人，再在Admin绑定已有好友。普通群启用仍要求名册有Master好友，陌生人和已登记者共用群权限；unknown/uncertain片段不会被删除后只执行其它人的话。改名/重录保持联系人和绑定，撤销声纹保留联系人与历史。
 本地唤醒需现场显式开启，当前模型支持字典可表达的 2–32 个汉字。自建 ASR/TTS 以接口接入 Crabot；云服务的音频留存由对应服务规则决定。未知或争议片段不会被删除后只执行其它人的话。
 
-日常对话只需点蓝色“开始说话”，看到“录音中”后说一句话，停顿后自动结束并等待回答；录音中也可点“结束录音”提前结束。等待时主按钮会显示“取消等待，重新说”，播放时显示“打断并说话”，这两种操作会开始新的一轮。第一次使用按系统提示授予麦克风权限；没有声纹也能对话，未识别者按陌生人处理。
+日常对话先点一次“开启语音待机”，随后喊配置的唤醒词，看到“我在听”后说内容，停顿后自动结束并等待回答。播报整轮结束后有8秒直接接话窗口，不需每轮按键。播放时可点“打断并说话”，底部“静音”关闭麦克风及播放；第一次使用按系统提示授予麦克风权限。没有声纹也能在已启用的群里对话，未识别者按陌生人处理，不能确认时显示具体原因。
 
-“开启唤醒待机”是可选的本地待机方式；“停止语音 / 关闭麦克风”在交互中可见。配对、重连、服务地址和技术说明收在“连接与说明”。后台发起声纹登记时，主页面显示对象与三段录音要求，主按钮切换为“现场确认并录音”，无需寻找另一个登记按钮。
+配对、重连、手动说话及技术诊断位于设置页；“声纹与联系人”提供现场新增、改名、重录及撤销样本，后台确认后更新目录。后台发起登记也须手机现场点按采样；退后台/断线后重新连接保持关麦。
 
 ## 验证
 
@@ -63,6 +64,8 @@ JVM 测试执行有限 PCM frame 和分段负例检查。仪器测试含公开�
 ```
 
 只在新建的、无保留数据的禁音频模拟器运行上面的仪器流程：Keystore 测试会清除测试 App 的配对/登记数据，代码也要求模拟器与显式参数。不要把通用 `connectedAndroidTest` 指向已配对手机。
+
+新增的NativeShortIdentityTest依赖官方公开文件，先按[来源清单](docs/research/2026-10-14-short-speaker-evidence/sources.json)取得文件，再运行`python3 docs/research/2026-10-14-short-speaker-evidence/prepare-native-test-fixtures.py --source-dir PUBLIC_AUDIO_DIR --output .model-cache/short-speaker`。原始/派生WAV不入仓，仅进入测试APK；单独的短句测试不读取真实声纹/配对或开启麦克风。
 
 2026-10-12 已保留数据安装 0.3.2 至 OnePlus 7 Pro，主页面与扫码页面保持竖屏；11 项 JVM 与一项只读真机方向回归通过。手机扫码、现场核对确认及局域网 Admin 同端口 WSS 连接已通过，连接后保持关麦；有限录放音仍待验收。扫码修订证据见[真机记录](docs/verification/2026-10-12-android-pairing-portrait.md)。
 

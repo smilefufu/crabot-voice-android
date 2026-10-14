@@ -183,6 +183,7 @@ class MainActivity : ComponentActivity() {
         text(hero, when (controller.mode) { VoiceController.Mode.WAKE -> "本机唤醒检测"; VoiceController.Mode.FOLLOWUP -> "8 秒本地接话窗口"; else -> if (controller.microphoneState == "closed") "麦克风关闭" else "正在收音" }, 12f, true).gravity = Gravity.CENTER
         content.addView(hero)
         if (controller.speakerSummary.isNotEmpty()) text(content, "本轮识别：${controller.speakerSummary}", 13f, true)
+        if (controller.speakerReason.isNotEmpty()) text(content, controller.speakerReason, 14f, true)
         if (controller.mode == VoiceController.Mode.PLAYING) button(content, "打断并说话", true) { withMicrophone { controller.recordButton() } }
         if (controller.mode == VoiceController.Mode.RECORDING) button(content, "结束说话") { controller.recordButton() }
         if (!controller.readyForConversation && controller.connected) text(content, controller.status, 14f, true)

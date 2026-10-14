@@ -59,6 +59,9 @@ extern "C" JNIEXPORT jlong JNICALL Java_com_crabot_voice_NativeModels_create(JNI
   } catch (...) { Error(env, "端侧模型加载失败"); return 0; }
 }
 extern "C" JNIEXPORT void JNICALL Java_com_crabot_voice_NativeModels_destroy(JNIEnv *, jobject, jlong ptr) { delete reinterpret_cast<Models *>(ptr); }
+extern "C" JNIEXPORT jint JNICALL Java_com_crabot_voice_NativeModels_dimension(JNIEnv *, jobject, jlong ptr) {
+  return reinterpret_cast<Models *>(ptr)->embedding.Dim();
+}
 extern "C" JNIEXPORT void JNICALL Java_com_crabot_voice_NativeModels_reset(JNIEnv *env, jobject, jlong ptr, jstring keyword) {
   try { auto m = reinterpret_cast<Models *>(ptr); m->vad.Reset(); m->stream = m->kws.CreateStream(Text(env, keyword)); }
   catch (...) { Error(env, "唤醒词初始化失败"); }

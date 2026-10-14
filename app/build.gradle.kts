@@ -7,8 +7,8 @@ android {
         applicationId = "com.crabot.voice"
         minSdk = 29
         targetSdk = 35
-        versionCode = 12
-        versionName = "0.5.1"
+        versionCode = 13
+        versionName = "0.5.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         ndk { abiFilters += "arm64-v8a" }
         externalNativeBuild { cmake { cppFlags += "-std=c++17"; arguments += "-DANDROID_STL=c++_shared" } }
@@ -19,6 +19,7 @@ android {
     buildTypes { release { isMinifyEnabled = false } }
     packaging { jniLibs { useLegacyPackaging = true } }
     testOptions { unitTests.isReturnDefaultValues = true }
+    sourceSets.getByName("androidTest").assets.srcDir(rootProject.file(".model-cache/short-speaker"))
 }
 dependencies {
     implementation("androidx.activity:activity-ktx:1.10.1")

@@ -45,18 +45,20 @@ object Models {
     }
 }
 
-class NativeModels(root: String) : AutoCloseable {
+class NativeModels(root: String) : SpeakerIdentityModel, AutoCloseable {
     private var handle = create(root)
     init { check(handle != 0L) { "端侧模型加载失败" } }
     private fun activeHandle(): Long { check(handle != 0L) { "端侧模型已关闭" }; return handle }
     @Synchronized fun reset(keyword: String) = reset(activeHandle(), keyword)
     @Synchronized fun feed(samples: ShortArray, vad: Boolean, kws: Boolean): Int = feed(activeHandle(), samples, vad, kws) // bit 0 VAD; bit 1 KWS
-    @Synchronized fun embedding(samples: ShortArray): FloatArray = embedding(activeHandle(), samples)
-    @Synchronized fun segments(samples: ShortArray): FloatArray = segments(activeHandle(), samples)
-    @Synchronized fun matches(vector: FloatArray, candidates: List<FloatArray>): FloatArray = matches(activeHandle(), vector, candidates.toTypedArray())
+    @Synchronized override fun dimension(): Int = dimension(activeHandle())
+    @Synchronized override fun embedding(samples: ShortArray): FloatArray = embedding(activeHandle(), samples)
+    @Synchronized override fun segments(samples: ShortArray): FloatArray = segments(activeHandle(), samples)
+    @Synchronized override fun matches(vector: FloatArray, candidates: List<FloatArray>): FloatArray = matches(activeHandle(), vector, candidates.toTypedArray())
     @Synchronized override fun close() { if (handle != 0L) { destroy(handle); handle = 0 } }
     private external fun create(root: String): Long
     private external fun destroy(handle: Long)
+    private external fun dimension(handle: Long): Int
     private external fun reset(handle: Long, keyword: String)
     private external fun feed(handle: Long, samples: ShortArray, vad: Boolean, kws: Boolean): Int
     private external fun embedding(handle: Long, samples: ShortArray): FloatArray

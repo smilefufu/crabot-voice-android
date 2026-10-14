@@ -90,6 +90,8 @@ class VoiceController(private val context: Context, private val changed: () -> U
         private set
     var speakerSummary = ""
         private set
+    var speakerReason = ""
+        private set
     var enrollmentCompleted = false
         private set
     val followupSeconds get() = ((deadline - SystemClock.elapsedRealtime() + 999) / 1000).coerceIn(0, 8).toInt()
@@ -306,6 +308,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
     }
     private fun beginTurn(leading: ShortArray) {
         speakerSummary = ""
+        speakerReason = ""
         mode = Mode.RECORDING; currentTurn = UUID.randomUUID().toString(); readyTurn = null
         sequence = 0; sentSamples = 0; count = 0; startedAt = SystemClock.elapsedRealtime(); hasSpeech = false; lastSpeechAt = startedAt
         leading.copyInto(pcm); count = leading.size; leading.fill(0)
@@ -383,7 +386,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         val v = withContext(Dispatchers.Default) {
             val segments = Identity.ranges(models!!.segments(audio), audio.size)
             Identity.requireComplete(segments)
-            require(segments.map { it.speaker }.distinct().size == 1 && segments.sumOf { it.end - it.start } >= Identity.MIN_CLUSTER_SAMPLES) { "登记需一人清楚说话，请重新录这一段" }
+            require(segments.map { it.speaker }.distinct().size == 1 && segments.sumOf { it.end - it.start } >= Identity.MIN_ENROLLMENT_SAMPLES) { "登记需一人清楚说话，请重新录这一段" }
             models!!.embedding(audio).also { require(it.isNotEmpty()) { "语音证据不足" } }
         }
         if (token != generation || SystemClock.elapsedRealtime() >= enrollmentDeadline) { v.fill(0f); return false }
@@ -402,12 +405,16 @@ class VoiceController(private val context: Context, private val changed: () -> U
         return true
     }
     private suspend fun completeCommand(audio: ShortArray, token: Int): Boolean {
-        val segments = withContext(Dispatchers.Default) { Identity.report(audio, models!!, store.vectors(), registrations) }
+        val diagnostics = mutableListOf<Identity.Diagnostic>()
+        val segments = withContext(Dispatchers.Default) { Identity.report(audio, models!!, store.vectors(), registrations) { diagnostics += it } }
         if (token != generation) return false
+        speakerReason = diagnostics.mapNotNull { d -> d.reason?.let { if (diagnostics.size == 1) it else "speaker-${d.speaker}：$it" } }.joinToString("\n")
+        diagnostics.forEach { d -> android.util.Log.i("CrabotVoiceIdentity", "speaker=${d.speaker} voiced_samples=${d.samples} candidates=${d.candidates} compared=${d.compared} score=${d.score} margin=${d.margin} reason=${d.reason}") }
         detail = (0 until segments.length()).joinToString("\n") { i ->
             val s = segments.getJSONObject(i)
             val r = (0 until registrations.length()).map { registrations.getJSONObject(it) }.find { it.getString("registration_id") == s.optString("registration_id") }
             "${s.getInt("start_sample") / 16000.0}–${s.getInt("end_sample") / 16000.0}s  ${s.getString("anonymous_speaker")}: ${r?.getString("display_name") ?: if (s.getString("identity_status") == "uncertain") "身份未确认（陌生人）" else "陌生人"}" }
+        detail += diagnostics.joinToString("\n", prefix = "\n") { d -> "speaker-${d.speaker} 人声${d.samples / 16000.0}s，候选${d.candidates}，已比对${d.compared}，分数${d.score}，差值${d.margin}；${d.reason ?: "已匹配"}" }
         speakerSummary = (0 until segments.length()).map { i -> val segment = segments.getJSONObject(i); (0 until registrations.length()).map { registrations.getJSONObject(it) }.find { it.getString("registration_id") == segment.optString("registration_id") }?.getString("display_name") ?: if (segment.getString("identity_status") == "uncertain") "身份未确认" else "陌生人" }.distinct().joinToString("、")
         connection.send(JSONObject().put("type", "turn_end").put("turn_id", currentTurn).put("audio_sample_count", audio.size).put("sample_rate", 16000)
             .put("models", Models.versions()).put("enrollment_revision", revision).put("segments", segments))
