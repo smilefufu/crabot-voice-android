@@ -21,7 +21,7 @@ Mac CPU/2线程结果见 `mac-results.json`。OnePlus 7 Pro/Android10 使用 APK
 | 2秒 | 26/26 | 0 | 0/3 |
 | 3秒 | 20/20 | 0 | 0/1 |
 
-各长度全部能提取有效特征；仅登记A时，各长度均未把B/C匹配为A。这些有限观察不能证明未来零误识，尤其极短片段。1.5秒不是模型接口硬限制；1秒仅是待确认的日常候选门槛，实际FuFu仍需现场复核。
+各长度全部能提取有效特征；仅登记A时，各长度均未把B/C匹配为A。这些有限观察不能证明未来零误识，尤其极短片段。1.5秒不是模型接口硬限制；此前1秒候选在讨论后撤回，当前待确认稿改用现成IsReady判断提取前置条件，实际FuFu仍需现场复核。
 
 手机和本机权重/库逐文件SHA256一致：
 
@@ -32,3 +32,5 @@ Mac CPU/2线程结果见 `mac-results.json`。OnePlus 7 Pro/Android10 使用 APK
 | libsherpa-onnx-cxx-api.so | 587a8d54936b1f669231b26d9e6e424af7e51f417fd013f78fd7e49580b0068f |
 
 `evaluate.py` 使用 sherpa-onnx1.13.8/numpy/soundfile，传入冻结模型及已核验公开数据目录；输出每个片段的来源、偏移、分数和汇总。`probe.cpp` 以Android NDK/API29链接上述同版本库，读取登记名单及由前者来源/偏移生成的PCM16裁剪名单，运行相同的embedding和GetBestMatches。原始公开录音、模型及生成的WAV不入仓；用户音频/向量始终不进入本记录。
+
+补测同一权重的本机0.1/0.15/0.2/0.25/0.3秒公开片段，IsReady均为true，输出192维有限非零特征，见 `below-300ms-results.json`。只证明0.3秒不是模型硬下限，不评价这些片段的身份正确率，也不声称已在手机复核。上游CAM++所用通用实现的[IsReady](https://github.com/k2-fsa/sherpa-onnx/blob/master/sherpa-onnx/csrc/speaker-embedding-extractor-general-impl.h)检查可计算的特征帧，不提供身份可信度保证。
