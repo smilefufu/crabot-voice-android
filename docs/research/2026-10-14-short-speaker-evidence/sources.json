@@ -1,0 +1,52 @@
+{
+  "fangjun-sr-1.wav": {
+    "sha256": "33c24061180224d2350143ee19e3af031446995c676bd25996325d34bb20a4d5",
+    "bytes": 73606,
+    "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/fangjun-sr-1.wav"
+  },
+  "fangjun-sr-2.wav": {
+    "sha256": "c9209ff0cc83cb3c30b3efb376cec6df93f33ceb0f3c1a8eb28fced7a8d08409",
+    "bytes": 165370,
+    "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/fangjun-sr-2.wav"
+  },
+  "fangjun-sr-3.wav": {
+    "sha256": "5a5f2fc98cb95cde4e457c31349dcbd5cf7ec2567528aac11487aa3884795bd8",
+    "bytes": 90324,
+    "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/fangjun-sr-3.wav"
+  },
+  "fangjun-test-sr-1.wav": {
+    "sha256": "9175e523081bf6a630ce72a55b05f92148eaafaf58cbbbe743686cd81c50848e",
+    "bytes": 178374,
+    "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/fangjun-test-sr-1.wav"
+  },
+  "fangjun-test-sr-2.wav": {
+    "sha256": "c55912144a28817a67d5eac806e5952ffcd29b82db3925f46d33df4c5f038907",
+    "bytes": 69890,
+    "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/fangjun-test-sr-2.wav"
+  },
+  "leijun-sr-1.wav": {
+    "sha256": "160a3d9bf5dd5038da8191b4430e1f3f751461613ae9489401b6b35a61b488ad",
+    "bytes": 134474,
+    "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/leijun-sr-1.wav"
+  },
+  "leijun-sr-2.wav": {
+    "sha256": "37a759c036f2520d143708dfe46d45901b38a0a6e621b52d6f1aef2c000d7fe0",
+    "bytes": 152368,
+    "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/leijun-sr-2.wav"
+  },
+  "leijun-test-sr-1.wav": {
+    "sha256": "36cda04ee4d10e38095de73b77c99e8e7c54347232967a9cde4cf54f7d496bab",
+    "bytes": 263878,
+    "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/leijun-test-sr-1.wav"
+  },
+  "leijun-test-sr-2.wav": {
+    "sha256": "84b85e7413b5348303a95bd78813e4d669b4dc70fa5a99990b9860ca6fda91e8",
+    "bytes": 217872,
+    "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/leijun-test-sr-2.wav"
+  },
+  "liudehua-test-sr-1.wav": {
+    "sha256": "a855706ad8e8253e341e3f65892c66d7dfb4bdc83675bcf38b863f2f8d167553",
+    "bytes": 119442,
+    "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/liudehua-test-sr-1.wav"
+  }
+}

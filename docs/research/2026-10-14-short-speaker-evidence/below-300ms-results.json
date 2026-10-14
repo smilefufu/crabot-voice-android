@@ -1,0 +1,46 @@
+{
+  "audio": "fangjun-test-sr-1.wav",
+  "audio_sha256": "9175e523081bf6a630ce72a55b05f92148eaafaf58cbbbe743686cd81c50848e",
+  "source_start_sample": 3840,
+  "model_sha256": "f682b514c05d947ee3fa91cd6ec6c5c7543479a128373fa29b1faedccd21fd11",
+  "sherpa_version": "1.13.8",
+  "microphone_used": false,
+  "limitation": "Extraction only, no identity accuracy evaluation or Android validation.",
+  "rows": [
+    {
+      "seconds": 0.1,
+      "ready": true,
+      "dimension": 192,
+      "finite": true,
+      "norm": 47.83722767900157
+    },
+    {
+      "seconds": 0.15,
+      "ready": true,
+      "dimension": 192,
+      "finite": true,
+      "norm": 37.385742376211795
+    },
+    {
+      "seconds": 0.2,
+      "ready": true,
+      "dimension": 192,
+      "finite": true,
+      "norm": 35.95620273869025
+    },
+    {
+      "seconds": 0.25,
+      "ready": true,
+      "dimension": 192,
+      "finite": true,
+      "norm": 35.267966967785725
+    },
+    {
+      "seconds": 0.3,
+      "ready": true,
+      "dimension": 192,
+      "finite": true,
+      "norm": 35.00037215486866
+    }
+  ]
+}
