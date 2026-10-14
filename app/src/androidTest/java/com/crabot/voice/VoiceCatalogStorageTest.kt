@@ -9,6 +9,8 @@ import org.junit.Test
 import java.nio.file.Files
 import java.time.Instant
 import java.util.UUID
+import java.security.KeyStore
+import javax.crypto.Cipher
 
 // Own cache files only, no microphone, network, user data or key deletion.
 class VoiceCatalogStorageTest {
@@ -49,5 +51,17 @@ class VoiceCatalogStorageTest {
         assertThrows(IllegalArgumentException::class.java) { VoiceCatalog.validate(catalog) }
         catalog.put("contacts", JSONArray().put(JSONObject().put("platform_user_id", contact).put("display_name", "Fixture").put("friend_id", "master")))
         assertThrows(IllegalArgumentException::class.java) { VoiceCatalog.validate(catalog) }
+    }
+    @Test fun corruptCatalogFailsClosedAndPreservesOriginalCiphertext() = fixture { _, context ->
+        val pairing = JSONObject().put("protocol_version", 5).put("channel_id", "fixture").put("credential", "isolated-fixture").put("url", "ws://localhost:3000/ws/voice/fixture")
+        val state = JSONObject().put("storage_version", 2).put("pairing", pairing).put("vectors", JSONObject()).put("catalog", JSONObject().put("enrollment_revision", "broken"))
+        val key = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }.getKey("crabot.voice.terminal.v1", null)
+        val cipher = Cipher.getInstance("AES/GCM/NoPadding").apply { init(Cipher.ENCRYPT_MODE, key) }
+        val blob = cipher.iv + cipher.doFinal(state.toString().toByteArray())
+        val file = java.io.File(context.filesDir, "terminal.enc"); file.writeBytes(blob)
+        val loaded = SecureStore(context)
+        assertFalse(loaded.compatible); assertNull(loaded.pairing()); assertNull(loaded.catalog())
+        assertEquals(0, loaded.pendingRequests().length()); assertNull(loaded.pendingCompletion())
+        assertArrayEquals(blob, file.readBytes())
     }
 }
