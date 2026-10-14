@@ -413,8 +413,11 @@ class VoiceController(private val context: Context, private val changed: () -> U
             .put("models", Models.versions()).put("enrollment_revision", revision).put("segments", segments))
         mode = Mode.WAITING; status = "已提交，等待接纳；麦克风关闭"
         val waitingTurn = currentTurn
-        main.postDelayed({ if (waitingTurn == currentTurn && mode == Mode.WAITING) { stop("本轮回答机会已结束；已接纳任务仍由 Crabot 负责，可重新唤醒询问", false); standby() } }, 60_000)
+        main.postDelayed({ expireWaitingTurn(waitingTurn) }, 60_000)
         return true
+    }
+    private fun expireWaitingTurn(waitingTurn: String?) {
+        if (waitingTurn == currentTurn && mode == Mode.WAITING) stop("回答等待超时（60 秒）；已接纳任务仍由 Crabot 负责，请重新开启语音待机后询问", true)
     }
     private fun uploadRemaining(audio: ShortArray) {
         // Full frames were streamed during finite capture; only the final short frame remains.

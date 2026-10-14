@@ -186,7 +186,7 @@ class MainActivity : ComponentActivity() {
         if (controller.mode == VoiceController.Mode.PLAYING) button(content, "打断并说话", true) { withMicrophone { controller.recordButton() } }
         if (controller.mode == VoiceController.Mode.RECORDING) button(content, "结束说话") { controller.recordButton() }
         if (!controller.readyForConversation && controller.connected) text(content, controller.status, 14f, true)
-        if (listOf("失败", "拒绝", "未检测", "失效", "过期", "尚未确认", "无法", "错误", "不兼容", "中断").any { controller.status.contains(it) }) text(content, controller.status, 14f)
+        if (listOf("失败", "拒绝", "未检测", "失效", "过期", "超时", "尚未确认", "无法", "错误", "不兼容", "中断").any { controller.status.contains(it) }) text(content, controller.status, 14f)
     }
     private fun settings() {
         text(content, "设置", 27f)
