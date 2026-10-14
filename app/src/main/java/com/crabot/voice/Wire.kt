@@ -5,9 +5,9 @@ import java.nio.ByteOrder
 import java.util.UUID
 
 object Wire {
-    const val PROTOCOL_VERSION = 4
+    const val PROTOCOL_VERSION = 5
     internal fun requirePairingVersion(version: Int, saved: Boolean) {
-        require(version == PROTOCOL_VERSION || (saved && version == 3)) { "配对版本不兼容，需要 v$PROTOCOL_VERSION 配对码" }
+        require(version == PROTOCOL_VERSION || (saved && version in 3..4)) { "配对版本不兼容，需要 v$PROTOCOL_VERSION 配对码" }
     }
     const val MAX_INPUT = 240_000
     const val MAX_OUTPUT = 480_000

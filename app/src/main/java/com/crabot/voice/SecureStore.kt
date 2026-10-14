@@ -26,6 +26,11 @@ class SecureStore(context: Context) {
                 cipher.init(Cipher.DECRYPT_MODE, key(), GCMParameterSpec(128, blob.copyOfRange(0, 12)))
                 val plain = cipher.doFinal(blob.copyOfRange(12, blob.size))
                 try { state = JSONObject(String(plain, Charsets.UTF_8)) } finally { plain.fill(0); blob.fill(0) }
+                if (state.optInt("storage_version") == 1 && validState()) {
+                    val backup = File(context.filesDir, "terminal.enc.v1.bak")
+                    if (!backup.exists()) replaceAtomic(backup, file.readFully())
+                    persist(JSONObject(state.toString()).put("storage_version", 2))
+                }
             } catch (_: Exception) {
                 loadFailed = true // Preserve the original encrypted file; clearing is an explicit user action.
             }
@@ -34,7 +39,7 @@ class SecureStore(context: Context) {
     val needsRepair get() = state.optInt("protocol_version") == 2
     val compatible get() = !loadFailed && (state.length() == 0 || validState())
     private fun validState(): Boolean = try {
-        val allowed = if (needsRepair) setOf("protocol_version", "pairing", "vectors") else setOf("storage_version", "pairing", "vectors")
+        val allowed = if (needsRepair) setOf("protocol_version", "pairing", "vectors") else if (state.optInt("storage_version") == 1) setOf("storage_version", "pairing", "vectors") else setOf("storage_version", "pairing", "vectors", "catalog", "pending_management", "pending_completion")
         require(state.keys().asSequence().all { it in allowed })
         val pairing = state.getJSONObject("pairing")
         require(pairing.getString("channel_id").isNotBlank() && pairing.getString("credential").isNotBlank())
@@ -43,7 +48,7 @@ class SecureStore(context: Context) {
             require(old.scheme == "wss" && old.host != null && old.path == "/voice" && old.userInfo == null && old.query == null && old.fragment == null)
             require(pairing.getString("tls_fingerprint_sha256").matches(Regex("[0-9a-f]{64}")))
         } else {
-            require(state.getInt("storage_version") == 1)
+            require(state.getInt("storage_version") in 1..2)
             Wire.requirePairingVersion(pairing.getInt("protocol_version"), saved = true)
             TerminalEndpoint.parse(pairing.getString("url"), pairing.getString("channel_id"))
             if (pairing.has("tls_fingerprint_sha256")) require(pairing.getString("tls_fingerprint_sha256").matches(Regex("[0-9a-f]{64}")))
@@ -56,6 +61,9 @@ class SecureStore(context: Context) {
             require(values.length() > 0)
             for (i in 0 until values.length()) require(values.getDouble(i).isFinite())
         }
+        if (state.has("catalog")) VoiceCatalog.validate(state.getJSONObject("catalog"))
+        if (state.has("pending_management")) state.getJSONObject("pending_management").let { requests -> requests.keys().forEach { id -> val request = requests.getJSONObject(id); VoiceCatalog.validateRequest(request); require(request.getString("request_id") == id) } }
+        if (state.has("pending_completion")) validateCompletion(state.getJSONObject("pending_completion"))
         true
     } catch (_: Exception) { false }
     @Synchronized fun checkChannel(channelId: String) {
@@ -76,7 +84,7 @@ class SecureStore(context: Context) {
         checkChannel(pairing.getString("channel_id"))
         require(pairing.getInt("protocol_version") == Wire.PROTOCOL_VERSION && pairing.getString("credential").isNotBlank())
         TerminalEndpoint.parse(pairing.getString("url"), pairing.getString("channel_id"))
-        val next = JSONObject(state.toString()).apply { remove("protocol_version"); put("storage_version", 1); put("pairing", JSONObject(pairing.toString())) }
+        val next = JSONObject(state.toString()).apply { remove("protocol_version"); put("storage_version", 2); put("pairing", JSONObject(pairing.toString())) }
         persist(next)
     }
     @Synchronized fun vectors(): JSONObject = state.optJSONObject("vectors")?.let { JSONObject(it.toString()) } ?: JSONObject()
@@ -84,7 +92,52 @@ class SecureStore(context: Context) {
         check(compatible && !needsRepair) { "请先重新扫码，保留同渠道声纹后再登记" }
         val vectors = vectors()
         vectors.put(id, JSONObject().put("model_id", Models.EMBEDDING).put("values", org.json.JSONArray(vector.toList())))
-        persist(JSONObject(state.toString()).put("storage_version", 1).put("vectors", vectors))
+        persist(JSONObject(state.toString()).put("storage_version", 2).put("vectors", vectors))
+    }
+    @Synchronized fun hasVector(id: String): Boolean = state.optJSONObject("vectors")?.has(id) == true
+    @Synchronized fun catalog(): JSONObject? = state.optJSONObject("catalog")?.takeIf { compatible && !needsRepair }?.let { JSONObject(it.toString()) }
+    @Synchronized fun pendingRequests(): JSONObject = state.optJSONObject("pending_management")?.takeIf { compatible && !needsRepair }?.let { JSONObject(it.toString()) } ?: JSONObject()
+    @Synchronized fun rememberRequest(request: JSONObject) {
+        check(compatible && !needsRepair)
+        VoiceCatalog.validateRequest(request)
+        val requests = pendingRequests(); requests.put(request.getString("request_id"), JSONObject(request.toString()))
+        persist(JSONObject(state.toString()).put("pending_management", requests))
+    }
+    @Synchronized fun resolveRequest(id: String) {
+        val requests = pendingRequests(); if (!requests.has(id)) return
+        requests.remove(id); persist(JSONObject(state.toString()).put("pending_management", requests))
+    }
+    @Synchronized fun pendingCompletion(): JSONObject? = state.optJSONObject("pending_completion")?.takeIf { compatible && !needsRepair }?.let { JSONObject(it.toString()) }
+    private fun validateCompletion(completion: JSONObject) {
+        val allowed = setOf("registration_id", "model_id", "enrollment_revision", "request_id")
+        require(completion.keys().asSequence().all { it in allowed })
+        require(completion.getString("registration_id") == java.util.UUID.fromString(completion.getString("registration_id")).toString())
+        require(completion.getString("model_id") == Models.EMBEDDING); VoiceCatalog.revision(completion)
+        if (completion.has("request_id")) require(completion.getString("request_id") == java.util.UUID.fromString(completion.getString("request_id")).toString())
+    }
+    @Synchronized fun saveEnrollment(id: String, vector: FloatArray, completion: JSONObject) {
+        check(compatible && !needsRepair)
+        validateCompletion(completion); require(completion.getString("registration_id") == id && vector.isNotEmpty() && vector.all { it.isFinite() })
+        val vectors = vectors(); vectors.put(id, JSONObject().put("model_id", Models.EMBEDDING).put("values", org.json.JSONArray(vector.toList())))
+        persist(JSONObject(state.toString()).put("vectors", vectors).put("pending_completion", JSONObject(completion.toString())))
+    }
+    @Synchronized fun resolveCompletion() {
+        if (state.has("pending_completion")) persist(JSONObject(state.toString()).apply { remove("pending_completion") })
+    }
+    @Synchronized fun applyCatalog(catalog: JSONObject): List<String> {
+        check(compatible && !needsRepair); VoiceCatalog.validate(catalog)
+        val previous = state.optJSONObject("catalog")
+        if (previous != null && VoiceCatalog.revision(previous) > VoiceCatalog.revision(catalog)) return emptyList()
+        val vectors = vectors(); val clears = mutableListOf<String>(); val records = catalog.getJSONArray("registrations")
+        for (i in 0 until records.length()) {
+            val registration = records.getJSONObject(i)
+            if (registration.getString("status") == "revoked") {
+                val id = registration.getString("registration_id"); vectors.remove(id)
+                if (!registration.getBoolean("terminal_cleared")) clears.add(id)
+            }
+        }
+        persist(JSONObject(state.toString()).put("catalog", JSONObject(catalog.toString())).put("vectors", vectors))
+        return clears
     }
     @Synchronized fun clearVector(id: String) {
         check(compatible && !needsRepair)

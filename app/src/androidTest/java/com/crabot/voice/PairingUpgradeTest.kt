@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 // Isolated cache directory only. Never writes the user's terminal.enc or deletes a key.
 class PairingUpgradeTest {
-    @Test fun savedV3MetadataReconnectsWithV4WireHandshake() {
+    @Test fun savedV3MetadataReconnectsWithV5WireHandshake() {
         val server = MockWebServer()
         val hello = AtomicReference<JSONObject>()
         val connected = CountDownLatch(1)
@@ -37,13 +37,13 @@ class PairingUpgradeTest {
             connection.connect(saved, JSONObject().put("type", "hello").put("protocol_version", Wire.PROTOCOL_VERSION).put("credential", saved.getString("credential")))
             assertTrue(connected.await(5, TimeUnit.SECONDS))
             assertTrue(connection.ready)
-            assertEquals(4, hello.get().getInt("protocol_version"))
+            assertEquals(5, hello.get().getInt("protocol_version"))
             assertEquals("isolated-fixture", hello.get().getString("credential"))
             assertEquals(3, saved.getInt("protocol_version"))
         } finally { connection.disconnect(null); server.shutdown() }
     }
 
-    @Test fun validV3PairingAndVectorsRemainReadableWithoutRewriting() {
+    @Test fun validV3PairingAndVectorsMigrateWithOriginalCiphertextBackup() {
         val target = InstrumentationRegistry.getInstrumentation().targetContext
         val directory = Files.createTempDirectory(target.cacheDir.toPath(), "pairing-upgrade-").toFile()
         val context = object : ContextWrapper(target) { override fun getFilesDir() = directory }
@@ -59,12 +59,13 @@ class PairingUpgradeTest {
             val blob = cipher.iv + cipher.doFinal(state.toString().toByteArray())
             val file = java.io.File(directory, "terminal.enc"); file.writeBytes(blob)
             val restored = SecureStore(context)
-            assertTrue("Valid v3 pairing must survive a wire v4 upgrade", restored.compatible)
+            assertTrue("Valid v3 pairing must survive a wire v5 upgrade", restored.compatible)
             assertFalse(restored.needsRepair)
             assertEquals("isolated-fixture", restored.pairing()!!.getString("credential"))
             assertEquals(3, restored.pairing()!!.getInt("protocol_version"))
             assertEquals(vectors.toString(), restored.vectors().toString())
-            assertArrayEquals(blob, file.readBytes())
+            assertArrayEquals(blob, java.io.File(directory, "terminal.enc.v1.bak").readBytes())
+            assertFalse(blob.contentEquals(file.readBytes()))
         } finally { directory.deleteRecursively() }
     }
 }

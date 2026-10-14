@@ -47,14 +47,27 @@ class VoiceController(private val context: Context, private val changed: () -> U
     private var deadline = 0L
     private var pendingFrames = 0
     private var enrollment: JSONObject? = null
-    private var enrollmentRevision = 0
+    private var enrollmentRevision = 0L
     private var enrollmentDeadline = 0L
     private val enrollmentVectors = mutableListOf<FloatArray>()
-    private var registrations = JSONArray()
-    private var revision = 0
+    private var registrations = store.catalog()?.optJSONArray("registrations") ?: JSONArray()
+    private var revision = store.catalog()?.getLong("enrollment_revision") ?: 0L
+    private var confirmedRevision = -1L
+    private var startEnrollmentRequest: String? = null
+    private var enrollmentRequestId: String? = null
+    private val unknownRequests = mutableSetOf<String>()
     private var connectionEpoch: String? = null
     private var previousEpoch: String? = null
-    private val connection = TerminalConnection(::control, ::audio) { reason -> stop(reason, disableWake = true); connectionEpoch = null; changed() }
+    private val reconnectLater: Runnable = Runnable { if (foreground && !connected && store.pairing() != null) reconnect() }
+    private var reconnectDelay = 1000L
+    private val connection: TerminalConnection = TerminalConnection(::control, ::audio) { reason ->
+        stop(reason, disableWake = true); connectionEpoch = null; confirmedRevision = -1
+        if (foreground && store.pairing() != null) {
+            main.removeCallbacks(reconnectLater); main.postDelayed(reconnectLater, reconnectDelay)
+            reconnectDelay = (reconnectDelay * 2).coerceAtMost(10_000)
+        }
+        changed()
+    }
     var mode = Mode.CLOSED
         private set
     var foreground = false
@@ -67,14 +80,33 @@ class VoiceController(private val context: Context, private val changed: () -> U
         private set
     var destinations = "尚未连接"
         private set
-    val connected get() = connection.ready && connectionEpoch != null
+    val connected: Boolean get() = connection.ready && connectionEpoch != null
+    val paired get() = store.pairing() != null
     val modelReady get() = models != null && keyword.isNotEmpty()
     val keepScreenOn get() = foreground && mode != Mode.CLOSED
-    val enrollmentName get() = enrollment?.getString("display_name")
+    val enrollmentName get() = enrollment?.getString("display_name") ?: pendingTask?.getJSONObject("registration")?.getString("display_name")
+    val wakePhrase get() = wakeWord
+    var lastReply = ""
+        private set
+    var speakerSummary = ""
+        private set
+    var enrollmentCompleted = false
+        private set
+    val followupSeconds get() = ((deadline - SystemClock.elapsedRealtime() + 999) / 1000).coerceIn(0, 8).toInt()
+    val contacts get() = store.catalog()?.optJSONArray("contacts") ?: JSONArray()
+    val voiceRegistrations get() = store.catalog()?.optJSONArray("registrations") ?: JSONArray()
+    val catalogRevision get() = revision
+    val pendingTask get() = store.catalog()?.optJSONObject("pending_enrollment")
+    val waitingConfirmation get() = store.pendingCompletion() != null
+    val enrollmentStep get() = enrollmentVectors.size + 1
+    val synchronizedCatalog get() = connected && confirmedRevision == revision
+    val readyForConversation get() = synchronizedCatalog && store.pendingRequests().length() == 0 && !waitingConfirmation && pendingTask == null
+    val pendingManagement get() = store.pendingRequests().length() > 0
+    fun hasVoiceSample(id: String) = store.hasVector(id)
     val microphoneState get() = when (mode) { Mode.WAKE, Mode.FOLLOWUP -> "wake"; Mode.RECORDING, Mode.ENROLLING -> "recording"; else -> "closed" }
     init {
         connection.heartbeat = { JSONObject().put("type", "heartbeat").put("foreground", foreground)
-            .put("microphone", microphoneState).put("playback", if (mode == Mode.PLAYING) "playing" else "idle") }
+            .put("microphone", microphoneState).put("playback", if (mode == Mode.PLAYING) "playing" else "idle").put("enrollment_revision", revision) }
         scope.launch {
             var prepared: NativeModels? = null
             try {
@@ -99,7 +131,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         if (!connected && store.pairing() != null) reconnect()
         heartbeat(); changed() // Resume/reconnect never opens the microphone.
     }
-    fun pause() { foreground = false; stop("已退到后台；麦克风与播放关闭", disableWake = true); heartbeat() }
+    fun pause() { foreground = false; main.removeCallbacks(reconnectLater); stop("已退到后台；麦克风与播放关闭", disableWake = true); heartbeat() }
     fun destroy() { pause(); connection.disconnect(null); scope.cancel(); models?.close(); models = null }
     fun scan(raw: String) {
         try {
@@ -121,7 +153,9 @@ class VoiceController(private val context: Context, private val changed: () -> U
         changed()
     }
     fun reconnect() {
+        main.removeCallbacks(reconnectLater)
         stop("正在连接；麦克风关闭", disableWake = true)
+        confirmedRevision = -1
         if (models == null) { status = "等待端侧模型加载；麦克风关闭"; changed(); return }
         try {
             check(store.compatible) { "旧 WIP 配对/声纹不兼容；原数据保留，请明确清除本机数据后重新配对" }
@@ -133,12 +167,17 @@ class VoiceController(private val context: Context, private val changed: () -> U
         } catch (e: Exception) { status = e.message ?: "请扫描 Admin 的 v${Wire.PROTOCOL_VERSION} 配对二维码" }
         changed()
     }
-    fun forget() { stop("本机已清除配对和登记；请在 Admin 撤销旧终端后重新配对", true); connection.disconnect(null); connectionEpoch = null; store.forget(); changed() }
+    fun forget() {
+        stop("本机已清除配对和登记；请在 Admin 撤销旧终端后重新配对", true)
+        connection.disconnect(null); connectionEpoch = null; store.forget()
+        revision = 0; confirmedRevision = -1; registrations = JSONArray(); unknownRequests.clear(); enrollmentCompleted = false; pairing = null
+        changed()
+    }
     private fun heartbeat() { if (connection.ready) try { connection.send(connection.heartbeat!!.invoke()) } catch (_: Exception) { connection.disconnect("连接已中断") } }
     fun toggleWake() {
         if (wakeEnabled) stop("麦克风关闭", true)
         else try {
-            require(foreground && connected && modelReady) { "需在前台连接并完成模型加载" }
+            require(foreground && readyForConversation && modelReady) { "请等待连接及声纹目录同步，或完成当前登记" }
             stop("开启本地唤醒；不上传待机音频", true)
             wakeEnabled = true; mode = Mode.WAKE; startMic(); status = "本地唤醒待机：$wakeWord。准确率与功耗尚未验收。"; heartbeat()
         } catch (e: Exception) { stop(e.message ?: "无法开启麦克风", true) }
@@ -151,11 +190,80 @@ class VoiceController(private val context: Context, private val changed: () -> U
             if (enrollment != null && mode == Mode.CLOSED) { beginEnrollmentClip(); changed(); return }
             val keepWake = wakeEnabled
             stop("开始有限录音", false); wakeEnabled = keepWake
-            if (enrollment != null) beginEnrollmentClip() else beginTurn(ShortArray(0))
+            if (enrollment != null) beginEnrollmentClip() else { require(readyForConversation) { "请等待声纹目录同步或完成当前登记" }; beginTurn(ShortArray(0)) }
         } catch (e: Exception) { stop(e.message ?: "无法开始录音", true) }
         changed()
     }
     fun mute() { stop("完全静音；麦克风与播放已关闭", true) }
+    fun enrollNew(name: String) = requestManagement(JSONObject().put("action", "enroll_new").put("display_name", name.trim()), true)
+    fun reEnroll(id: String) = requestManagement(JSONObject().put("action", "enroll").put("platform_user_id", id), true)
+    fun renameContact(id: String, name: String) = requestManagement(JSONObject().put("action", "rename_contact").put("platform_user_id", id).put("display_name", name.trim()))
+    fun deleteVoiceSample(id: String) = requestManagement(JSONObject().put("action", "delete_registration").put("registration_id", id))
+    fun cancelEnrollment() {
+        val task = pendingTask ?: run { mute(); return }
+        if (waitingConfirmation) { mute(); status = "声纹已保存，正在等待后台确认"; changed(); return }
+        requestManagement(JSONObject().put("action", "cancel_enrollment").put("registration_id", task.getJSONObject("registration").getString("registration_id")))
+    }
+    private fun requestManagement(command: JSONObject, beginRecording: Boolean = false) {
+        try {
+            require(foreground && synchronizedCatalog && modelReady) { "请先连接并等待目录同步" }
+            if (command.getString("action") != "rename_contact") stop("准备管理声纹；麦克风关闭", true)
+            val id = UUID.randomUUID().toString()
+            val request = JSONObject().put("request_id", id).put("expected_revision", revision).put("command", command)
+            store.rememberRequest(request)
+            startEnrollmentRequest = if (beginRecording) id else null
+            connection.send(JSONObject().put("type", "contact_action").put("request", request))
+            status = "正在等待 Crabot 确认操作"
+        } catch (e: Exception) { status = e.message ?: "操作尚未确认，请重试同步" }
+        changed()
+    }
+    fun retrySynchronization() {
+        if (!foreground) return
+        if (!connected) { reconnect(); return }
+        try {
+            val requests = store.pendingRequests()
+            requests.keys().forEach { id ->
+                if (id in unknownRequests) connection.send(JSONObject().put("type", "contact_action").put("request", requests.getJSONObject(id)))
+                else connection.send(JSONObject().put("type", "contact_action_query").put("request_id", id))
+            }
+            retryCompletion()
+        } catch (_: Exception) { status = "同步未完成，原操作已保留" }
+        changed()
+    }
+    private fun retryCompletion() {
+        val completion = store.pendingCompletion() ?: return
+        val task = pendingTask
+        val id = completion.getString("registration_id")
+        val active = (0 until registrations.length()).map { registrations.getJSONObject(it) }.any { it.getString("registration_id") == id && it.getString("status") == "active" }
+        if (active) {
+            completion.optString("request_id").takeIf { it.isNotEmpty() }?.let { store.resolveRequest(it) }
+            store.resolveCompletion(); enrollmentCompleted = true; status = "声纹已同步到 Crabot"
+            return
+        }
+        val revoked = (0 until registrations.length()).map { registrations.getJSONObject(it) }.any { it.getString("registration_id") == id && it.getString("status") == "revoked" }
+        if (revoked) {
+            store.resolveCompletion(); enrollmentCompleted = false; status = "录入任务或样本已撤销，请核对联系人状态"
+            return
+        }
+        if (task?.getJSONObject("registration")?.getString("registration_id") == id && java.time.Instant.parse(task.getString("expires_at")).toEpochMilli() > System.currentTimeMillis()) {
+            connection.send(JSONObject().put("type", "enrollment_done").put("registration_id", id).put("model_id", completion.getString("model_id")).put("enrollment_revision", completion.getLong("enrollment_revision")))
+        }
+    }
+    private fun applyCatalog(catalog: JSONObject) {
+        VoiceCatalog.validate(catalog)
+        val nextRevision = VoiceCatalog.revision(catalog)
+        if (nextRevision < revision) return
+        if (nextRevision != revision && enrollment == null && mode in listOf(Mode.WAKE, Mode.FOLLOWUP, Mode.RECORDING, Mode.PROCESSING)) stop("声纹目录已更新，请重新开启语音", true)
+        val clears = store.applyCatalog(catalog)
+        if (revision != nextRevision) confirmedRevision = -1
+        revision = nextRevision
+        registrations = catalog.getJSONArray("registrations")
+        val task = catalog.optJSONObject("pending_enrollment")
+        if (enrollment != null && task?.getJSONObject("registration")?.getString("registration_id") != enrollment!!.getString("registration_id")) stop("声纹登记状态已更新；麦克风关闭", true)
+        for (id in clears) connection.send(JSONObject().put("type", "registration_cleared").put("registration_id", id).put("enrollment_revision", revision))
+        retryCompletion()
+        connection.send(JSONObject().put("type", "catalog_applied").put("enrollment_revision", revision))
+    }
     fun stop(reason: String, disableWake: Boolean = false) {
         generation++; captureGeneration++; processing?.cancel(); processing = null
         mic.stop(); mode = Mode.CLOSED
@@ -171,6 +279,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         currentTurn = null; readyTurn = null; count = 0; sentSamples = 0; sequence = 0
         pcm.fill(0); preRoll.fill(0); preCount = 0
         if (disableWake) wakeEnabled = false
+        if (disableWake) { startEnrollmentRequest = null; enrollmentRequestId = null }
         enrollmentVectors.forEach { it.fill(0f) }; enrollmentVectors.clear()
         if (disableWake) enrollment = null
         manager.abandonAudioFocusRequest(focus)
@@ -196,6 +305,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         }
     }
     private fun beginTurn(leading: ShortArray) {
+        speakerSummary = ""
         mode = Mode.RECORDING; currentTurn = UUID.randomUUID().toString(); readyTurn = null
         sequence = 0; sentSamples = 0; count = 0; startedAt = SystemClock.elapsedRealtime(); hasSpeech = false; lastSpeechAt = startedAt
         leading.copyInto(pcm); count = leading.size; leading.fill(0)
@@ -281,7 +391,9 @@ class VoiceController(private val context: Context, private val changed: () -> U
         if (enrollmentVectors.size == 3) {
             val mean = FloatArray(v.size) { i -> enrollmentVectors.sumOf { it[i].toDouble() }.toFloat() / 3 }
             val target = enrollment ?: error("登记已取消")
-            try { store.putVector(target.getString("registration_id"), mean) } finally { mean.fill(0f) }
+            val completion = JSONObject().put("registration_id", target.getString("registration_id")).put("model_id", Models.EMBEDDING).put("enrollment_revision", enrollmentRevision)
+            enrollmentRequestId?.let { completion.put("request_id", it) }
+            try { store.saveEnrollment(target.getString("registration_id"), mean, completion) } finally { mean.fill(0f) }
             enrollmentVectors.forEach { it.fill(0f) }; enrollmentVectors.clear()
             connection.send(JSONObject().put("type", "enrollment_done").put("registration_id", target.getString("registration_id"))
                 .put("model_id", Models.EMBEDDING).put("enrollment_revision", enrollmentRevision))
@@ -296,6 +408,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
             val s = segments.getJSONObject(i)
             val r = (0 until registrations.length()).map { registrations.getJSONObject(it) }.find { it.getString("registration_id") == s.optString("registration_id") }
             "${s.getInt("start_sample") / 16000.0}–${s.getInt("end_sample") / 16000.0}s  ${s.getString("anonymous_speaker")}: ${r?.getString("display_name") ?: if (s.getString("identity_status") == "uncertain") "身份未确认（陌生人）" else "陌生人"}" }
+        speakerSummary = (0 until segments.length()).map { i -> val segment = segments.getJSONObject(i); (0 until registrations.length()).map { registrations.getJSONObject(it) }.find { it.getString("registration_id") == segment.optString("registration_id") }?.getString("display_name") ?: if (segment.getString("identity_status") == "uncertain") "身份未确认" else "陌生人" }.distinct().joinToString("、")
         connection.send(JSONObject().put("type", "turn_end").put("turn_id", currentTurn).put("audio_sample_count", audio.size).put("sample_rate", 16000)
             .put("models", Models.versions()).put("enrollment_revision", revision).put("segments", segments))
         mode = Mode.WAITING; status = "已提交，等待接纳；麦克风关闭"
@@ -314,13 +427,31 @@ class VoiceController(private val context: Context, private val changed: () -> U
     }
     private fun standby() {
         mode = Mode.CLOSED
-        if (wakeEnabled && foreground && connected) { mode = Mode.WAKE; startMic(); status += "；恢复本地唤醒待机" }
+        if (wakeEnabled && foreground && readyForConversation) { mode = Mode.WAKE; startMic(); status += "；恢复本地唤醒待机" }
         else manager.abandonAudioFocusRequest(focus)
         heartbeat(); changed()
     }
     fun confirmEnrollment() {
-        try { require(enrollment != null && foreground && connected && modelReady); beginEnrollmentClip() }
+        try {
+            require(foreground && connected && modelReady && !waitingConfirmation)
+            if (enrollment == null) prepareEnrollment(pendingTask ?: error("没有待录入任务"))
+            beginEnrollmentClip()
+        }
         catch (e: Exception) { stop(e.message ?: "无法开始登记", true) }; changed()
+    }
+    private fun prepareEnrollment(task: JSONObject) {
+        val registration = task.getJSONObject("registration")
+        if (enrollment?.getString("registration_id") == registration.getString("registration_id")) return
+        stop("请现场确认声纹录入", true)
+        require(registration.getString("model_id") == Models.EMBEDDING)
+        val remaining = java.time.Instant.parse(task.getString("expires_at")).toEpochMilli() - System.currentTimeMillis()
+        require(remaining > 0) { "声纹录入已过期，请重新发起" }
+        enrollment = registration; enrollmentRevision = task.getLong("enrollment_revision")
+        enrollmentCompleted = false
+        enrollmentDeadline = SystemClock.elapsedRealtime() + remaining
+        status = "录入 ${enrollmentName}：三段不同短句，每段 3–5 秒"
+        val id = registration.getString("registration_id")
+        main.postDelayed({ if (enrollment?.getString("registration_id") == id && SystemClock.elapsedRealtime() >= enrollmentDeadline) stop("声纹录入任务已过期，请重新开始", true) }, remaining)
     }
     private fun beginEnrollmentClip() {
         check(SystemClock.elapsedRealtime() < enrollmentDeadline) { "登记任务已过期" }
@@ -343,20 +474,26 @@ class VoiceController(private val context: Context, private val changed: () -> U
                     pairing = null; detail = ""; reconnect()
                 }
                 "hello" -> {
+                    main.removeCallbacks(reconnectLater); reconnectDelay = 1000
                     val epoch = c.getString("connection_epoch")
                     if (previousEpoch != epoch) { stop("已连接；麦克风关闭", true); previousEpoch = epoch }
                     connectionEpoch = epoch
-                    registrations = c.getJSONArray("registrations"); revision = c.getInt("enrollment_revision")
-                    (0 until registrations.length()).forEach { i -> val r = registrations.getJSONObject(i); require(r.getString("platform_user_id").isNotBlank() && !r.has("friend_id")) }
                     wakeWord = c.getJSONObject("config").getString("wake_word")
                     keyword = Models.keyword(wakeWord, tokens)
-                    val revoked = (0 until registrations.length()).map { registrations.getJSONObject(it) }.filter { it.getString("status") == "revoked" }
-                    revoked.forEach { clearRegistration(it.getString("registration_id"), revision) }
+                    applyCatalog(c.getJSONObject("catalog"))
                     destinations = (0 until c.getJSONArray("destinations").length()).joinToString("\n") { i ->
                         val d = c.getJSONArray("destinations").getJSONObject(i); "${d.getString("capability").uppercase()}: ${d.getString("endpoint")}" }
-                    status = "已连接；麦克风关闭。声纹分数配置尚待真人校准。"; heartbeat()
+                    status = "已连接，正在核对声纹目录；麦克风关闭"; heartbeat(); retrySynchronization()
                 }
                 "heartbeat" -> Unit
+                "catalog" -> applyCatalog(c.getJSONObject("catalog"))
+                "catalog_confirmed" -> {
+                    if (c.getLong("enrollment_revision") == revision) {
+                        confirmedRevision = revision
+                        if (mode == Mode.CLOSED && !pendingManagement && !waitingConfirmation) status = "已连接，声纹目录已同步；麦克风关闭"
+                    }
+                }
+                "contact_result" -> contactResult(c)
                 "turn_ready" -> { if (c.getString("turn_id") == currentTurn && mode == Mode.RECORDING) { readyTurn = currentTurn; upload() } }
                 "turn_status" -> if (c.getString("turn_id") == currentTurn) {
                     status = when (c.getString("status")) { "accepted" -> "整轮已接纳，等待回答；麦克风关闭"; "pending", "unknown" -> "已提交，接纳状态待确认；不会换 ID 重传"; else -> "整轮拒绝：${c.optString("reason", "请重说或登记")}" }
@@ -369,28 +506,48 @@ class VoiceController(private val context: Context, private val changed: () -> U
                     require(connected && foreground && currentTurn == c.getString("turn_id") && mode == Mode.WAITING && player == null)
                     mic.stop(); captureGeneration++; mode = Mode.PLAYING
                     check(manager.requestAudioFocus(focus) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-                    playbackId = c.getString("playback_id"); status = "播放中可点按打断"; detail += "\n回答：${c.getString("text")}"; heartbeat()
+                    playbackId = c.getString("playback_id"); lastReply = c.getString("text"); status = "播放中可点按打断"; detail += "\n回答：${lastReply}"; heartbeat()
                     player = Playback(context, playbackId!!) { id, receipt, played -> main.post { playbackReceipt(id, receipt, played) } }
                 }
-                "playback_end" -> { if (c.getString("playback_id") == playbackId) { player!!.finish(c.getInt("sample_count")); detail += "\n完整回答：${c.getString("text")}" } }
+                "playback_end" -> { if (c.getString("playback_id") == playbackId) { player!!.finish(c.getInt("sample_count")); lastReply = c.getString("text"); detail += "\n完整回答：${lastReply}" } }
                 "response_end" -> { if (c.getString("turn_id") == currentTurn && player == null) finishResponse() }
                 "playback_cancel" -> { if (c.getString("playback_id") == playbackId) stop("播报已取消；已接纳任务仍由 Crabot 负责", false) }
                 "enroll" -> {
-                    stop("后台发起登记，请现场确认后录音", true)
-                    require(c.getJSONObject("registration").getString("model_id") == Models.EMBEDDING)
-                    enrollment = c.getJSONObject("registration"); enrollmentRevision = c.getInt("enrollment_revision")
-                    enrollmentDeadline = SystemClock.elapsedRealtime() + 60_000
-                    status = "登记 ${enrollmentName}：请现场点按确认；3 段不同内容，每段 3–5 秒，60 秒内完成"
-                    main.postDelayed({ if (enrollment != null && SystemClock.elapsedRealtime() >= enrollmentDeadline) stop("登记任务已过期，请从 Admin 重新开始", true) }, 60_000)
+                    prepareEnrollment(c.getJSONObject("task"))
                 }
-                "clear_registration" -> { stop("联系人声纹已撤销；本轮已结束", true); clearRegistration(c.getString("registration_id"), c.getInt("enrollment_revision")) }
+                "clear_registration" -> { stop("联系人声纹已撤销；本轮已结束", true); clearRegistration(c.getString("registration_id"), c.getLong("enrollment_revision")) }
                 "error" -> stop("语音端错误：${c.getString("message")}", true)
                 else -> error("未知协议控制")
             }
             changed()
         } catch (_: Exception) { stop("协议、模型或登记版本不兼容；麦克风关闭", true); connection.disconnect(null); connectionEpoch = null; changed() }
     }
-    private fun clearRegistration(id: String, rev: Int) {
+    private fun contactResult(c: JSONObject) {
+        val id = c.getString("request_id")
+        val request = store.pendingRequests().optJSONObject(id)
+        val result = c.getJSONObject("result")
+        val shouldBegin = startEnrollmentRequest == id && foreground
+        applyCatalog(result.getJSONObject("catalog"))
+        when (result.getString("status")) {
+            "pending" -> {
+                val task = result.getJSONObject("catalog").optJSONObject("pending_enrollment")
+                if (request?.getJSONObject("command")?.getString("action") in listOf("enroll_new", "enroll") && task != null) {
+                    prepareEnrollment(task); enrollmentRequestId = id
+                    if (shouldBegin) beginEnrollmentClip()
+                }
+            }
+            "completed", "rejected" -> {
+                store.resolveRequest(id); unknownRequests.remove(id)
+                if (store.pendingCompletion()?.optString("request_id") == id) store.resolveCompletion()
+                if (result.getString("status") == "rejected") status = result.optString("message", "操作被拒绝，请核对最新目录后重试")
+                else status = "后台已提交，正在核对本机状态"
+                val remaining = store.pendingRequests(); remaining.keys().forEach { requestId -> connection.send(JSONObject().put("type", "contact_action_query").put("request_id", requestId)) }
+            }
+            "unknown" -> { unknownRequests.add(id); status = "操作尚未确认，原请求已保留；请点重试同步" }
+            else -> error("管理结果无效")
+        }
+    }
+    private fun clearRegistration(id: String, rev: Long) {
         store.clearVector(id)
         if (connected) connection.send(JSONObject().put("type", "registration_cleared").put("registration_id", id).put("enrollment_revision", rev))
     }
@@ -417,7 +574,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         currentTurn = null
         if (!interactionHadPlayback) { mode = Mode.CLOSED; status = "本轮结束，没有可播回复；麦克风关闭"; heartbeat(); changed(); return }
         interactionHadPlayback = false
-        if (foreground && connected) try {
+        if (foreground && readyForConversation) try {
             mode = Mode.FOLLOWUP; deadline = SystemClock.elapsedRealtime() + 8000; status = "播放完成；8 秒本地接话窗口"; startMic()
             main.postDelayed({ if (mode == Mode.FOLLOWUP && SystemClock.elapsedRealtime() >= deadline) {
                 mic.stop(); captureGeneration++
