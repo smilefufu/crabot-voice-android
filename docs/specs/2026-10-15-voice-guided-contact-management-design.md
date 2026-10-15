@@ -1,7 +1,7 @@
 # 语音引导声纹与联系人管理
 
 日期：2026-10-15
-状态：待用户确认；未修改手机代码、模型、阈值或用户数据。
+状态：2026-10-15 用户认可全语音管理业务方案；主控工具按后端配套稿接入现有功能族加载。未修改手机代码、模型、阈值或用户数据，前置设计按各自确认状态推进。
 
 配套[后端全语音登记设计](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-15-voice-controlled-enrollment-design.md)。前提为[设备所有者激活](2026-10-15-device-owner-activation-design.md)及[请求级授权](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-15-group-request-authorization-and-interruption-design.md)；正式跨端协议只引用 [protocol-voice](https://github.com/smilefufu/crabot-docs/blob/main/protocols/protocol-voice.md)。
 
@@ -67,6 +67,6 @@ Master 在正常语音轮发起登记 Thea 后，手机自动进入有限的引�
 
 质量阈值的真实家庭误拒/误录、现场 Thea 参与及整体耗时均待验收，不因公开文件测试通过就宣称准确可靠。先用公开音频和隔离状态准备回归，不把真实录音/向量入库；真机测试须保留当前配对和声纹。
 
-确认后更新正式协议、写实施计划、实现并定向测试/review，安卓按既有授权直接 main。当前仅新增本 spec。
+前置设计确认后更新正式协议、写实施计划、实现并定向测试/review，安卓按既有授权直接 main。当前仅维护本 spec。
 
 自审：免按钮路径限定已授权现场语音任务，采样是数据而非新命令，自动待机恢复仅继承仍有效的原许可；未新增后台监听或手机好友权限。
