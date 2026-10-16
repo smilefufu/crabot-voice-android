@@ -26,10 +26,15 @@ class SecureStore(context: Context) {
                 cipher.init(Cipher.DECRYPT_MODE, key(), GCMParameterSpec(128, blob.copyOfRange(0, 12)))
                 val plain = cipher.doFinal(blob.copyOfRange(12, blob.size))
                 try { state = JSONObject(String(plain, Charsets.UTF_8)) } finally { plain.fill(0); blob.fill(0) }
-                if (state.optInt("storage_version") == 1 && validState()) {
-                    val backup = File(context.filesDir, "terminal.enc.v1.bak")
-                    if (!backup.exists()) replaceAtomic(backup, file.readFully())
-                    persist(JSONObject(state.toString()).put("storage_version", 2))
+                val version = state.optInt("storage_version")
+                if (version in 1..2 && validState()) {
+                    val backup = File(context.filesDir, "terminal.enc.v$version.bak")
+                    val original = file.readFully()
+                    try {
+                        if (!backup.exists()) replaceAtomic(backup, original)
+                        require(backup.readBytes().contentEquals(original)) { "配对迁移备份校验失败" }
+                        persist(JSONObject(state.toString()).put("storage_version", 3))
+                    } finally { original.fill(0) }
                 }
             } catch (_: Exception) {
                 loadFailed = true // Preserve the original encrypted file; clearing is an explicit user action.
@@ -39,19 +44,51 @@ class SecureStore(context: Context) {
     val needsRepair get() = state.optInt("protocol_version") == 2
     val compatible get() = !loadFailed && (state.length() == 0 || validState())
     private fun validState(): Boolean = try {
-        val allowed = if (needsRepair) setOf("protocol_version", "pairing", "vectors") else if (state.optInt("storage_version") == 1) setOf("storage_version", "pairing", "vectors") else setOf("storage_version", "pairing", "vectors", "catalog", "pending_management", "pending_completion")
+        val version = state.optInt("storage_version")
+        val oldFields = setOf("storage_version", "pairing", "vectors", "catalog", "pending_management", "pending_completion")
+        val allowed = when {
+            needsRepair -> setOf("protocol_version", "pairing", "vectors")
+            version == 1 -> setOf("storage_version", "pairing", "vectors")
+            version == 2 -> oldFields
+            version == 3 -> oldFields + setOf("owner", "owner_vector", "owner_activation", "pending_owner_saved")
+            else -> error("不支持的配对存储版本")
+        }
         require(state.keys().asSequence().all { it in allowed })
-        val pairing = state.getJSONObject("pairing")
-        require(pairing.getString("channel_id").isNotBlank() && pairing.getString("credential").isNotBlank())
-        if (needsRepair) {
-            val old = java.net.URI(pairing.getString("url"))
-            require(old.scheme == "wss" && old.host != null && old.path == "/voice" && old.userInfo == null && old.query == null && old.fragment == null)
-            require(pairing.getString("tls_fingerprint_sha256").matches(Regex("[0-9a-f]{64}")))
+        val pairing = state.optJSONObject("pairing")
+        if (pairing == null) {
+            require(version == 3 && state.has("owner") && state.has("owner_vector") && !state.has("owner_activation") && !state.has("pending_owner_saved"))
+            require(listOf("catalog", "pending_management", "pending_completion").none { state.has(it) })
+            require((state.optJSONObject("vectors")?.length() ?: 0) == 0)
         } else {
-            require(state.getInt("storage_version") in 1..2)
-            Wire.requirePairingVersion(pairing.getInt("protocol_version"), saved = true)
-            TerminalEndpoint.parse(pairing.getString("url"), pairing.getString("channel_id"))
-            if (pairing.has("tls_fingerprint_sha256")) require(pairing.getString("tls_fingerprint_sha256").matches(Regex("[0-9a-f]{64}")))
+            require(pairing.getString("channel_id").isNotBlank() && pairing.getString("credential").isNotBlank())
+            if (needsRepair) {
+                val old = java.net.URI(pairing.getString("url"))
+                require(old.scheme == "wss" && old.host != null && old.path == "/voice" && old.userInfo == null && old.query == null && old.fragment == null)
+                require(pairing.getString("tls_fingerprint_sha256").matches(Regex("[0-9a-f]{64}")))
+            } else {
+                Wire.requirePairingVersion(pairing.getInt("protocol_version"), saved = true)
+                TerminalEndpoint.parse(pairing.getString("url"), pairing.getString("channel_id"))
+                if (pairing.has("tls_fingerprint_sha256")) require(pairing.getString("tls_fingerprint_sha256").matches(Regex("[0-9a-f]{64}")))
+            }
+        }
+        if (state.has("owner")) DeviceOwner.validate(state.getJSONObject("owner"))
+        if (state.has("owner_vector")) {
+            require(state.has("owner"))
+            validateOwnerVector(state.getJSONObject("owner_vector"))
+        }
+        if (state.has("owner_activation")) {
+            val activation = state.getJSONObject("owner_activation")
+            DeviceOwner.validateActivation(activation)
+            require(pairing != null && DeviceOwner.sameOwner(state.getJSONObject("owner"), activation.getJSONObject("owner")))
+            if (activation.getString("status") == "pending") {
+                require(state.has("pending_owner_saved"))
+                validateOwnerVector(state.getJSONObject("vectors").getJSONObject(activation.getString("registration_id")))
+            } else require(!state.has("pending_owner_saved") && !state.has("owner_vector"))
+        }
+        if (state.has("pending_owner_saved")) {
+            val activation = state.getJSONObject("owner_activation")
+            require(activation.getString("status") == "pending")
+            DeviceOwner.validateSaved(state.getJSONObject("pending_owner_saved"), activation)
         }
         val vectors = state.optJSONObject("vectors") ?: JSONObject()
         vectors.keys().forEach { id ->
@@ -79,12 +116,68 @@ class SecureStore(context: Context) {
                 .setBlockModes(KeyProperties.BLOCK_MODE_GCM).setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE).build())
         }.generateKey()
     }
+    private fun validateOwnerVector(vector: JSONObject) {
+        require(vector.keys().asSequence().toSet() == setOf("model_id", "values") && vector.getString("model_id") == Models.EMBEDDING)
+        val values = vector.getJSONArray("values")
+        require(values.length() > 0)
+        val samples = DoubleArray(values.length()) { values.getDouble(it) }
+        require(samples.all { it.isFinite() && it.toFloat().isFinite() } && samples.sumOf { it * it } > 0) { "所有者声纹特征无效" }
+    }
+    @Synchronized fun owner(): JSONObject? = state.optJSONObject("owner")?.takeIf { compatible && !needsRepair }?.let { JSONObject(it.toString()) }
+    @Synchronized fun ownerActivation(): JSONObject? = state.optJSONObject("owner_activation")?.takeIf { compatible && !needsRepair }?.let { JSONObject(it.toString()) }
+    @Synchronized fun pendingOwnerSaved(): JSONObject? = state.optJSONObject("pending_owner_saved")?.takeIf { compatible && !needsRepair }?.let { JSONObject(it.toString()) }
+    @Synchronized fun saveLocalOwner(name: String, vector: FloatArray) {
+        check(compatible && !needsRepair && !state.has("owner") && !state.has("pairing")) { "已有所有者或配对，不能重新认主" }
+        val owner = DeviceOwner.create(name)
+        val sample = JSONObject().put("model_id", Models.EMBEDDING).put("values", org.json.JSONArray(vector.toList()))
+        validateOwnerVector(sample)
+        persist(JSONObject(state.toString()).put("storage_version", 3).put("owner", owner).put("owner_vector", sample))
+    }
+    @Synchronized fun saveOwnerPairing(pairing: JSONObject, activation: JSONObject) {
+        checkChannel(pairing.getString("channel_id")); DeviceOwner.validateActivation(activation)
+        require(activation.getString("status") == "pending" && DeviceOwner.sameOwner(owner() ?: error("请先登记本人声纹"), activation.getJSONObject("owner")))
+        val previous = ownerActivation()
+        require(previous == null || previous.getString("status") == "pending" && DeviceOwner.sameActivation(previous, activation)) { "不能替换原所有者关联操作" }
+        require(pairing.getInt("protocol_version") == Wire.PROTOCOL_VERSION && pairing.getString("credential").isNotBlank())
+        TerminalEndpoint.parse(pairing.getString("url"), pairing.getString("channel_id"))
+        val id = activation.getString("registration_id")
+        val sample = state.optJSONObject("owner_vector") ?: vectors().getJSONObject(id)
+        validateOwnerVector(sample)
+        val vectors = vectors(); vectors.put(id, JSONObject(sample.toString()))
+        persist(JSONObject(state.toString()).put("storage_version", 3).put("pairing", JSONObject(pairing.toString())).put("vectors", vectors)
+            .put("owner_activation", JSONObject(activation.toString())).put("pending_owner_saved", DeviceOwner.saved(activation)).apply { remove("owner_vector") })
+    }
+    @Synchronized fun adoptOwner(activation: JSONObject, dimension: Int) {
+        check(compatible && !needsRepair && pairing() != null && owner() == null) { "只能恢复既有设备的所有者引用" }
+        DeviceOwner.validateActivation(activation)
+        val id = activation.getString("registration_id")
+        val catalog = catalog() ?: error("请先同步后台目录")
+        val registrations = catalog.getJSONArray("registrations")
+        val registration = (0 until registrations.length()).map { registrations.getJSONObject(it) }.singleOrNull {
+            it.getString("registration_id") == id && it.getString("platform_user_id") == activation.getString("platform_user_id") &&
+                it.getString("status") == "active" && it.getString("model_id") == Models.EMBEDDING
+        } ?: error("后台所有者没有兼容有效登记，请在 Admin 恢复")
+        val sample = vectors().getJSONObject(registration.getString("registration_id"))
+        validateOwnerVector(sample)
+        require(dimension > 0 && sample.getJSONArray("values").length() == dimension) { "本机所有者声纹模型不兼容，请在 Admin 恢复" }
+        val next = JSONObject(state.toString()).put("storage_version", 3).put("owner", JSONObject(activation.getJSONObject("owner").toString()))
+            .put("owner_activation", JSONObject(activation.toString()))
+        if (activation.getString("status") == "pending") next.put("pending_owner_saved", DeviceOwner.saved(activation))
+        persist(next)
+    }
+    @Synchronized fun completeOwnerActivation(activation: JSONObject) {
+        check(compatible && !needsRepair); DeviceOwner.validateActivation(activation)
+        val previous = ownerActivation() ?: error("没有待完成的所有者关联")
+        require(activation.getString("status") == "completed" && DeviceOwner.sameActivation(previous, activation)) { "所有者关联结果与原操作不符" }
+        if (previous.getString("status") == "completed") return
+        persist(JSONObject(state.toString()).put("owner_activation", JSONObject(activation.toString())).apply { remove("pending_owner_saved"); remove("owner_vector") })
+    }
     @Synchronized fun pairing(): JSONObject? = state.optJSONObject("pairing")?.takeIf { compatible && !needsRepair }?.let { JSONObject(it.toString()) }
     @Synchronized fun savePairing(pairing: JSONObject) {
         checkChannel(pairing.getString("channel_id"))
         require(pairing.getInt("protocol_version") == Wire.PROTOCOL_VERSION && pairing.getString("credential").isNotBlank())
         TerminalEndpoint.parse(pairing.getString("url"), pairing.getString("channel_id"))
-        val next = JSONObject(state.toString()).apply { remove("protocol_version"); put("storage_version", 2); put("pairing", JSONObject(pairing.toString())) }
+        val next = JSONObject(state.toString()).apply { remove("protocol_version"); put("storage_version", 3); put("pairing", JSONObject(pairing.toString())) }
         persist(next)
     }
     @Synchronized fun vectors(): JSONObject = state.optJSONObject("vectors")?.let { JSONObject(it.toString()) } ?: JSONObject()
@@ -92,7 +185,7 @@ class SecureStore(context: Context) {
         check(compatible && !needsRepair) { "请先重新扫码，保留同渠道声纹后再登记" }
         val vectors = vectors()
         vectors.put(id, JSONObject().put("model_id", Models.EMBEDDING).put("values", org.json.JSONArray(vector.toList())))
-        persist(JSONObject(state.toString()).put("storage_version", 2).put("vectors", vectors))
+        persist(JSONObject(state.toString()).put("storage_version", 3).put("vectors", vectors))
     }
     @Synchronized fun hasVector(id: String): Boolean = state.optJSONObject("vectors")?.has(id) == true
     @Synchronized fun catalog(): JSONObject? = state.optJSONObject("catalog")?.takeIf { compatible && !needsRepair }?.let { JSONObject(it.toString()) }
