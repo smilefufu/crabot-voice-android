@@ -1,7 +1,7 @@
 # 设备所有者首次激活与配对
 
 日期：2026-10-15
-状态：待用户确认；仅设计稿，未修改 APK 或真实设备数据。
+状态：2026-10-16 用户确认整组设计（含安卓配套）；按设备所有者激活 → 请求级授权与插话隔离 → 全语音管理实施，正式协议先行，完整流程通过后统一升级。
 
 配套[后端自动认主设计](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-15-voice-device-owner-activation-design.md)。正式跨端类型、状态和权限规则只以 [protocol-voice](https://github.com/smilefufu/crabot-docs/blob/main/protocols/protocol-voice.md) 为准，本仓不复制协议 schema。
 

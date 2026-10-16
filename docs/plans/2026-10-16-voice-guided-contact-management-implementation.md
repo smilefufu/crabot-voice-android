@@ -1,7 +1,7 @@
 # 语音引导声纹管理实施准备
 
 日期：2026-10-16
-状态：准备稿；全语音管理方案及按需工具族要求已确认，前置激活/授权范围正在核对，正式跨端协议升级前不实现产品代码。
+状态：2026-10-16 用户确认整组设计（含安卓配套）；按设备所有者激活 → 请求级授权与插话隔离 → 全语音管理实施，正式协议先行，完整流程通过后统一升级。
 
 依据[安卓 spec](../specs/2026-10-15-voice-guided-contact-management-design.md)及[后端配套实施准备](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/plans/2026-10-16-voice-controlled-enrollment-implementation.md)。正式类型、字段和状态以 [protocol-voice](https://github.com/smilefufu/crabot-docs/blob/main/protocols/protocol-voice.md) 为准，本计划不复制 schema。
 
