@@ -383,16 +383,15 @@ class VoiceController(private val context: Context, private val changed: () -> U
         }
     }
     private suspend fun completeEnrollment(audio: ShortArray, token: Int): Boolean {
-        val v = withContext(Dispatchers.Default) {
-            val segments = Identity.ranges(models!!.segments(audio), audio.size)
-            Identity.requireComplete(segments)
-            require(segments.map { it.speaker }.distinct().size == 1 && segments.sumOf { it.end - it.start } >= Identity.MIN_ENROLLMENT_SAMPLES) { "登记需一人清楚说话，请重新录这一段" }
-            models!!.embedding(audio).also { require(it.isNotEmpty()) { "语音证据不足" } }
-        }
+        val v = withContext(Dispatchers.Default) { Identity.enrollmentSample(audio, models!!) }
         if (token != generation || SystemClock.elapsedRealtime() >= enrollmentDeadline) { v.fill(0f); return false }
         enrollmentVectors += v
         if (enrollmentVectors.size == 3) {
-            val mean = FloatArray(v.size) { i -> enrollmentVectors.sumOf { it[i].toDouble() }.toFloat() / 3 }
+            val samples = enrollmentVectors.map { it.copyOf() }
+            val mean = try {
+                withContext(Dispatchers.Default) { Identity.enrollmentCandidate(samples, models!!) }
+            } finally { samples.forEach { it.fill(0f) } }
+            if (token != generation || SystemClock.elapsedRealtime() >= enrollmentDeadline) { mean.fill(0f); return false }
             val target = enrollment ?: error("登记已取消")
             val completion = JSONObject().put("registration_id", target.getString("registration_id")).put("model_id", Models.EMBEDDING).put("enrollment_revision", enrollmentRevision)
             enrollmentRequestId?.let { completion.put("request_id", it) }

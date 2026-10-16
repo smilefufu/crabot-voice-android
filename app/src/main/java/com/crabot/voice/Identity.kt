@@ -34,6 +34,35 @@ object Identity {
     fun requireComplete(ranges: List<Segment>) {
         require(ranges.zipWithNext().all { (a, b) -> b.start >= a.end }) { "分段重叠或无序，内容无法归属；整轮未提交，请轮流重说" }
     }
+    fun enrollmentSample(audio: ShortArray, models: SpeakerIdentityModel): FloatArray {
+        require(audio.size in 48_000..80_000) { "每段登记需 3–5 秒，请重新录这一段" }
+        val segments = ranges(models.segments(audio), audio.size)
+        requireComplete(segments)
+        require(segments.map { it.speaker }.distinct().size == 1 && segments.sumOf { it.end - it.start } >= MIN_ENROLLMENT_SAMPLES) {
+            "登记需一人清楚说话，请重新录这一段"
+        }
+        val vector = models.embedding(audio)
+        if (!validVector(vector, models.dimension())) {
+            vector.fill(0f)
+            throw IllegalArgumentException("登记声纹特征无效，请重新录这一段")
+        }
+        return vector
+    }
+    fun enrollmentCandidate(samples: List<FloatArray>, models: SpeakerIdentityModel): FloatArray {
+        val dimension = models.dimension()
+        require(samples.size == 3 && samples.all { validVector(it, dimension) }) { "需要三段有效的登记声纹" }
+        for (i in samples.indices) for (j in i + 1 until samples.size) {
+            val hits = models.matches(samples[i], listOf(samples[j]))
+            require(validMatches(hits, 1)) { "登记声纹比对结果无效，请重新录入" }
+            require(hits[1] >= SCORE) { "三段声音不一致，请由同一人重新录入" }
+        }
+        val mean = FloatArray(dimension) { i -> (samples.sumOf { it[i].toDouble() } / 3).toFloat() }
+        if (!validVector(mean, dimension)) {
+            mean.fill(0f)
+            throw IllegalArgumentException("合成登记声纹无效，请重新录入")
+        }
+        return mean
+    }
     fun report(pcm: ShortArray, models: SpeakerIdentityModel, stored: JSONObject, registrations: JSONArray,
                diagnostic: (Diagnostic) -> Unit = {}): JSONArray {
         val ranges = ranges(models.segments(pcm), pcm.size)
