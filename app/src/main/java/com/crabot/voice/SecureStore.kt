@@ -82,7 +82,6 @@ class SecureStore(context: Context) {
             require(pairing != null && DeviceOwner.sameOwner(state.getJSONObject("owner"), activation.getJSONObject("owner")))
             if (activation.getString("status") == "pending") {
                 require(state.has("pending_owner_saved"))
-                validateOwnerVector(state.getJSONObject("vectors").getJSONObject(activation.getString("registration_id")))
             } else require(!state.has("pending_owner_saved") && !state.has("owner_vector"))
         }
         if (state.has("pending_owner_saved")) {
@@ -150,11 +149,10 @@ class SecureStore(context: Context) {
     @Synchronized fun adoptOwner(activation: JSONObject, dimension: Int) {
         check(compatible && !needsRepair && pairing() != null && owner() == null) { "只能恢复既有设备的所有者引用" }
         DeviceOwner.validateActivation(activation)
-        val id = activation.getString("registration_id")
         val catalog = catalog() ?: error("请先同步后台目录")
         val registrations = catalog.getJSONArray("registrations")
         val registration = (0 until registrations.length()).map { registrations.getJSONObject(it) }.singleOrNull {
-            it.getString("registration_id") == id && it.getString("platform_user_id") == activation.getString("platform_user_id") &&
+            it.getString("platform_user_id") == activation.getString("platform_user_id") &&
                 it.getString("status") == "active" && it.getString("model_id") == Models.EMBEDDING
         } ?: error("后台所有者没有兼容有效登记，请在 Admin 恢复")
         val sample = vectors().getJSONObject(registration.getString("registration_id"))

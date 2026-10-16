@@ -120,6 +120,36 @@ class DeviceOwnerStorageTest {
         assertEquals(id, loaded.pendingOwnerSaved()!!.getString("registration_id"))
         assertEquals("isolated-owner-credential", loaded.pairing()!!.getString("credential"))
     }
+    @Test fun legacyOwnerHistoryUsesCurrentActiveSampleAfterExplicitRerecording() = fixture { store, context ->
+        store.savePairing(pairing())
+        val operation = activation(DeviceOwner.create("Existing owner"))
+        val historical = operation.getString("registration_id"); val current = UUID.randomUUID().toString()
+        store.putVector(current, floatArrayOf(.1f, .2f))
+        fun sample(id: String, status: String) = JSONObject().put("registration_id", id).put("platform_user_id", operation.getString("platform_user_id"))
+            .put("display_name", "Owner").put("model_id", Models.EMBEDDING).put("status", status).put("terminal_cleared", false)
+        store.applyCatalog(JSONObject().put("enrollment_revision", 2).put("pending_enrollment", JSONObject.NULL)
+            .put("contacts", JSONArray().put(JSONObject().put("platform_user_id", operation.getString("platform_user_id")).put("display_name", "Owner")))
+            .put("registrations", JSONArray().put(sample(historical, "revoked")).put(sample(current, "active"))))
+        store.adoptOwner(operation, 2)
+        val restored = SecureStore(context)
+        assertTrue(restored.compatible); assertTrue(restored.hasVector(current)); assertFalse(restored.hasVector(historical))
+        assertEquals(historical, restored.pendingOwnerSaved()!!.getString("registration_id"))
+        assertEquals(operation.getJSONObject("owner").getString("profile_id"), restored.owner()!!.getString("profile_id"))
+    }
+    @Test fun laterSampleRevocationDoesNotInvalidateTheAlreadySavedOwnerReceipt() = fixture { store, context ->
+        store.saveLocalOwner("Owner", floatArrayOf(.1f, .2f))
+        val operation = activation(store.owner()!!); store.saveOwnerPairing(pairing(), operation)
+        val id = operation.getString("registration_id")
+        val sample = JSONObject().put("registration_id", id).put("platform_user_id", operation.getString("platform_user_id"))
+            .put("display_name", "Owner").put("model_id", Models.EMBEDDING).put("status", "revoked").put("terminal_cleared", false)
+        store.applyCatalog(JSONObject().put("enrollment_revision", 2).put("pending_enrollment", JSONObject.NULL)
+            .put("contacts", JSONArray().put(JSONObject().put("platform_user_id", operation.getString("platform_user_id")).put("display_name", "Owner")))
+            .put("registrations", JSONArray().put(sample)))
+        val restored = SecureStore(context)
+        assertTrue(restored.compatible); assertNotNull(restored.pendingOwnerSaved()); assertFalse(restored.hasVector(id))
+        restored.completeOwnerActivation(JSONObject(operation.toString()).put("status", "completed"))
+        assertEquals(operation.getJSONObject("owner").getString("profile_id"), restored.owner()!!.getString("profile_id"))
+    }
     @Test fun invalidLocalFeaturesOrOwnerMetadataDoNotCreateAProfile() = fixture { store, context ->
         for (vector in listOf(floatArrayOf(), floatArrayOf(0f, 0f), floatArrayOf(Float.NaN, 1f), floatArrayOf(Float.POSITIVE_INFINITY, 1f))) {
             assertThrows(Exception::class.java) { store.saveLocalOwner("Owner", vector) }

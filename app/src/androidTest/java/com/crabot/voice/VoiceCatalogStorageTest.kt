@@ -20,7 +20,7 @@ class VoiceCatalogStorageTest {
         val context = object : ContextWrapper(target) { override fun getFilesDir() = directory }
         try {
             val store = SecureStore(context)
-            store.savePairing(JSONObject().put("protocol_version", 5).put("channel_id", "fixture").put("credential", "isolated-fixture").put("url", "ws://localhost:3000/ws/voice/fixture"))
+            store.savePairing(JSONObject().put("protocol_version", Wire.PROTOCOL_VERSION).put("channel_id", "fixture").put("credential", "isolated-fixture").put("url", "ws://localhost:3000/ws/voice/fixture"))
             work(store, context)
         } finally { directory.deleteRecursively() }
     }
@@ -53,7 +53,7 @@ class VoiceCatalogStorageTest {
         assertThrows(IllegalArgumentException::class.java) { VoiceCatalog.validate(catalog) }
     }
     @Test fun corruptCatalogFailsClosedAndPreservesOriginalCiphertext() = fixture { _, context ->
-        val pairing = JSONObject().put("protocol_version", 5).put("channel_id", "fixture").put("credential", "isolated-fixture").put("url", "ws://localhost:3000/ws/voice/fixture")
+        val pairing = JSONObject().put("protocol_version", Wire.PROTOCOL_VERSION).put("channel_id", "fixture").put("credential", "isolated-fixture").put("url", "ws://localhost:3000/ws/voice/fixture")
         val state = JSONObject().put("storage_version", 2).put("pairing", pairing).put("vectors", JSONObject()).put("catalog", JSONObject().put("enrollment_revision", "broken"))
         val key = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }.getKey("crabot.voice.terminal.v1", null)
         val cipher = Cipher.getInstance("AES/GCM/NoPadding").apply { init(Cipher.ENCRYPT_MODE, key) }

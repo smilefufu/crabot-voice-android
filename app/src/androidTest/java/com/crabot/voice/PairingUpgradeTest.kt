@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 // Isolated cache directory only. Never writes the user's terminal.enc or deletes a key.
 class PairingUpgradeTest {
-    @Test fun savedV3MetadataReconnectsWithV5WireHandshake() {
+    @Test fun savedV3MetadataReconnectsWithV6WireHandshake() {
         val server = MockWebServer()
         val hello = AtomicReference<JSONObject>()
         val connected = CountDownLatch(1)
@@ -37,7 +37,7 @@ class PairingUpgradeTest {
             connection.connect(saved, JSONObject().put("type", "hello").put("protocol_version", Wire.PROTOCOL_VERSION).put("credential", saved.getString("credential")))
             assertTrue(connected.await(5, TimeUnit.SECONDS))
             assertTrue(connection.ready)
-            assertEquals(5, hello.get().getInt("protocol_version"))
+            assertEquals(6, hello.get().getInt("protocol_version"))
             assertEquals("isolated-fixture", hello.get().getString("credential"))
             assertEquals(3, saved.getInt("protocol_version"))
         } finally { connection.disconnect(null); server.shutdown() }

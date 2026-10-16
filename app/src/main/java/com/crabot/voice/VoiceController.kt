@@ -13,7 +13,7 @@ import org.json.JSONObject
 import java.util.UUID
 
 class VoiceController(private val context: Context, private val changed: () -> Unit) {
-    enum class Mode { CLOSED, WAKE, RECORDING, PROCESSING, WAITING, PLAYING, FOLLOWUP, ENROLLING }
+    enum class Mode { CLOSED, WAKE, RECORDING, PROCESSING, WAITING, PLAYING, FOLLOWUP, ENROLLING, OWNER_PREPARING, OWNER_RECORDING }
     private val main = Handler(Looper.getMainLooper())
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val store = SecureStore(context)
@@ -46,6 +46,9 @@ class VoiceController(private val context: Context, private val changed: () -> U
     private var hasSpeech = false
     private var deadline = 0L
     private var pendingFrames = 0
+    private var localOwnerName: String? = null
+    var ownerNeedsRetry = false
+        private set
     private var enrollment: JSONObject? = null
     private var enrollmentRevision = 0L
     private var enrollmentDeadline = 0L
@@ -57,11 +60,17 @@ class VoiceController(private val context: Context, private val changed: () -> U
     private var enrollmentRequestId: String? = null
     private val unknownRequests = mutableSetOf<String>()
     private var connectionEpoch: String? = null
+    private var pendingOwnerOffer: JSONObject? = null
+    private var ownerRecoveryReason: String? = null
+    val ownerRecoveryHint get() = ownerRecoveryReason ?: ""
+    val canManageContacts get() = paired && store.pendingOwnerSaved() == null
+    private var setupComplete = false
+    private var servicesConfigured = false
     private var previousEpoch: String? = null
     private val reconnectLater: Runnable = Runnable { if (foreground && !connected && store.pairing() != null) reconnect() }
     private var reconnectDelay = 1000L
     private val connection: TerminalConnection = TerminalConnection(::control, ::audio) { reason ->
-        stop(reason, disableWake = true); connectionEpoch = null; confirmedRevision = -1
+        stop(reason, disableWake = true); connectionEpoch = null; confirmedRevision = -1; pendingOwnerOffer = null
         if (foreground && store.pairing() != null) {
             main.removeCallbacks(reconnectLater); main.postDelayed(reconnectLater, reconnectDelay)
             reconnectDelay = (reconnectDelay * 2).coerceAtMost(10_000)
@@ -82,8 +91,13 @@ class VoiceController(private val context: Context, private val changed: () -> U
         private set
     val connected: Boolean get() = connection.ready && connectionEpoch != null
     val paired get() = store.pairing() != null
+    val owner get() = store.owner()
+    val ownerActivation get() = store.ownerActivation()
+    val needsOwnerEnrollment get() = !paired && store.compatible && !store.needsRepair && owner == null
+    val ownerEnrollmentActive get() = localOwnerName != null
+    val ownerPrompt get() = listOf("你好，这是我的第一段声音，请记住我的说话方式。", "我正在登记自己的声音，以后请认出是我在说话。", "这台设备将成为我的语音助手，很高兴认识你。")[(enrollmentStep - 1).coerceIn(0, 2)]
     val modelReady get() = models != null && keyword.isNotEmpty()
-    val keepScreenOn get() = foreground && mode != Mode.CLOSED
+    val keepScreenOn get() = foreground && (mode != Mode.CLOSED || ownerEnrollmentActive)
     val enrollmentName get() = enrollment?.getString("display_name") ?: pendingTask?.getJSONObject("registration")?.getString("display_name")
     val wakePhrase get() = wakeWord
     var lastReply = ""
@@ -102,10 +116,10 @@ class VoiceController(private val context: Context, private val changed: () -> U
     val waitingConfirmation get() = store.pendingCompletion() != null
     val enrollmentStep get() = enrollmentVectors.size + 1
     val synchronizedCatalog get() = connected && confirmedRevision == revision
-    val readyForConversation get() = synchronizedCatalog && store.pendingRequests().length() == 0 && !waitingConfirmation && pendingTask == null
+    val readyForConversation get() = setupComplete && servicesConfigured && store.pendingOwnerSaved() == null && synchronizedCatalog && store.pendingRequests().length() == 0 && !waitingConfirmation && pendingTask == null
     val pendingManagement get() = store.pendingRequests().length() > 0
     fun hasVoiceSample(id: String) = store.hasVector(id)
-    val microphoneState get() = when (mode) { Mode.WAKE, Mode.FOLLOWUP -> "wake"; Mode.RECORDING, Mode.ENROLLING -> "recording"; else -> "closed" }
+    val microphoneState get() = when (mode) { Mode.WAKE, Mode.FOLLOWUP -> "wake"; Mode.RECORDING, Mode.ENROLLING, Mode.OWNER_RECORDING -> "recording"; else -> "closed" }
     init {
         connection.heartbeat = { JSONObject().put("type", "heartbeat").put("foreground", foreground)
             .put("microphone", microphoneState).put("playback", if (mode == Mode.PLAYING) "playing" else "idle").put("enrollment_revision", revision) }
@@ -119,7 +133,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
                     prepared = NativeModels(root)
                 }
                 models = prepared; prepared = null
-                status = if (store.needsRepair && store.compatible) "旧配对需重新扫码；同渠道声纹已保留，请先在 Admin 撤销旧终端。" else if (store.compatible) "模型已加载；麦克风关闭。声纹和唤醒尚待真人校准验收。" else "配对数据不兼容；原文件保留，请明确清除本机数据后重新配对"
+                status = if (store.needsRepair && store.compatible) "旧配对需重新扫码；同渠道声纹已保留，请先在 Admin 撤销旧终端。" else if (needsOwnerEnrollment) "已准备好，请填写名字并开始登记；麦克风关闭" else if (store.compatible) "模型已加载；麦克风关闭。声纹和唤醒尚待真人校准验收。" else "配对数据不兼容；原文件保留，请明确清除本机数据后重新配对"
                 if (foreground && !connected && store.pairing() != null) reconnect()
             } catch (e: CancellationException) { throw e }
             catch (_: Exception) { status = "端侧分段模型加载失败；麦克风关闭" }
@@ -135,6 +149,41 @@ class VoiceController(private val context: Context, private val changed: () -> U
     }
     fun pause() { foreground = false; main.removeCallbacks(reconnectLater); stop("已退到后台；麦克风与播放关闭", disableWake = true); heartbeat() }
     fun destroy() { pause(); connection.disconnect(null); scope.cancel(); models?.close(); models = null }
+    fun enrollOwner(name: String) {
+        try {
+            require(foreground && modelReady && needsOwnerEnrollment) { "请等待本机模型就绪；已有配对不能重新认主" }
+            val descriptor = DeviceOwner.create(name)
+            stop("准备登记设备所有者；麦克风关闭", true)
+            localOwnerName = descriptor.getString("display_name")
+            enrollmentDeadline = SystemClock.elapsedRealtime() + 60_000
+            val token = generation
+            main.postDelayed({ if (token == generation && ownerEnrollmentActive) stop("本人声纹登记已超时，请重新开始", true) }, 60_000)
+            queueOwnerClip(token)
+        } catch (e: Exception) { stop(e.message ?: "无法开始本人登记", true) }
+        changed()
+    }
+    fun retryOwnerClip() {
+        if (ownerEnrollmentActive && ownerNeedsRetry && foreground) queueOwnerClip(generation)
+    }
+    private fun queueOwnerClip(token: Int) {
+        ownerNeedsRetry = false; mode = Mode.OWNER_PREPARING
+        fun countdown(remaining: Int) {
+            if (token != generation || !ownerEnrollmentActive || !foreground) return
+            if (SystemClock.elapsedRealtime() >= enrollmentDeadline) { stop("本人声纹登记已超时，请重新开始", true); return }
+            if (remaining > 0) {
+                status = "第 $enrollmentStep/3 段，$remaining 秒后开始，请看读句准备"; changed()
+                main.postDelayed({ countdown(remaining - 1) }, 1000)
+            } else try {
+                count = 0; pcm.fill(0); startedAt = SystemClock.elapsedRealtime(); lastSpeechAt = startedAt; hasSpeech = false
+                mode = Mode.OWNER_RECORDING; startMic(); status = "请自然朗读第 $enrollmentStep/3 段，说完会自动结束"; changed()
+            } catch (e: Exception) { stop(e.message ?: "无法开启麦克风", true) }
+        }
+        countdown(3)
+    }
+    private fun ownerRetry(reason: String) {
+        count = 0; pcm.fill(0); mode = Mode.OWNER_PREPARING; ownerNeedsRetry = true
+        status = "$reason；请重录第 $enrollmentStep/3 段"; changed()
+    }
     fun scan(raw: String) {
         try {
             stop("开始配对；麦克风关闭", disableWake = true)
@@ -144,9 +193,10 @@ class VoiceController(private val context: Context, private val changed: () -> U
             require(System.currentTimeMillis() < java.time.Instant.parse(qr.getString("expires_at")).toEpochMilli()) { "二维码已过期，请在 Admin 重新生成后再扫描" }
             store.checkChannel(qr.getString("channel_id"))
             TerminalEndpoint.parse(qr.getString("url"), qr.getString("channel_id"))
+            val descriptor = store.owner() ?: error("请先登记本人声纹；已有设备请先连接原 Crabot 恢复所有者引用")
             pairing = qr
             connectionEpoch = null
-            connection.connect(qr, JSONObject().put("type", "pair").put("protocol_version", Wire.PROTOCOL_VERSION).put("nonce", qr.getString("nonce")))
+            connection.connect(qr, JSONObject().put("type", "pair").put("protocol_version", Wire.PROTOCOL_VERSION).put("nonce", qr.getString("nonce")).put("owner", descriptor))
             status = "正在配对；请在 Admin 核对手机显示的代码后确认"
         } catch (e: Exception) {
             android.util.Log.w("CrabotPairing", "scan_rejected=${e.javaClass.simpleName}")
@@ -165,7 +215,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
             val saved = store.pairing() ?: error("请扫描 Admin 的 v${Wire.PROTOCOL_VERSION} 配对二维码")
             connectionEpoch = null
             connection.connect(saved, JSONObject().put("type", "hello").put("protocol_version", Wire.PROTOCOL_VERSION).put("credential", saved.getString("credential"))
-                .put("models", Models.versions()).put("aec_verified", false))
+                .put("models", Models.versions()).put("aec_verified", false).apply { store.owner()?.let { put("owner", it) } })
         } catch (e: Exception) { status = e.message ?: "请扫描 Admin 的 v${Wire.PROTOCOL_VERSION} 配对二维码" }
         changed()
     }
@@ -173,6 +223,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         stop("本机已清除配对和登记；请在 Admin 撤销旧终端后重新配对", true)
         connection.disconnect(null); connectionEpoch = null; store.forget()
         revision = 0; confirmedRevision = -1; registrations = JSONArray(); unknownRequests.clear(); enrollmentCompleted = false; pairing = null
+        pendingOwnerOffer = null; ownerRecoveryReason = null; setupComplete = false; servicesConfigured = false
         changed()
     }
     private fun heartbeat() { if (connection.ready) try { connection.send(connection.heartbeat!!.invoke()) } catch (_: Exception) { connection.disconnect("连接已中断") } }
@@ -208,7 +259,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
     }
     private fun requestManagement(command: JSONObject, beginRecording: Boolean = false) {
         try {
-            require(foreground && synchronizedCatalog && modelReady) { "请先连接并等待目录同步" }
+            require(foreground && synchronizedCatalog && modelReady && canManageContacts) { "请先连接并等待目录同步" }
             if (command.getString("action") != "rename_contact") stop("准备管理声纹；麦克风关闭", true)
             val id = UUID.randomUUID().toString()
             val request = JSONObject().put("request_id", id).put("expected_revision", revision).put("command", command)
@@ -223,6 +274,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         if (!foreground) return
         if (!connected) { reconnect(); return }
         try {
+            heartbeat(); retryOwnerSaved()
             val requests = store.pendingRequests()
             requests.keys().forEach { id ->
                 if (id in unknownRequests) connection.send(JSONObject().put("type", "contact_action").put("request", requests.getJSONObject(id)))
@@ -257,13 +309,14 @@ class VoiceController(private val context: Context, private val changed: () -> U
         if (nextRevision < revision) return
         if (nextRevision != revision && enrollment == null && mode in listOf(Mode.WAKE, Mode.FOLLOWUP, Mode.RECORDING, Mode.PROCESSING)) stop("声纹目录已更新，请重新开启语音", true)
         val clears = store.applyCatalog(catalog)
+        if (store.owner() == null) pendingOwnerOffer?.let { applyOwnerActivation(it) }
         if (revision != nextRevision) confirmedRevision = -1
         revision = nextRevision
         registrations = catalog.getJSONArray("registrations")
         val task = catalog.optJSONObject("pending_enrollment")
         if (enrollment != null && task?.getJSONObject("registration")?.getString("registration_id") != enrollment!!.getString("registration_id")) stop("声纹登记状态已更新；麦克风关闭", true)
         for (id in clears) connection.send(JSONObject().put("type", "registration_cleared").put("registration_id", id).put("enrollment_revision", revision))
-        retryCompletion()
+        retryCompletion(); retryOwnerSaved()
         connection.send(JSONObject().put("type", "catalog_applied").put("enrollment_revision", revision))
     }
     fun stop(reason: String, disableWake: Boolean = false) {
@@ -283,6 +336,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         if (disableWake) wakeEnabled = false
         if (disableWake) { startEnrollmentRequest = null; enrollmentRequestId = null }
         enrollmentVectors.forEach { it.fill(0f) }; enrollmentVectors.clear()
+        localOwnerName = null; ownerNeedsRetry = false
         if (disableWake) enrollment = null
         manager.abandonAudioFocusRequest(focus)
         status = reason; heartbeat(); changed()
@@ -332,7 +386,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
                     hasSpeech = true; lastSpeechAt = now
                 }
             }
-            Mode.RECORDING, Mode.ENROLLING -> {
+            Mode.RECORDING, Mode.ENROLLING, Mode.OWNER_RECORDING -> {
                 val n = audio.size.coerceAtMost(Wire.MAX_INPUT - count)
                 audio.copyInto(pcm, count, 0, n); count += n
                 if (flags and 1 != 0) { hasSpeech = true; lastSpeechAt = now }
@@ -340,8 +394,8 @@ class VoiceController(private val context: Context, private val changed: () -> U
                     if (readyTurn == currentTurn) upload()
                     else check(now - startedAt <= 1000) { "终端未就绪，录音已结束" }
                     if (count == Wire.MAX_INPUT || (!hasSpeech && now - startedAt >= 3000) || (hasSpeech && now - lastSpeechAt >= 800)) finishCapture()
-                } else if (now >= enrollmentDeadline) stop("登记任务已过期，请在 Admin 重新开始", true)
-                else if (now - startedAt >= 5000) finishCapture()
+                } else if (now >= enrollmentDeadline) stop("登记任务已过期，请重新开始", true)
+                else if (now - startedAt >= 5000 || count >= 80000 || mode == Mode.OWNER_RECORDING && count >= 48000 && hasSpeech && now - lastSpeechAt >= 800) finishCapture()
             }
             else -> Unit
         }
@@ -355,15 +409,22 @@ class VoiceController(private val context: Context, private val changed: () -> U
         }
     }
     private fun finishCapture() {
-        val enroll = mode == Mode.ENROLLING
+        val localOwner = mode == Mode.OWNER_RECORDING
+        val enroll = localOwner || mode == Mode.ENROLLING
         mic.stop(); captureGeneration++
         var peak = 0
         var energy = 0.0
         for (i in 0 until count) { val sample = pcm[i].toInt(); peak = maxOf(peak, kotlin.math.abs(sample)); energy += sample.toDouble() * sample }
         val rms = if (count == 0) 0 else kotlin.math.sqrt(energy / count).toInt()
         android.util.Log.i("CrabotVoiceInput", "samples=$count peak=$peak rms=$rms vad_seen=$hasSpeech")
-        if (!hasSpeech || count == 0) { stop("未检测到有效人声，请重说", false); standby(); return }
-        if (enroll && count !in 48000..80000) { count = 0; pcm.fill(0); mode = Mode.CLOSED; status = "每段登记需 3–5 秒；请重新录这一段"; changed(); return }
+        if (!hasSpeech || count == 0) {
+            if (localOwner) ownerRetry("未检测到清楚的人声") else { stop("未检测到有效人声，请重说", false); standby() }
+            return
+        }
+        if (enroll && count !in 48000..80000) {
+            if (localOwner) ownerRetry("这一段需完整朗读 3–5 秒") else { count = 0; pcm.fill(0); mode = Mode.CLOSED; status = "每段登记需 3–5 秒；请重新录这一段"; changed() }
+            return
+        }
         val audio = pcm.copyOf(count); pcm.fill(0)
         val token = generation
         if (!enroll) {
@@ -374,23 +435,41 @@ class VoiceController(private val context: Context, private val changed: () -> U
         mode = Mode.PROCESSING; status = if (enroll) "正在提取登记声纹" else "正在本机分段并逐人匹配"; heartbeat(); changed()
         processing = scope.launch {
             try {
-                val completed = if (enroll) completeEnrollment(audio, token) else completeCommand(audio, token)
+                val completed = if (localOwner) completeLocalOwner(audio, token) else if (enroll) completeEnrollment(audio, token) else completeCommand(audio, token)
                 if (!completed) return@launch
                 heartbeat(); changed()
             } catch (e: CancellationException) { throw e }
-            catch (e: Exception) { if (token == generation) stop(e.message ?: "声纹处理失败；整轮未提交", false) }
+            catch (e: Exception) { if (token == generation) {
+                if (localOwner && ownerEnrollmentActive && enrollmentVectors.size < 3) ownerRetry(e.message ?: "本段声音不清楚")
+                else stop(e.message ?: "声纹处理失败；整轮未提交", localOwner)
+            } }
             finally { audio.fill(0) }
         }
+    }
+    private suspend fun enrollmentCandidate(): FloatArray {
+        val samples = enrollmentVectors.map { it.copyOf() }
+        return try { withContext(Dispatchers.Default) { Identity.enrollmentCandidate(samples, models!!) } }
+            finally { samples.forEach { it.fill(0f) } }
+    }
+    private suspend fun completeLocalOwner(audio: ShortArray, token: Int): Boolean {
+        val sample = withContext(Dispatchers.Default) { Identity.enrollmentSample(audio, models!!) }
+        if (token != generation || !ownerEnrollmentActive || SystemClock.elapsedRealtime() >= enrollmentDeadline) { sample.fill(0f); return false }
+        enrollmentVectors += sample
+        if (enrollmentVectors.size < 3) { queueOwnerClip(token); return true }
+        val candidate = enrollmentCandidate()
+        try {
+            if (token != generation || !ownerEnrollmentActive || SystemClock.elapsedRealtime() >= enrollmentDeadline) return false
+            store.saveLocalOwner(localOwnerName!!, candidate)
+        } finally { candidate.fill(0f) }
+        stop("本人声纹已录入，接下来扫描 Crabot 配对二维码；麦克风关闭", true)
+        return true
     }
     private suspend fun completeEnrollment(audio: ShortArray, token: Int): Boolean {
         val v = withContext(Dispatchers.Default) { Identity.enrollmentSample(audio, models!!) }
         if (token != generation || SystemClock.elapsedRealtime() >= enrollmentDeadline) { v.fill(0f); return false }
         enrollmentVectors += v
         if (enrollmentVectors.size == 3) {
-            val samples = enrollmentVectors.map { it.copyOf() }
-            val mean = try {
-                withContext(Dispatchers.Default) { Identity.enrollmentCandidate(samples, models!!) }
-            } finally { samples.forEach { it.fill(0f) } }
+            val mean = enrollmentCandidate()
             if (token != generation || SystemClock.elapsedRealtime() >= enrollmentDeadline) { mean.fill(0f); return false }
             val target = enrollment ?: error("登记已取消")
             val completion = JSONObject().put("registration_id", target.getString("registration_id")).put("model_id", Models.EMBEDDING).put("enrollment_revision", enrollmentRevision)
@@ -475,7 +554,10 @@ class VoiceController(private val context: Context, private val changed: () -> U
                     val qr = pairing ?: error("无配对任务")
                     val saved = JSONObject().put("protocol_version", Wire.PROTOCOL_VERSION).put("url", qr.getString("url")).put("channel_id", qr.getString("channel_id")).put("credential", c.getString("credential"))
                     if (qr.has("tls_fingerprint_sha256")) saved.put("tls_fingerprint_sha256", qr.getString("tls_fingerprint_sha256"))
-                    try { store.savePairing(saved) }
+                    try {
+                        val activation = c.optJSONObject("owner_activation")
+                        if (activation?.getString("status") == "pending") store.saveOwnerPairing(saved, activation) else store.savePairing(saved)
+                    }
                     catch (_: Exception) {
                         pairing = null; stop("新凭据保存失败，旧配对和声纹保留。请在 Admin 撤销终端，再扫描同渠道新二维码。", true)
                         connection.disconnect(null); connectionEpoch = null; changed(); return
@@ -487,19 +569,39 @@ class VoiceController(private val context: Context, private val changed: () -> U
                     val epoch = c.getString("connection_epoch")
                     if (previousEpoch != epoch) { stop("已连接；麦克风关闭", true); previousEpoch = epoch }
                     connectionEpoch = epoch
-                    wakeWord = c.getJSONObject("config").getString("wake_word")
+                    heartbeat()
+                    val setup = c.getString("setup_status"); require(setup in listOf("draft", "complete"))
+                    setupComplete = setup == "complete"
+                    val config = c.getJSONObject("config")
+                    servicesConfigured = !config.isNull("asr") && !config.isNull("tts")
+                    wakeWord = config.getString("wake_word")
                     keyword = Models.keyword(wakeWord, tokens)
+                    val activation = c.optJSONObject("owner_activation")
+                    pendingOwnerOffer = activation?.let { JSONObject(it.toString()) }; ownerRecoveryReason = null
+                    if (activation?.getString("status") == "completed" && store.ownerActivation() != null) applyOwnerActivation(activation)
                     applyCatalog(c.getJSONObject("catalog"))
+                    if (activation != null) applyOwnerActivation(activation)
                     destinations = (0 until c.getJSONArray("destinations").length()).joinToString("\n") { i ->
                         val d = c.getJSONArray("destinations").getJSONObject(i); "${d.getString("capability").uppercase()}: ${d.getString("endpoint")}" }
-                    status = "已连接，正在核对声纹目录；麦克风关闭"; heartbeat(); retrySynchronization()
+                    status = connectionSummary()
+                    heartbeat(); retryOwnerSaved(); retrySynchronization()
+                }
+                "owner_activation" -> {
+                    applyOwnerActivation(c.getJSONObject("activation"))
+                    if (mode == Mode.CLOSED) status = connectionSummary()
+                }
+                "setup_status" -> {
+                    val state = c.getString("status"); require(state in listOf("draft", "complete"))
+                    setupComplete = state == "complete"
+                    if (!setupComplete) stop("请在后台完成语音创建向导；麦克风关闭", true)
+                    else if (mode == Mode.CLOSED) status = connectionSummary()
                 }
                 "heartbeat" -> Unit
                 "catalog" -> applyCatalog(c.getJSONObject("catalog"))
                 "catalog_confirmed" -> {
                     if (c.getLong("enrollment_revision") == revision) {
                         confirmedRevision = revision
-                        if (mode == Mode.CLOSED && !pendingManagement && !waitingConfirmation) status = "已连接，声纹目录已同步；麦克风关闭"
+                        if (mode == Mode.CLOSED && !pendingManagement && !waitingConfirmation && store.pendingOwnerSaved() == null) status = connectionSummary()
                     }
                 }
                 "contact_result" -> contactResult(c)
@@ -530,6 +632,30 @@ class VoiceController(private val context: Context, private val changed: () -> U
             }
             changed()
         } catch (_: Exception) { stop("协议、模型或登记版本不兼容；麦克风关闭", true); connection.disconnect(null); connectionEpoch = null; changed() }
+    }
+    private fun connectionSummary(): String = when {
+        ownerRecoveryReason != null -> ownerRecoveryReason!!
+        store.pendingOwnerSaved() != null -> "已连接，正在完成所有者关联；麦克风关闭"
+        !servicesConfigured -> "已连接，请在 Crabot 后台完成语音服务配置；麦克风关闭"
+        !setupComplete -> "已连接，请在后台完成语音创建向导；麦克风关闭"
+        !synchronizedCatalog -> "已连接，正在核对声纹目录；麦克风关闭"
+        else -> "已连接，声纹目录已同步；麦克风关闭"
+    }
+    private fun applyOwnerActivation(activation: JSONObject) {
+        DeviceOwner.validateActivation(activation)
+        pendingOwnerOffer = JSONObject(activation.toString())
+        if (store.owner() == null) {
+            try { store.adoptOwner(activation, models!!.dimension()) }
+            catch (_: Exception) { ownerRecoveryReason = "本机缺少可用的本人声纹，请在后台发起重录恢复；原联系人和配对已保留"; return }
+        }
+        ownerRecoveryReason = null
+        val local = store.ownerActivation() ?: error("本机所有者尚未关联；请在 Admin 恢复既有渠道身份")
+        require(DeviceOwner.sameActivation(local, activation)) { "所有者引用与当前渠道不符，请在 Admin 恢复" }
+        if (activation.getString("status") == "completed") store.completeOwnerActivation(activation)
+        else require(local.getString("status") != "completed") { "所有者关联状态不能回退" }
+    }
+    private fun retryOwnerSaved() {
+        if (connected && foreground) store.pendingOwnerSaved()?.let { connection.send(JSONObject().put("type", "owner_saved").put("saved", it)) }
     }
     private fun contactResult(c: JSONObject) {
         val id = c.getString("request_id")

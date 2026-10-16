@@ -36,7 +36,7 @@ class TerminalConnectionTest {
                 messages.incrementAndGet()
                 when (JSONObject(text).getString("type")) {
                     "pair" -> {
-                        assertEquals(3, JSONObject(text).getInt("protocol_version"))
+                        assertEquals(Wire.PROTOCOL_VERSION, JSONObject(text).getInt("protocol_version"))
                         peer.set(ws)
                         ws.send(JSONObject().put("type", "pair_waiting").put("pairing_id", "fixture-id").put("verification_code", "123456").toString())
                     }
@@ -53,8 +53,8 @@ class TerminalConnectionTest {
             main {
                 client = TerminalConnection({ if (it.getString("type") == "pair_waiting") waiting.countDown() }, { fail("No audio while pairing") }, { fail("Pairing must remain open for human confirmation") })
                 client!!.heartbeat = { JSONObject().put("type", "heartbeat").put("foreground", true).put("microphone", "closed").put("playback", "idle") }
-                client!!.connect(JSONObject().put("protocol_version", 3).put("channel_id", "phone").put("url", url).put("tls_fingerprint_sha256", fingerprint),
-                    JSONObject().put("type", "pair").put("protocol_version", Wire.PROTOCOL_VERSION).put("nonce", "fixture-nonce"))
+                client!!.connect(JSONObject().put("protocol_version", Wire.PROTOCOL_VERSION).put("channel_id", "phone").put("url", url).put("tls_fingerprint_sha256", fingerprint),
+                    JSONObject().put("type", "pair").put("protocol_version", Wire.PROTOCOL_VERSION).put("nonce", "fixture-nonce").put("owner", DeviceOwner.create("Fixture")))
             }
             assertTrue(waiting.await(5, TimeUnit.SECONDS))
             Thread.sleep(5500) // Exceed the normal authenticated heartbeat-loss budget while human verification is pending.

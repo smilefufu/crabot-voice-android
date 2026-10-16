@@ -21,7 +21,7 @@ import com.journeyapps.barcodescanner.ScanOptions
 import org.json.JSONObject
 
 class MainActivity : ComponentActivity() {
-    private enum class Page { HOME, SETTINGS, CONTACTS, NEW_CONTACT, CONTACT, RENAME, ENROLL }
+    private enum class Page { HOME, SETTINGS, CONTACTS, NEW_CONTACT, CONTACT, RENAME, ENROLL, OWNER, CONNECT }
     private lateinit var controller: VoiceController
     private lateinit var content: LinearLayout
     private lateinit var connectionState: TextView
@@ -29,6 +29,7 @@ class MainActivity : ComponentActivity() {
     private var page = Page.HOME
     private var renderedKey = ""
     private var selectedId: String? = null
+    private var ownerDraft = ""
     private var nameDraft = ""
     private var renameDraft = ""
     private var shownTask: String? = null
@@ -64,7 +65,12 @@ class MainActivity : ComponentActivity() {
         content = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0, dp(18), 0, dp(12)) }
         root.addView(ScrollView(this).apply { isFillViewport = true; addView(content) }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f))
         mainAction = button(root, "开启语音待机", true) {
-            if (!controller.paired) navigate(Page.SETTINGS)
+            if (controller.ownerEnrollmentActive) controller.mute()
+            else if (page == Page.CONNECT && controller.paired) { if (controller.ownerActivation?.getString("status") == "pending") controller.retrySynchronization() else navigate(Page.SETTINGS) }
+            else if (controller.needsOwnerEnrollment) {
+                if (page == Page.OWNER) withMicrophone { controller.enrollOwner(ownerDraft) } else navigate(Page.OWNER)
+            } else if (!controller.paired && controller.owner != null) launchScan()
+            else if (!controller.paired) navigate(Page.SETTINGS)
             else if (controller.mode != VoiceController.Mode.CLOSED || controller.enrollmentName != null || controller.pendingManagement) controller.mute()
             else withMicrophone { controller.toggleWake(); navigate(Page.HOME) }
         }
@@ -72,7 +78,8 @@ class MainActivity : ComponentActivity() {
         controller = VoiceController(this) { render() }
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (page == Page.HOME) { isEnabled = false; onBackPressedDispatcher.onBackPressed(); return }
+                if (page == Page.OWNER) controller.mute()
+                if (page in listOf(Page.HOME, Page.OWNER, Page.CONNECT)) { isEnabled = false; onBackPressedDispatcher.onBackPressed(); return }
                 if (page == Page.ENROLL) controller.cancelEnrollment()
                 navigate(if (page in listOf(Page.CONTACT, Page.NEW_CONTACT, Page.RENAME, Page.ENROLL)) Page.CONTACTS else Page.HOME)
             }
@@ -112,7 +119,14 @@ class MainActivity : ComponentActivity() {
         if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) action()
         else { pendingMicAction = action; microphonePermission.launch(Manifest.permission.RECORD_AUDIO) }
     }
-    private fun navigate(next: Page) { page = next; renderedKey = ""; render() }
+    private fun launchScan() {
+        if (controller.owner == null) { Toast.makeText(this, "请先完成本人声纹登记或连接原 Crabot 恢复引用", Toast.LENGTH_LONG).show(); return }
+        scan.launch(ScanOptions().setDesiredBarcodeFormats(ScanOptions.QR_CODE).setOrientationLocked(true).setBeepEnabled(false))
+    }
+    private fun navigate(next: Page) {
+        if (page == Page.OWNER && next != Page.OWNER && controller.ownerEnrollmentActive) controller.mute()
+        page = next; renderedKey = ""; render()
+    }
     private fun selectedContact(): JSONObject? {
         val contacts = controller.contacts
         return (0 until contacts.length()).map { contacts.getJSONObject(it) }.find { it.getString("platform_user_id") == selectedId }
@@ -124,12 +138,24 @@ class MainActivity : ComponentActivity() {
     private fun render() {
         if (!::controller.isInitialized) return
         val mode = controller.mode
+        if (controller.needsOwnerEnrollment && page == Page.HOME) page = Page.OWNER
+        if (!controller.paired && controller.owner != null && page in listOf(Page.HOME, Page.OWNER)) { page = Page.CONNECT; renderedKey = "" }
+        if (page == Page.CONNECT && controller.paired && controller.ownerActivation?.getString("status") == "completed") { page = Page.HOME; renderedKey = "" }
         connectionState.text = if (!controller.connected) "● 未连接" else if (!controller.synchronizedCatalog) "● 已连接 · 目录同步中" else "● 已连接 · ${if (controller.microphoneState == "closed") "麦克风关闭" else if (mode == VoiceController.Mode.WAKE) "本机唤醒" else "正在收音"}"
         val taskId = controller.pendingTask?.getJSONObject("registration")?.getString("registration_id")
         if (taskId != null && taskId != shownTask) { shownTask = taskId; page = Page.ENROLL; renderedKey = "" }
         val inactive = mode == VoiceController.Mode.CLOSED && controller.enrollmentName == null && !controller.pendingManagement
-        mainAction.text = if (!controller.paired) "连接 Crabot" else if (inactive) "开启语音待机" else "静音"
-        mainAction.isEnabled = !controller.paired || !inactive || (controller.modelReady && controller.readyForConversation)
+        mainAction.text = when {
+            controller.ownerEnrollmentActive -> "取消登记"
+            page == Page.CONNECT && controller.paired -> if (controller.ownerActivation?.getString("status") == "pending") "重试关联同步" else "查看连接状态"
+            controller.needsOwnerEnrollment -> if (page == Page.OWNER) "开始登记我的声音" else "登记我的声音"
+            !controller.paired && controller.owner != null -> "扫描二维码连接"
+            !controller.paired -> "连接 Crabot"
+            inactive -> "开启语音待机"
+            else -> "静音"
+        }
+        mainAction.isEnabled = if (page == Page.CONNECT) true else if (controller.needsOwnerEnrollment && !controller.ownerEnrollmentActive && page == Page.OWNER) controller.modelReady && ownerDraft.trim().isNotEmpty()
+            else !controller.paired || !inactive || controller.modelReady && controller.readyForConversation
         if (controller.keepScreenOn) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) else window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         val key = when (page) {
             Page.NEW_CONTACT, Page.RENAME -> "$page|$selectedId|${controller.synchronizedCatalog}|${controller.modelReady}|${controller.pendingManagement}"
@@ -158,12 +184,47 @@ class MainActivity : ComponentActivity() {
                 button(content, "取消") { navigate(Page.CONTACT) }
             }
             Page.ENROLL -> enrollment()
+            Page.OWNER -> ownerEnrollment()
+            Page.CONNECT -> connectOwner()
         }
+    }
+    private fun ownerEnrollment() {
+        text(content, "先认识你的声音", 27f)
+        text(content, "1 登记本人  ·  2 扫码连接  ·  3 自动关联", 13f, true)
+        if (!controller.ownerEnrollmentActive) {
+            input("你的名字", ownerDraft) {
+                ownerDraft = it
+                mainAction.isEnabled = controller.modelReady && ownerDraft.trim().isNotEmpty()
+            }
+            text(content, "接下来读三句不同的话。点一次开始，手机会依次提示、自动录制。", 17f)
+            text(content, "声纹保存在本机。扫码后自动关联，无需再录一遍或手动绑定本人。", 14f, true)
+            if (!controller.modelReady) text(content, "正在准备本机语音能力，请稍候。", 14f, true)
+        } else {
+            text(content, "第 ${controller.enrollmentStep.coerceAtMost(3)} / 3 段", 20f)
+            val card = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; background = panel(); setPadding(dp(20), dp(18), dp(20), dp(18)) }
+            text(card, if (controller.mode == VoiceController.Mode.OWNER_RECORDING) "正在录音，请自然朗读" else "请准备朗读", 14f, true)
+            text(card, controller.ownerPrompt, 23f)
+            content.addView(card)
+            text(content, "说完稍作停顿即可，每段约 3–5 秒。不需要逐段点按钮。", 14f, true)
+            if (controller.ownerNeedsRetry) button(content, "重新录这一段", true) { withMicrophone { controller.retryOwnerClip() } }
+        }
+        text(content, controller.status, 14f, true)
+    }
+    private fun connectOwner() {
+        text(content, if (controller.paired) "正在完成关联" else "连接你的 Crabot", 27f)
+        text(content, "1 本人已登记  ·  2 扫码连接  ·  3 自动关联", 13f, true)
+        text(content, "已记住 ${controller.owner?.getString("display_name") ?: "你"} 的声音", 21f)
+        if (!controller.paired) {
+            text(content, "在 Crabot 后台创建语音渠道，然后扫描配对二维码。", 18f)
+            text(content, "核对名字和代码后，后台会自动完成所有者关联，无需再录一次。", 15f, true)
+        } else text(content, "本人声纹已保存在本机，正在等待后台确认联系人和 Master 关联。", 17f)
+        text(content, controller.status, 14f, true)
+        text(content, "麦克风保持关闭。语音服务在 Crabot 后台配置。", 14f, true)
     }
     private fun home() {
         val reply = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; background = panel(); setPadding(dp(20), dp(18), dp(20), dp(18)) }
         text(reply, if (controller.mode == VoiceController.Mode.PLAYING) "Crabot 正在回答" else "最近回答", 13f, true)
-        text(reply, controller.lastReply.ifEmpty { "开启语音待机后，喊唤醒词开始对话。" }, 22f)
+        text(reply, controller.lastReply.ifEmpty { if (controller.readyForConversation) "开启语音待机后，喊唤醒词开始对话。" else "连接和配置就绪后，就可以开始语音对话。" }, 22f)
         content.addView(reply)
         val hero = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER; setPadding(0, dp(25), 0, dp(20)) }
         val orb = button(hero, "▂ ▆ █ ▆ ▂") { withMicrophone { controller.recordButton() } }.apply {
@@ -177,13 +238,15 @@ class MainActivity : ComponentActivity() {
             VoiceController.Mode.PROCESSING, VoiceController.Mode.WAITING -> "正在处理" to "麦克风已关闭，正在准备回答。"
             VoiceController.Mode.PLAYING -> "正在回答" to "需要插话，可以点下面的打断。"
             VoiceController.Mode.FOLLOWUP -> "可以接着说" to "直接说下一句，不用再喊唤醒词。"
-            else -> "麦克风已关闭" to if (controller.connected) "想聊的时候，开启一次语音待机。" else "请先在设置中连接 Crabot。"
+            else -> if (controller.connected && !controller.readyForConversation) "正在准备语音" to controller.status
+                else "麦克风已关闭" to if (controller.connected) "想聊的时候，开启一次语音待机。" else "请先连接 Crabot。"
         }
         text(hero, title, 25f).gravity = Gravity.CENTER; text(hero, hint, 15f, true).gravity = Gravity.CENTER
         text(hero, when (controller.mode) { VoiceController.Mode.WAKE -> "本机唤醒检测"; VoiceController.Mode.FOLLOWUP -> "8 秒本地接话窗口"; else -> if (controller.microphoneState == "closed") "麦克风关闭" else "正在收音" }, 12f, true).gravity = Gravity.CENTER
         content.addView(hero)
         if (controller.speakerSummary.isNotEmpty()) text(content, "本轮识别：${controller.speakerSummary}", 13f, true)
         if (controller.speakerReason.isNotEmpty()) text(content, controller.speakerReason, 14f, true)
+        if (controller.ownerRecoveryHint.isNotEmpty()) text(content, controller.ownerRecoveryHint, 14f, true)
         if (controller.mode == VoiceController.Mode.PLAYING) button(content, "打断并说话", true) { withMicrophone { controller.recordButton() } }
         if (controller.mode == VoiceController.Mode.RECORDING) button(content, "结束说话") { controller.recordButton() }
         if (!controller.readyForConversation && controller.connected) text(content, controller.status, 14f, true)
@@ -191,10 +254,20 @@ class MainActivity : ComponentActivity() {
     }
     private fun settings() {
         text(content, "设置", 27f)
-        button(content, "声纹与联系人") { navigate(Page.CONTACTS) }
+        if (controller.paired) button(content, "声纹与联系人") { navigate(Page.CONTACTS) }
         text(content, "唤醒词：${controller.wakePhrase}", 16f)
         text(content, "唤醒词由 Crabot 下发，检测在手机本地进行。", 14f, true)
-        button(content, "扫描配对二维码") { scan.launch(ScanOptions().setDesiredBarcodeFormats(ScanOptions.QR_CODE).setOrientationLocked(true).setBeepEnabled(false)) }
+        controller.owner?.let { owner ->
+            text(content, "设备所有者：${owner.getString("display_name")}", 18f)
+            text(content, when (controller.ownerActivation?.getString("status")) {
+                "completed" -> "所有者关联已完成。删除或重录声纹不会更换所有者。"
+                "pending" -> "本人声纹已保存，正在等待 Crabot 完成关联。"
+                else -> "本人声纹已录入。请在 Crabot 后台新建语音渠道，再扫描配对二维码。"
+            }, 14f, true)
+        }
+        if (controller.paired) button(content, "扫描配对二维码") { launchScan() }.isEnabled = controller.owner != null
+        else text(content, "扫码时请核对名字和代码。语音识别、播报服务在 Crabot 后台配置。", 14f, true)
+        if (controller.ownerActivation?.getString("status") == "pending") button(content, "重试关联同步") { controller.retrySynchronization() }
         button(content, "重新连接") { controller.reconnect() }
         button(content, "手动说话") { withMicrophone { controller.recordButton(); navigate(Page.HOME) } }.isEnabled = controller.readyForConversation
         button(content, "${if (diagnostics) "收起" else "查看"}连接与诊断") { diagnostics = !diagnostics; renderedKey = ""; render() }
@@ -218,7 +291,7 @@ class MainActivity : ComponentActivity() {
             val state = if (sample == null) { if (clearing) "后台已撤销 · 本机清除待确认" else "已删除声纹 · 联系人保留" } else if (sample.getString("model_id") != Models.EMBEDDING || !controller.hasVoiceSample(sample.getString("registration_id"))) "需重新录制" else "声纹可识别"
             button(content, "${contact.getString("display_name")}\n$state") { selectedId = id; navigate(Page.CONTACT) }
         }
-        button(content, "录入声纹", true) { nameDraft = ""; navigate(Page.NEW_CONTACT) }.isEnabled = controller.synchronizedCatalog && controller.modelReady && controller.pendingTask == null && !controller.pendingManagement
+        button(content, "录入声纹", true) { nameDraft = ""; navigate(Page.NEW_CONTACT) }.isEnabled = controller.canManageContacts && controller.synchronizedCatalog && controller.modelReady && controller.pendingTask == null && !controller.pendingManagement
         if (controller.pendingTask != null) button(content, "继续当前录入") { navigate(Page.ENROLL) }
         if (controller.pendingManagement || controller.waitingConfirmation) { text(content, controller.status, 14f, true); button(content, "重试同步") { controller.retrySynchronization() } }
         button(content, "返回设置") { navigate(Page.SETTINGS) }
@@ -227,8 +300,8 @@ class MainActivity : ComponentActivity() {
         val contact = selectedContact() ?: run { page = Page.CONTACTS; contacts(); return }
         text(content, contact.getString("display_name"), 27f)
         text(content, "重录和改名保持同一联系人。好友绑定在 Crabot 管理后台维护。", 15f, true)
-        button(content, "重新录制", true) { withMicrophone { controller.reEnroll(selectedId!!); navigate(Page.ENROLL) } }.isEnabled = controller.synchronizedCatalog && controller.pendingTask == null && !controller.pendingManagement
-        button(content, "修改名字") { renameDraft = contact.getString("display_name"); navigate(Page.RENAME) }.isEnabled = controller.synchronizedCatalog && controller.pendingTask == null && !controller.pendingManagement
+        button(content, "重新录制", true) { withMicrophone { controller.reEnroll(selectedId!!); navigate(Page.ENROLL) } }.isEnabled = controller.canManageContacts && controller.synchronizedCatalog && controller.pendingTask == null && !controller.pendingManagement
+        button(content, "修改名字") { renameDraft = contact.getString("display_name"); navigate(Page.RENAME) }.isEnabled = controller.canManageContacts && controller.synchronizedCatalog && controller.pendingTask == null && !controller.pendingManagement
         activeSample()?.let { sample -> button(content, "删除声纹") {
             android.app.AlertDialog.Builder(this).setTitle("删除声纹？").setMessage("将无法通过此声纹识别人。联系人、好友绑定和历史对话会保留。").setNegativeButton("保留", null).setPositiveButton("删除声纹") { _, _ -> controller.deleteVoiceSample(sample.getString("registration_id")) }.show()
         }.isEnabled = controller.synchronizedCatalog && !controller.pendingManagement }
