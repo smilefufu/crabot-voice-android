@@ -34,6 +34,15 @@ class VoiceController(private val context: Context, private val changed: () -> U
     private var interactionHadPlayback = false
     private var pairing: JSONObject? = null
     private var currentTurn: String? = null
+    private var speechEnabled = false
+    private var reservedPlayback: String? = null
+    private var reservedContext: JSONObject? = null
+    private var notificationPlayback = false
+    private var playbackReturnMode = Mode.CLOSED
+    private var playbackReturnDeadline = 0L
+    private val playbackReceipts = runCatching { PlaybackReceiptJournal(java.io.File(context.filesDir, "playback-receipts.bin")) }.getOrNull()
+    var pendingResults = 0
+        private set
     private var readyTurn: String? = null
     private var sequence = 0
     private var sentSamples = 0
@@ -122,7 +131,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
     val microphoneState get() = when (mode) { Mode.WAKE, Mode.FOLLOWUP -> "wake"; Mode.RECORDING, Mode.ENROLLING, Mode.OWNER_RECORDING -> "recording"; else -> "closed" }
     init {
         connection.heartbeat = { JSONObject().put("type", "heartbeat").put("foreground", foreground)
-            .put("microphone", microphoneState).put("playback", if (mode == Mode.PLAYING) "playing" else "idle").put("enrollment_revision", revision) }
+            .put("microphone", microphoneState).put("playback", if (mode == Mode.PLAYING) "playing" else "idle").put("enrollment_revision", revision).put("speech_enabled", speechEnabled).put("activity", outputActivity()) }
         scope.launch {
             var prepared: NativeModels? = null
             try {
@@ -232,7 +241,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         else try {
             require(foreground && readyForConversation && modelReady) { "请等待连接及声纹目录同步，或完成当前登记" }
             stop("开启本地唤醒；不上传待机音频", true)
-            wakeEnabled = true; mode = Mode.WAKE; startMic(); status = "本地唤醒待机：$wakeWord。准确率与功耗尚未验收。"; heartbeat()
+            wakeEnabled = true; speechEnabled = true; mode = Mode.WAKE; startMic(); status = "本地唤醒待机：$wakeWord。准确率与功耗尚未验收。"; heartbeat()
         } catch (e: Exception) { stop(e.message ?: "无法开启麦克风", true) }
         changed()
     }
@@ -322,7 +331,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
     fun stop(reason: String, disableWake: Boolean = false) {
         generation++; captureGeneration++; processing?.cancel(); processing = null
         mic.stop(); mode = Mode.CLOSED
-        val turn = currentTurn; val playback = playbackId
+        val turn = currentTurn; val playback = playbackId ?: reservedPlayback
         player?.stop(); player = null; playbackId = null
         if (connected && (turn != null || playback != null)) try {
             val cancel = JSONObject().put("type", "cancel")
@@ -333,7 +342,8 @@ class VoiceController(private val context: Context, private val changed: () -> U
         interactionHadPlayback = false
         currentTurn = null; readyTurn = null; count = 0; sentSamples = 0; sequence = 0
         pcm.fill(0); preRoll.fill(0); preCount = 0
-        if (disableWake) wakeEnabled = false
+        reservedPlayback = null; reservedContext = null; notificationPlayback = false
+        if (disableWake) { wakeEnabled = false; speechEnabled = false }
         if (disableWake) { startEnrollmentRequest = null; enrollmentRequestId = null }
         enrollmentVectors.forEach { it.fill(0f) }; enrollmentVectors.clear()
         localOwnerName = null; ownerNeedsRetry = false
@@ -363,6 +373,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
     private fun beginTurn(leading: ShortArray) {
         speakerSummary = ""
         speakerReason = ""
+        speechEnabled = true
         mode = Mode.RECORDING; currentTurn = UUID.randomUUID().toString(); readyTurn = null
         sequence = 0; sentSamples = 0; count = 0; startedAt = SystemClock.elapsedRealtime(); hasSpeech = false; lastSpeechAt = startedAt
         leading.copyInto(pcm); count = leading.size; leading.fill(0)
@@ -502,7 +513,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         return true
     }
     private fun expireWaitingTurn(waitingTurn: String?) {
-        if (waitingTurn == currentTurn && mode == Mode.WAITING) stop("回答等待超时（60 秒）；已接纳任务仍由 Crabot 负责，请重新开启语音待机后询问", true)
+        if (waitingTurn == currentTurn && mode == Mode.WAITING) releaseWaitingTurn()
     }
     private fun uploadRemaining(audio: ShortArray) {
         // Full frames were streamed during finite capture; only the final short frame remains.
@@ -584,7 +595,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
                     destinations = (0 until c.getJSONArray("destinations").length()).joinToString("\n") { i ->
                         val d = c.getJSONArray("destinations").getJSONObject(i); "${d.getString("capability").uppercase()}: ${d.getString("endpoint")}" }
                     status = connectionSummary()
-                    heartbeat(); retryOwnerSaved(); retrySynchronization()
+                    heartbeat(); retryOwnerSaved(); retrySynchronization(); retryPlaybackReceipts()
                 }
                 "owner_activation" -> {
                     applyOwnerActivation(c.getJSONObject("activation"))
@@ -596,7 +607,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
                     if (!setupComplete) stop("请在后台完成语音创建向导；麦克风关闭", true)
                     else if (mode == Mode.CLOSED) status = connectionSummary()
                 }
-                "heartbeat" -> Unit
+                "heartbeat" -> retryPlaybackReceipts()
                 "catalog" -> applyCatalog(c.getJSONObject("catalog"))
                 "catalog_confirmed" -> {
                     if (c.getLong("enrollment_revision") == revision) {
@@ -613,8 +624,15 @@ class VoiceController(private val context: Context, private val changed: () -> U
                     }
                     if (c.getString("status") == "rejected") { currentTurn = null; standby() }
                 }
+                "playback_prepare" -> preparePlayback(c)
+                "playback_confirmed" -> receiptScope()?.let { playbackReceipts?.confirm(it, c.getString("playback_id")) }
+                "pending_results" -> { val count = c.getInt("count"); require(count >= 0); pendingResults = count }
                 "playback_start" -> {
-                    require(connected && foreground && currentTurn == c.getString("turn_id") && mode == Mode.WAITING && player == null)
+                    require(connected && foreground && speechEnabled && reservedPlayback == c.getString("playback_id") && mode == Mode.WAITING && player == null)
+                    val prepared = reservedContext ?: error("播放未准备")
+                    require(prepared.getString("connection_epoch") == connectionEpoch)
+                    notificationPlayback = prepared.getString("kind") == "notification"
+                    require(if (notificationPlayback) c.getString("turn_id") == reservedPlayback else currentTurn == c.getString("turn_id"))
                     mic.stop(); captureGeneration++; mode = Mode.PLAYING
                     check(manager.requestAudioFocus(focus) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                     playbackId = c.getString("playback_id"); lastReply = c.getString("text"); status = "播放中可点按打断"; detail += "\n回答：${lastReply}"; heartbeat()
@@ -622,12 +640,18 @@ class VoiceController(private val context: Context, private val changed: () -> U
                 }
                 "playback_end" -> { if (c.getString("playback_id") == playbackId) { player!!.finish(c.getInt("sample_count")); lastReply = c.getString("text"); detail += "\n完整回答：${lastReply}" } }
                 "response_end" -> { if (c.getString("turn_id") == currentTurn && player == null) finishResponse() }
-                "playback_cancel" -> { if (c.getString("playback_id") == playbackId) stop("播报已取消；已接纳任务仍由 Crabot 负责", false) }
+                "playback_cancel" -> if (c.getString("playback_id") == (playbackId ?: reservedPlayback)) {
+                    val restore = notificationPlayback || reservedContext?.optString("kind") == "notification"
+                    stop("播报已取消；已接纳任务仍由 Crabot 负责", false)
+                    if (restore) restoreAfterNotification()
+                }
                 "enroll" -> {
                     prepareEnrollment(c.getJSONObject("task"))
                 }
                 "clear_registration" -> { stop("联系人声纹已撤销；本轮已结束", true); clearRegistration(c.getString("registration_id"), c.getLong("enrollment_revision")) }
-                "error" -> stop("语音端错误：${c.getString("message")}", true)
+                "error" -> if (c.getString("code") == "VOICE_REPLY_EXPIRED") {
+                    if (c.optString("turn_id") == currentTurn && mode == Mode.WAITING) releaseWaitingTurn()
+                } else stop("语音端错误：${c.getString("message")}", true)
                 else -> error("未知协议控制")
             }
             changed()
@@ -693,6 +717,11 @@ class VoiceController(private val context: Context, private val changed: () -> U
         try { player!!.add(frame) } catch (e: Exception) { frame.samples.fill(0); throw e }
     }
     private fun playbackReceipt(id: String, receipt: String, played: Int?) {
+        if (receipt != "started") try {
+            val scope = receiptScope() ?: error("播放回执缺少配对")
+            val journal = playbackReceipts ?: error("播放记录无法读取")
+            journal.remember(PlaybackReceipt(scope, id, receipt, played))
+        } catch (_: Exception) { stop("播放回执暂时无法保存，未记作送达；原记录保留", true); return }
         if (connected) try {
             val control = JSONObject().put("type", "playback").put("playback_id", id).put("status", receipt)
             if (played != null) control.put("played_samples", played)
@@ -700,10 +729,63 @@ class VoiceController(private val context: Context, private val changed: () -> U
         } catch (_: Exception) {}
         if (id != playbackId) return
         if (receipt == "completed") {
-            player = null; playbackId = null; interactionHadPlayback = true
-            mode = Mode.WAITING; status = "播报完成，等待后续答复；麦克风关闭"; heartbeat()
-        } else if (receipt != "started") { interactionHadPlayback = false; player = null; playbackId = null; mode = Mode.CLOSED; status = "播放${if (receipt == "failed") "失败" else "已打断"}，未自动重播" }
+            player = null; playbackId = null; reservedPlayback = null; reservedContext = null
+            if (notificationPlayback) { notificationPlayback = false; restoreAfterNotification() }
+            else { interactionHadPlayback = true; mode = Mode.WAITING; status = "播报完成，等待后续答复；麦克风关闭"; heartbeat() }
+        } else if (receipt != "started") {
+            val restore = notificationPlayback
+            interactionHadPlayback = false; player = null; playbackId = null; reservedPlayback = null; reservedContext = null; notificationPlayback = false
+            if (restore) restoreAfterNotification() else { mode = Mode.CLOSED; heartbeat() }
+            status = "播放${if (receipt == "failed") "失败" else "已打断"}，未自动重播"
+        }
         changed()
+    }
+    private fun outputActivity(): String = when {
+        reservedPlayback != null || mode == Mode.PLAYING -> "answering"
+        mode in listOf(Mode.ENROLLING, Mode.OWNER_PREPARING, Mode.OWNER_RECORDING) || pendingTask != null || waitingConfirmation -> "management"
+        mode == Mode.RECORDING -> "recording"
+        mode == Mode.PROCESSING || mode == Mode.WAITING -> "processing"
+        else -> "idle"
+    }
+    private fun receiptScope(): String? = store.pairing()?.optString("credential")?.takeIf { it.isNotBlank() }?.let {
+        java.security.MessageDigest.getInstance("SHA-256").digest(it.toByteArray(Charsets.UTF_8)).joinToString("") { byte -> "%02x".format(byte) }
+    }
+    private fun retryPlaybackReceipts() {
+        val scope = receiptScope() ?: return
+        for (receipt in playbackReceipts?.pending(scope).orEmpty()) {
+            val value = JSONObject().put("type", "playback").put("playback_id", receipt.id).put("status", receipt.status)
+            receipt.played?.let { value.put("played_samples", it) }
+            if (connected) connection.send(value)
+        }
+    }
+    private fun preparePlayback(control: JSONObject) {
+        val id = control.getString("playback_id"); require(UUID.fromString(id).toString() == id)
+        val prepared = control.getJSONObject("context")
+        val sameEndpoint = prepared.getJSONObject("binding").getString("channel_id") == store.pairing()?.getString("channel_id") && prepared.getString("connection_epoch") == connectionEpoch
+        if (playbackReceipts == null) status = "播放记录暂时无法读取，已保留原数据；本轮答复会留在待通知中"
+        val accepted = sameEndpoint && playbackReceipts != null && PlaybackAdmission.allows(prepared.getString("kind"), mode.name, foreground, connected,
+            speechEnabled, readyForConversation, prepared.optString("turn_id") == currentTurn, player != null || reservedPlayback != null)
+        if (accepted) {
+            playbackReturnMode = mode; playbackReturnDeadline = deadline
+            mic.stop(); captureGeneration++; reservedPlayback = id; reservedContext = JSONObject(prepared.toString()); mode = Mode.WAITING
+            main.postDelayed({ if (reservedPlayback == id && player == null) { reservedPlayback = null; reservedContext = null; restoreAfterNotification() } }, 3000)
+        }
+        connection.send(JSONObject().put("type", "playback_ready").put("playback_id", id).put("accepted", accepted))
+        heartbeat()
+    }
+    private fun restoreAfterNotification() {
+        mode = Mode.CLOSED
+        if (speechEnabled && foreground && readyForConversation) {
+            if (playbackReturnMode == Mode.FOLLOWUP && SystemClock.elapsedRealtime() < playbackReturnDeadline) {
+                mode = Mode.FOLLOWUP; deadline = playbackReturnDeadline; startMic()
+                main.postDelayed({ if (mode == Mode.FOLLOWUP && SystemClock.elapsedRealtime() >= deadline) { mic.stop(); captureGeneration++; standby() } }, (deadline - SystemClock.elapsedRealtime()).coerceAtLeast(1))
+            } else if (playbackReturnMode == Mode.WAKE && wakeEnabled) standby()
+        }
+        status = if (mode == Mode.WAKE) "等你唤醒" else if (mode == Mode.FOLLOWUP) "可以接着说" else "麦克风已关闭"
+        heartbeat(); changed()
+    }
+    private fun releaseWaitingTurn() {
+        currentTurn = null; interactionHadPlayback = false; standby(); heartbeat(); changed()
     }
     private fun finishResponse() {
         currentTurn = null

@@ -159,7 +159,7 @@ class MainActivity : ComponentActivity() {
         if (controller.keepScreenOn) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) else window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         val key = when (page) {
             Page.NEW_CONTACT, Page.RENAME -> "$page|$selectedId|${controller.synchronizedCatalog}|${controller.modelReady}|${controller.pendingManagement}"
-            else -> "$page|$selectedId|${controller.catalogRevision}|$mode|${controller.lastReply}|${controller.status}|${controller.enrollmentStep}|${controller.pendingManagement}|${controller.waitingConfirmation}|$diagnostics"
+            else -> "$page|$selectedId|${controller.catalogRevision}|$mode|${controller.lastReply}|${controller.pendingResults}|${controller.status}|${controller.enrollmentStep}|${controller.pendingManagement}|${controller.waitingConfirmation}|$diagnostics"
         }
         if (key == renderedKey) return
         renderedKey = key; content.removeAllViews()
@@ -244,6 +244,7 @@ class MainActivity : ComponentActivity() {
         text(hero, title, 25f).gravity = Gravity.CENTER; text(hero, hint, 15f, true).gravity = Gravity.CENTER
         text(hero, when (controller.mode) { VoiceController.Mode.WAKE -> "本机唤醒检测"; VoiceController.Mode.FOLLOWUP -> "8 秒本地接话窗口"; else -> if (controller.microphoneState == "closed") "麦克风关闭" else "正在收音" }, 12f, true).gravity = Gravity.CENTER
         content.addView(hero)
+        if (controller.pendingResults > 0) text(content, "还有一些新进展，等你方便时接着聊。", 13f, true)
         if (controller.speakerSummary.isNotEmpty()) text(content, "本轮识别：${controller.speakerSummary}", 13f, true)
         if (controller.speakerReason.isNotEmpty()) text(content, controller.speakerReason, 14f, true)
         if (controller.ownerRecoveryHint.isNotEmpty()) text(content, controller.ownerRecoveryHint, 14f, true)
