@@ -3,7 +3,7 @@
 日期：2026-10-16
 状态：2026-10-16 用户确认整组设计（含安卓配套）；按设备所有者激活 → 请求级授权与插话隔离 → 全语音管理实施，正式协议先行，完整流程通过后统一升级。
 
-2026-10-17核对：管理控制已按正式v0.8.0/wire8接通，候选APK0.7.0/code16；JVM26、只读模拟器10项与生产/测试包构建通过，未安装用户手机。最终四处模型文字已确认；受控模型重录通过，首次添加只口头接单未发起操作，后端仍有提示词确认/复测门禁。详见[本轮验证](../verification/2026-10-17-guided-management.md)。本稿旧wire6筹备描述由最新正式协议版本替代，不改变已确认业务边界。
+2026-10-17核对：管理控制已按正式v0.8.0/wire8接通，候选APK0.7.0/code16；JVM26、只读模拟器10项与生产/测试包构建通过，未安装用户手机。最终四处模型文字已确认；后端已完成确认文字修订与新一轮16次真实模型调用，首次添加和重录各只有接单/完成两段，无重复指引，进入主仓PR与联合升级准备。详见[本轮验证](../verification/2026-10-17-guided-management.md)。本稿旧wire6筹备描述由最新正式协议版本替代，不改变已确认业务边界。
 
 依据[安卓 spec](../specs/2026-10-15-voice-guided-contact-management-design.md)及[后端配套实施准备](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/plans/2026-10-16-voice-controlled-enrollment-implementation.md)。正式类型、字段和状态以 [protocol-voice](https://github.com/smilefufu/crabot-docs/blob/main/protocols/protocol-voice.md) 为准，本计划不复制 schema。
 
