@@ -4,6 +4,21 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class IdentityTest {
+    @Test fun guidedSamplesMustMatchEveryPreviousClip() {
+        var score = .8f
+        val models = object : SpeakerIdentityModel {
+            override fun dimension() = 2
+            override fun segments(samples: ShortArray) = floatArrayOf()
+            override fun embedding(samples: ShortArray) = floatArrayOf(1f, 0f)
+            override fun matches(vector: FloatArray, candidates: List<FloatArray>) = floatArrayOf(0f, score)
+        }
+        val first = floatArrayOf(1f, 0f)
+        Identity.requireConsistentSample(first, listOf(first, first), models)
+        score = .49f
+        assertThrows(IllegalArgumentException::class.java) { Identity.requireConsistentSample(first, listOf(first), models) }
+        score = Float.NaN
+        assertThrows(IllegalArgumentException::class.java) { Identity.requireConsistentSample(first, listOf(first), models) }
+    }
     @Test fun preservesShortAndOverlappingSpeechForWholeTurnGate() {
         val segments = Identity.ranges(floatArrayOf(0f, 1f, 0f, .99f, 1.05f, 1f, 1.05f, 2f, 0f), 32000)
         assertEquals(listOf(0, 1, 0), segments.map { it.speaker })

@@ -6,16 +6,18 @@ import java.nio.ByteBuffer
 import java.util.UUID
 
 class WireTest {
-    @Test fun wireUpgradePreservesSavedV3V4V5ButRequiresV7ForNewPairing() {
+    @Test fun wireUpgradePreservesSavedV3ThroughV7ButRequiresV8ForNewPairing() {
         Wire.requirePairingVersion(3, saved = true)
         Wire.requirePairingVersion(4, saved = true)
-        Wire.requirePairingVersion(7, saved = false)
+        Wire.requirePairingVersion(8, saved = false)
+        Wire.requirePairingVersion(7, saved = true)
+        assertThrows(IllegalArgumentException::class.java) { Wire.requirePairingVersion(7, saved = false) }
         Wire.requirePairingVersion(6, saved = true)
         assertThrows(IllegalArgumentException::class.java) { Wire.requirePairingVersion(5, saved = false) }
         Wire.requirePairingVersion(5, saved = true)
         assertThrows(IllegalArgumentException::class.java) { Wire.requirePairingVersion(4, saved = false) }
         assertThrows(IllegalArgumentException::class.java) { Wire.requirePairingVersion(3, saved = false) }
-        listOf(0, 1, 2, 8).forEach { version ->
+        listOf(0, 1, 2, 9).forEach { version ->
             assertThrows(IllegalArgumentException::class.java) { Wire.requirePairingVersion(version, saved = true) }
             assertThrows(IllegalArgumentException::class.java) { Wire.requirePairingVersion(version, saved = false) }
         }

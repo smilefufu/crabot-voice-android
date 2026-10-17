@@ -10,6 +10,7 @@ interface SpeakerIdentityModel {
     fun embedding(samples: ShortArray): FloatArray
     fun matches(vector: FloatArray, candidates: List<FloatArray>): FloatArray
 }
+class ExistingVoiceIdentityException : IllegalArgumentException("这段声音与已登记的人相近，请先确认要为谁录入")
 
 /** Frozen research thresholds, not a claim that household calibration has passed. */
 object Identity {
@@ -62,6 +63,32 @@ object Identity {
             throw IllegalArgumentException("合成登记声纹无效，请重新录入")
         }
         return mean
+    }
+    fun requireConsistentSample(sample: FloatArray, previous: List<FloatArray>, models: SpeakerIdentityModel) {
+        require(validVector(sample, models.dimension())) { "登记声音无效" }
+        for (old in previous) {
+            val hits = models.matches(sample, listOf(old))
+            require(validMatches(hits, 1) && hits[1] >= SCORE) { "这段声音与前面的声音不一致，请由同一人重新读这一段" }
+        }
+    }
+    fun requireDistinctContact(candidate: FloatArray, models: SpeakerIdentityModel, stored: JSONObject, registrations: JSONArray, platformUserId: String) {
+        val vectors = mutableListOf<FloatArray>()
+        try {
+            for (i in 0 until registrations.length()) {
+                val registration = registrations.getJSONObject(i)
+                val id = registration.getString("registration_id")
+                if (registration.getString("status") != "active" || registration.getString("model_id") != Models.EMBEDDING
+                    || registration.getString("platform_user_id") == platformUserId || !stored.has(id)) continue
+                val values = stored.getJSONObject(id).getJSONArray("values")
+                val vector = FloatArray(values.length()) { values.getDouble(it).toFloat() }; vectors += vector
+                require(validVector(vector, models.dimension())) { "已有声音记录无效，请先恢复" }
+            }
+            if (vectors.isNotEmpty()) {
+                val hits = models.matches(candidate, vectors)
+                require(validMatches(hits, vectors.size)) { "声音比对暂时不可用" }
+                if (hits[1] >= SCORE) throw ExistingVoiceIdentityException()
+            }
+        } finally { vectors.forEach { it.fill(0f) } }
     }
     fun report(pcm: ShortArray, models: SpeakerIdentityModel, stored: JSONObject, registrations: JSONArray,
                diagnostic: (Diagnostic) -> Unit = {}): JSONArray {

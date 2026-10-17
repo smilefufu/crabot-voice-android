@@ -238,6 +238,9 @@ class MainActivity : ComponentActivity() {
             VoiceController.Mode.PROCESSING, VoiceController.Mode.WAITING -> "正在处理" to "麦克风已关闭，正在准备回答。"
             VoiceController.Mode.PLAYING -> "正在回答" to "需要插话，可以点下面的打断。"
             VoiceController.Mode.FOLLOWUP -> "可以接着说" to "直接说下一句，不用再喊唤醒词。"
+            VoiceController.Mode.GUIDED_PLAYING -> "请听提示" to controller.guidedPromptText
+            VoiceController.Mode.GUIDED_WAITING -> "正在记住声音" to controller.status
+            VoiceController.Mode.ENROLLING -> "请自然朗读" to "第 ${controller.enrollmentStep}/3 段，说完稍作停顿，会自动继续。"
             else -> if (controller.connected && !controller.readyForConversation) "正在准备语音" to controller.status
                 else "麦克风已关闭" to if (controller.connected) "想聊的时候，开启一次语音待机。" else "请先连接 Crabot。"
         }
@@ -250,6 +253,7 @@ class MainActivity : ComponentActivity() {
         if (controller.ownerRecoveryHint.isNotEmpty()) text(content, controller.ownerRecoveryHint, 14f, true)
         if (controller.mode == VoiceController.Mode.PLAYING) button(content, "打断并说话", true) { withMicrophone { controller.recordButton() } }
         if (controller.mode == VoiceController.Mode.RECORDING) button(content, "结束说话") { controller.recordButton() }
+        if (controller.guidedEnrollmentActive) button(content, "取消本次录入") { controller.cancelEnrollment() }
         if (!controller.readyForConversation && controller.connected) text(content, controller.status, 14f, true)
         if (listOf("失败", "拒绝", "未检测", "失效", "过期", "超时", "尚未确认", "无法", "错误", "不兼容", "中断").any { controller.status.contains(it) }) text(content, controller.status, 14f)
     }
@@ -310,8 +314,14 @@ class MainActivity : ComponentActivity() {
         button(content, "返回列表") { navigate(Page.CONTACTS) }
     }
     private fun enrollment() {
+        if (controller.guidedEnrollmentActive) {
+            text(content, "正在记住 ${controller.enrollmentName ?: "对方"} 的声音", 25f)
+            text(content, controller.status, 18f); text(content, controller.guidedPromptText, 18f)
+            button(content, "取消本次录入") { controller.cancelEnrollment() }
+            return
+        }
         if (controller.enrollmentCompleted && controller.pendingTask == null) {
-            text(content, "录入已完成", 26f); text(content, "声纹已同步到 Crabot，可以在后台将联系人绑定到已有好友。", 18f)
+            text(content, "录入已完成", 26f); text(content, "声音记录已同步，可以返回对话或查看联系人。", 18f)
             button(content, "查看联系人", true) { navigate(Page.CONTACTS) }; button(content, "返回对话") { navigate(Page.HOME) }; return
         }
         text(content, "录入 ${controller.enrollmentName ?: "声纹"}", 25f)

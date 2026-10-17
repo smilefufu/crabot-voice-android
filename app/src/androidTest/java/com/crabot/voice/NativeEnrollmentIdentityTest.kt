@@ -3,11 +3,30 @@ package com.crabot.voice
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert.*
 import org.junit.Test
+import org.json.JSONArray
+import org.json.JSONObject
+import java.util.UUID
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
 // Public finite fixtures only; never opens a microphone or touches SecureStore.
 class NativeEnrollmentIdentityTest {
+    @Test fun aKnownPublicSpeakerCannotBeRegisteredAsAnotherContactButCanBeRerecordedForTheSameContact() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        NativeModels(Models.prepare(context)).use { models ->
+            val audio = audio("fangjun-sr-1.wav")
+            val vector = try { models.embedding(audio) } finally { audio.fill(0) }
+            try {
+                val contact = UUID.randomUUID().toString()
+                val registration = UUID.randomUUID().toString()
+                val stored = JSONObject().put(registration, JSONObject().put("model_id", Models.EMBEDDING).put("values", JSONArray(vector.map { it.toDouble() })))
+                val catalog = JSONArray().put(JSONObject().put("registration_id", registration).put("platform_user_id", contact).put("status", "active").put("model_id", Models.EMBEDDING))
+                assertThrows(ExistingVoiceIdentityException::class.java) { Identity.requireDistinctContact(vector, models, stored, catalog, UUID.randomUUID().toString()) }
+                Identity.requireDistinctContact(vector, models, stored, catalog, contact)
+                Identity.requireConsistentSample(vector, listOf(vector), models)
+            } finally { vector.fill(0f) }
+        }
+    }
     private fun audio(name: String): ShortArray {
         val bytes = InstrumentationRegistry.getInstrumentation().context.assets.open(name).use { it.readBytes() }
         val buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN)
