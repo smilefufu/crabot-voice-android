@@ -34,3 +34,15 @@ Mac CPU/2线程结果见 `mac-results.json`。OnePlus 7 Pro/Android10 使用 APK
 `evaluate.py` 使用 sherpa-onnx1.13.8/numpy/soundfile，传入冻结模型及已核验公开数据目录；输出每个片段的来源、偏移、分数和汇总。`probe.cpp` 以Android NDK/API29链接上述同版本库，读取登记名单及由前者来源/偏移生成的PCM16裁剪名单，运行相同的embedding和GetBestMatches。原始公开录音、模型及生成的WAV不入仓；用户音频/向量始终不进入本记录。
 
 补测同一权重的本机0.1/0.15/0.2/0.25/0.3秒公开片段，IsReady均为true，输出192维有限非零特征，见 `below-300ms-results.json`。只证明0.3秒不是模型硬下限，不评价这些片段的身份正确率，也不声称已在手机复核。上游CAM++所用通用实现的[IsReady](https://github.com/k2-fsa/sherpa-onnx/blob/master/sherpa-onnx/csrc/speaker-embedding-extractor-general-impl.h)检查可计算的特征帧，不提供身份可信度保证。
+
+## 2026-10-19完整分段链路对照
+
+调查0.8.0一次FuFu漏认，使用本目录sources.json固定的10个公开文件及相同CAM++/pyannote模型、sherpa-onnx1.13.8、CPU两线程。登记仍为A三个/B两个独立原文件；测试为另外五个文件，以0/0.5/1秒偏移取1/1.77/3秒或完整文件（不足长度的组合排除），两侧仅模拟采音边缘加入0.25/0.8秒静音。此模拟不是产品补齐声纹时长。分段使用产品num_clusters=-1、threshold=0.5、min_duration_on/off=0；按匿名说话人拼接真实分段，识别门槛0.50/候选差值0.08保持不变。逐项分数见[pipeline-results-2026-10-19.json](pipeline-results-2026-10-19.json)。
+
+| 对照方式 | 已登记者正确/总数 | 认作另一登记者 | 未登记者误接纳/总数 |
+|---|---:|---:|---:|
+| 现有：整段登记、分段查询 | 34/35 | 0 | 0/9 |
+| 对照：登记也分段、分段查询 | 34/35 | 0 | 0/9 |
+| 对照：整段登记、整段查询 | 33/35 | 0 | 0/9 |
+
+现有方式漏认的公开查询为A测试文件1、偏移1秒的一秒片段，相似度0.4436；两个对照也未认出它。其余公开数据未复现FuFu现场原因。仅三位来源人、重叠片段和模拟静音，不用于宣称家庭识别准确率或据此调整阈值，未在手机重跑本组44项。上游[带VAD的识别示例](https://github.com/k2-fsa/sherpa-onnx/blob/master/python-api-examples/speaker-identification-with-vad.py)也采用整段登记/人声查询，因此预处理不同本身不是缺陷证据。未使用真实用户录音、向量或配对状态；产品及个人登记保持不变。
