@@ -1,6 +1,6 @@
 # Android 长回答连续播放与响应速度配套修订
 
-日期：2026-10-19。状态：用户已确认暂不做通用SSML兼容层、优先连续播放与响应速度的方向；本配套修订稿待确认，未改产品代码/提示词或再次安装APK。配套[后端长回答连续分段播放稿](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-19-continuous-long-voice-playback-design.md)，正式wire及共享类型只以[protocol-voice](https://github.com/smilefufu/crabot-docs/blob/main/protocols/protocol-voice.md)为准，本仓不维护第二份协议。
+日期：2026-10-19。状态：用户已明确确认本配套修订稿、后端设计和一处精确提示词文字，授权先同步正式协议再实施/测试；正式协议已同步v0.9.0 / wire9，产品实现与验收进行中，尚未再次安装APK。配套[后端长回答连续分段播放稿](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-19-continuous-long-voice-playback-design.md)，正式wire及共享类型只以[protocol-voice](https://github.com/smilefufu/crabot-docs/blob/main/protocols/protocol-voice.md)为准，本仓不维护第二份协议。
 
 ## 1. 用户行为与范围
 

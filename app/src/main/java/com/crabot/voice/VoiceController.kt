@@ -31,6 +31,9 @@ class VoiceController(private val context: Context, private val changed: () -> U
     private val mic = Microphone(context) { reason -> main.post { stop(reason, disableWake = true) } }
     private var player: Playback? = null
     private var playbackId: String? = null
+    private var playbackTextSegments = 0L
+    private var latencyTurn: String? = null
+    private var captureEndedByButton = false
     private var interactionHadPlayback = false
     private var pairing: JSONObject? = null
     private var currentTurn: String? = null
@@ -257,7 +260,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         changed()
     }
     fun recordButton() {
-        if (mode == Mode.RECORDING || mode == Mode.ENROLLING) { finishCapture(); return }
+        if (mode == Mode.RECORDING || mode == Mode.ENROLLING) { captureEndedByButton = true; finishCapture(); return }
         try {
             require(foreground && connected && modelReady) { "需在前台连接并完成模型加载" }
             if (enrollment != null && mode == Mode.CLOSED) { beginEnrollmentClip(); changed(); return }
@@ -394,7 +397,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         speakerReason = ""
         speechEnabled = true
         mode = Mode.RECORDING; currentTurn = UUID.randomUUID().toString(); readyTurn = null
-        sequence = 0; sentSamples = 0; count = 0; startedAt = SystemClock.elapsedRealtime(); hasSpeech = false; lastSpeechAt = startedAt
+        sequence = 0; sentSamples = 0; count = 0; startedAt = SystemClock.elapsedRealtime(); hasSpeech = false; lastSpeechAt = startedAt; captureEndedByButton = false
         leading.copyInto(pcm); count = leading.size; leading.fill(0)
         connection.send(JSONObject().put("type", "turn_start").put("turn_id", currentTurn))
         startMic(); status = "正在录音，最多 15 秒；可点按结束"; heartbeat(); changed()
@@ -548,7 +551,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         return true
     }
     private fun expireWaitingTurn(waitingTurn: String?) {
-        if (waitingTurn == currentTurn && mode == Mode.WAITING) releaseWaitingTurn()
+        if (waitingTurn == currentTurn && mode == Mode.WAITING && !interactionHadPlayback && reservedPlayback == null) releaseWaitingTurn()
     }
     private fun uploadRemaining(audio: ShortArray) {
         // Full frames were streamed during finite capture; only the final short frame remains.
@@ -638,10 +641,10 @@ class VoiceController(private val context: Context, private val changed: () -> U
         guidedPromptText = control.getString("text"); require(guidedPromptText.length in 1..512)
         mic.stop(); captureGeneration++; mode = Mode.GUIDED_PLAYING
         check(manager.requestAudioFocus(focus) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-        player = Playback(context, id) { playback, receipt, played -> main.post {
+        player = Playback(context, id, finite = true) { playback, receipt, played -> main.post {
             if (guided !== session || guidedPlaybackId != playback) return@post
             try {
-                if (receipt == "completed") { session.played(playback, played ?: 0); player = null; mode = Mode.GUIDED_WAITING }
+                if (receipt == "completed") { session.played(playback, (played ?: 0L).toInt()); player = null; mode = Mode.GUIDED_WAITING }
                 val report = JSONObject().put("type", "guided_playback").put("operation_id", session.operationId).put("playback_id", playback).put("status", receipt)
                 played?.let { report.put("played_samples", it) }; connection.send(report)
                 if (receipt !in listOf("started", "completed")) stop("提示播放中断，本次录入已停止", true)
@@ -658,7 +661,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
                 "guided_prompt_end" -> {
                     val session = guided ?: error("没有当前录入任务")
                     require(c.getString("operation_id") == session.operationId && c.getString("playback_id") == guidedPlaybackId && mode == Mode.GUIDED_PLAYING)
-                    val count = c.getInt("sample_count"); session.ended(c.getString("playback_id"), count); player!!.finish(count)
+                    val count = c.getInt("sample_count"); session.ended(c.getString("playback_id"), count); player!!.finish(count.toLong())
                 }
                 "guided_record" -> {
                     val session = guided ?: error("没有当前录入任务")
@@ -753,10 +756,17 @@ class VoiceController(private val context: Context, private val changed: () -> U
                     require(if (notificationPlayback) c.getString("turn_id") == reservedPlayback else currentTurn == c.getString("turn_id"))
                     mic.stop(); captureGeneration++; mode = Mode.PLAYING
                     check(manager.requestAudioFocus(focus) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-                    playbackId = c.getString("playback_id"); lastReply = c.getString("text"); status = "播放中可点按打断"; detail += "\n回答：${lastReply}"; heartbeat()
-                    player = Playback(context, playbackId!!) { id, receipt, played -> main.post { playbackReceipt(id, receipt, played) } }
+                    playbackId = c.getString("playback_id"); playbackTextSegments = 0; lastReply = ""; status = "播放中可点按打断"; heartbeat()
+                    player = Playback(context, playbackId!!, onProgress = { played -> main.post {
+                        if (connected && playbackId == c.getString("playback_id")) connection.send(JSONObject().put("type", "playback_progress").put("playback_id", playbackId).put("played_samples", played))
+                    } }) { id, receipt, played -> main.post { playbackReceipt(id, receipt, played) } }
                 }
-                "playback_end" -> { if (c.getString("playback_id") == playbackId) { player!!.finish(c.getInt("sample_count")); lastReply = c.getString("text"); detail += "\n完整回答：${lastReply}" } }
+                "playback_text" -> {
+                    require(mode == Mode.PLAYING && c.getString("playback_id") == playbackId && Wire.sampleCount(c.get("sequence")) == playbackTextSegments)
+                    val text = c.getString("text"); require(text.codePointCount(0, text.length) in 1..120)
+                    lastReply += text; playbackTextSegments++
+                }
+                "playback_end" -> { if (c.getString("playback_id") == playbackId) { require(Wire.sampleCount(c.get("text_segment_count")) == playbackTextSegments); player!!.finish(Wire.sampleCount(c.get("sample_count"))) } }
                 "response_end" -> { if (c.getString("turn_id") == currentTurn && player == null) finishResponse() }
                 "playback_cancel" -> if (c.getString("playback_id") == (playbackId ?: reservedPlayback)) {
                     val restore = notificationPlayback || reservedContext?.optString("kind") == "notification"
@@ -840,7 +850,11 @@ class VoiceController(private val context: Context, private val changed: () -> U
         if (frame.id != playbackId) { frame.samples.fill(0); return }
         try { player!!.add(frame) } catch (e: Exception) { frame.samples.fill(0); throw e }
     }
-    private fun playbackReceipt(id: String, receipt: String, played: Int?) {
+    private fun playbackReceipt(id: String, receipt: String, played: Long?) {
+        if (receipt == "started" && id == playbackId && !notificationPlayback && currentTurn != null && latencyTurn != currentTurn) {
+            latencyTurn = currentTurn
+            android.util.Log.i("CrabotVoiceLatency", "turn=" + currentTurn + " playback=" + id + " button_end=" + captureEndedByButton + " first_audio_ms=" + (SystemClock.elapsedRealtime() - lastSpeechAt))
+        }
         if (receipt != "started") try {
             val scope = receiptScope() ?: error("播放回执缺少配对")
             val journal = playbackReceipts ?: error("播放记录无法读取")

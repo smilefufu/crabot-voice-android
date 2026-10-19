@@ -60,13 +60,14 @@ class Microphone(private val context: Context, private val failure: (String) -> 
 }
 
 class Playback(private val context: Context, private val id: String,
-               private val receipt: (String, String, Int?) -> Unit) {
-    // Queue is at most one second; PCM is cleared on consumption or cancellation.
+               private val onProgress: ((Long) -> Unit)? = null, private val finite: Boolean = false,
+               private val receipt: (String, String, Long?) -> Unit) {
+    // The host limits total unplayed PCM to one second, including AudioTrack.
     private val queue = ArrayBlockingQueue<ShortArray>(50)
     private val running = AtomicBoolean(true)
     @Volatile private var ended = false
-    private val progress = PlaybackProgress(id)
-    @Volatile private var playedSamples: Int? = null
+    private val progress = PlaybackProgress(id, if (finite) Wire.MAX_OUTPUT.toLong() else Wire.MAX_SAFE_SAMPLES)
+    @Volatile private var playedSamples: Long? = null
     private val track: AudioTrack
     private val worker: Thread
     init {
@@ -86,22 +87,53 @@ class Playback(private val context: Context, private val id: String,
         progress.add(frame)
         require(queue.offer(frame.samples)) { "播放队列超过一秒" }
     }
-    @Synchronized fun finish(count: Int) { progress.finish(count); ended = true }
+    @Synchronized fun finish(count: Long) { progress.finish(count); ended = true }
     private fun play() {
         var started = false
-        val timestamp = AudioTimestamp()
-        val deadline = SystemClock.elapsedRealtime() + 25_000
+        val beganAt = SystemClock.elapsedRealtime()
+        var advancedAt = beganAt
+        var reportedAt = beganAt
+        var reportedSamples = 0L
+        var written = 0L
+        var previousHead = 0L
+        var wraps = 0L
+        var gapAt: Long? = null
+        var gaps = 0
+        var gapMs = 0L
+        fun observe() {
+            val now = SystemClock.elapsedRealtime()
+            val head = track.playbackHeadPosition.toLong() and 0xffffffffL
+            if (head < previousHead) { check(previousHead - head > 0x80000000L) { "播放游标回退" }; wraps += 0x100000000L }
+            previousHead = head
+            val actual = (wraps + head).coerceAtMost(written)
+            if (actual > (playedSamples ?: 0L)) advancedAt = now
+            playedSamples = actual
+            if (!started && actual > 0) {
+                check(track.routedDevice?.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER) { "无法确认内置扬声器路由" }
+                started = true; receipt(id, "started", actual)
+            }
+            if (onProgress != null && now - reportedAt >= 500 && actual > reportedSamples) {
+                onProgress.invoke(actual); reportedAt = now; reportedSamples = actual
+            }
+            if (started && actual == written && !ended && queue.isEmpty()) {
+                if (gapAt == null) gapAt = now
+            } else if (gapAt != null && actual < written) {
+                gaps++; gapMs += now - gapAt!!; gapAt = null
+            }
+            check(!finite || now - beganAt < 25_000) { "管理读句播放超时" }
+            check(progress.received <= actual || now - advancedAt < 5000) { "播放游标没有前进" }
+        }
         try {
             track.play()
             while (running.get()) {
-                check(SystemClock.elapsedRealtime() < deadline) { "播放超时" }
                 val pcm = queue.poll(10, java.util.concurrent.TimeUnit.MILLISECONDS)
                 if (pcm != null) {
                     try {
                         var offset = 0
                         while (running.get() && offset < pcm.size) {
                             val n = track.write(pcm, offset, pcm.size - offset, AudioTrack.WRITE_NON_BLOCKING)
-                            check(n >= 0) { "播放失败" }; offset += n
+                            check(n >= 0) { "播放失败" }; offset += n; written += n
+                            observe()
                             if (n == 0) Thread.sleep(5)
                         }
                     } finally { pcm.fill(0) }
@@ -109,14 +141,13 @@ class Playback(private val context: Context, private val id: String,
                 if (!running.get()) break
                 val route = track.routedDevice
                 check(route == null || route.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER) { "播放路由已变化" }
-                val actualFrames = if (track.getTimestamp(timestamp)) timestamp.framePosition else track.playbackHeadPosition.toLong() and 0xffffffffL
-                playedSamples = actualFrames.toInt().coerceAtMost(progress.received)
-                if (!started && actualFrames > 0) {
-                    check(route?.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER) { "无法确认内置扬声器路由" }
-                    started = true; receipt(id, "started", playedSamples)
-                }
-                if (ended && queue.isEmpty() && progress.count != null && actualFrames >= progress.count!!) {
-                    if (running.compareAndSet(true, false)) receipt(id, "completed", progress.count)
+                observe()
+                val count = progress.count
+                if (ended && queue.isEmpty() && count != null && playedSamples == count) {
+                    if (running.compareAndSet(true, false)) {
+                        android.util.Log.i("CrabotVoicePlayback", "id=" + id + " samples=" + count + " gap_count=" + gaps + " gap_ms=" + gapMs)
+                        receipt(id, "completed", count)
+                    }
                     break
                 }
             }

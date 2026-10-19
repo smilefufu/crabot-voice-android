@@ -6,6 +6,21 @@ import java.nio.file.Files
 import java.util.UUID
 
 class PlaybackReceiptJournalTest {
+    @Test fun readsOldIntReceiptsAndWritesLongWithVerifiedBackup() {
+        val dir = Files.createTempDirectory("voice-receipts-v1").toFile()
+        try {
+            val file = java.io.File(dir, "receipts"); val scope = "a".repeat(64); val id = UUID.randomUUID().toString()
+            java.io.DataOutputStream(file.outputStream()).use { out ->
+                out.writeInt(1); out.writeInt(1); out.writeUTF(scope); out.writeUTF(id); out.writeUTF("completed"); out.writeInt(480)
+            }
+            val before = file.readBytes()
+            val store = PlaybackReceiptJournal(file)
+            assertEquals(480L, store.pending(scope).single().played)
+            assertArrayEquals(before, java.io.File(dir, "receipts.v1.bak").readBytes())
+            store.remember(PlaybackReceipt(scope, UUID.randomUUID().toString(), "completed", 3_000_000_000L))
+            assertEquals(3_000_000_000L, PlaybackReceiptJournal(file).pending(scope).last().played)
+        } finally { dir.deleteRecursively() }
+    }
     @Test fun retainsActualCompletionUntilTheOriginalReceiptIsConfirmed() {
         val dir = Files.createTempDirectory("voice-receipts").toFile()
         try {
