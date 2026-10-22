@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-22",
+  "product_version": "0.8.0/code17/wire9",
+  "product_source": "210a251",
+  "device": "OnePlus 7 Pro / Android 10",
+  "scope": "isolated cache, valid in-memory fixture, model-loader coroutine canceled, fake socket; no microphone, network or genuine profile reads",
+  "cases": [
+    {
+      "case": "firstAudioWithinFiveSecondBudgetMustNotLoseItsReservationAtThreeSeconds",
+      "setup_accepted": true,
+      "wait_ms": 3300,
+      "expected": "reservation retained",
+      "observed": "reservation null",
+      "result": "reproduced failure"
+    },
+    {
+      "case": "emptyAttemptCancellationMustNotCancelTheOriginalInputTurn",
+      "setup_accepted": true,
+      "input": "server playback_cancel on unstarted reserved reply",
+      "expected": "original input retained for existing retry",
+      "observed": "currentTurn null",
+      "result": "reproduced failure"
+    }
+  ],
+  "junit_seconds": 3.491,
+  "tests_run": 2,
+  "expected_failures": 2,
+  "original_encrypted_state_unchanged": true,
+  "product_apk_replaced": false,
+  "source_sha256": "51ebd4edcd9caf7cc7a03a9dcfe4ec5d63a82f15af55aab3aa010491afdc63a2",
+  "excluded_experiment": "first fixture omitted required storage fields and failed setup; not used as product evidence",
+  "acceptance": false
+}

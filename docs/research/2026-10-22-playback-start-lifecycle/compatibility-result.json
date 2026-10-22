@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-22",
+  "product_version": "0.8.0/code17/wire9",
+  "tests_run": 1,
+  "case": "existingClientWaitsForPcmAfterAnEarlyStartWithoutFalsePlaybackReceipt",
+  "junit_seconds": 3.962,
+  "result": "passed",
+  "sequence": [
+    "accepted ready",
+    "immediate playback_start",
+    "3400ms without PCM or playback receipt",
+    "7200 silent PCM samples and playback_end",
+    "actual started with positive cursor",
+    "completed with 7200 samples"
+  ],
+  "microphone_used": false,
+  "model_loaded": false,
+  "real_network_used": false,
+  "product_apk_replaced": false,
+  "source_snapshot": "VoiceReservationReproTest.with-compatibility.kt.txt",
+  "source_sha256": "b23208c41a2f8e5c0cd27a11f42f04e4340a39b52643a89928016aec61b54edb",
+  "excluded_attempts": [
+    "initial build type mismatch; stale APK produced OK (0 tests), not verification"
+  ],
+  "scope": "existing client compatibility only; backend product implementation remains pending spec confirmation"
+}

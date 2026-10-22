@@ -1,0 +1,69 @@
+package com.crabot.voice
+
+import android.content.ContextWrapper
+import androidx.test.platform.app.InstrumentationRegistry
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
+import okhttp3.Request
+import okhttp3.WebSocket
+import okio.ByteString
+import org.json.JSONObject
+import org.junit.Assert.*
+import org.junit.Test
+import java.nio.file.Files
+import java.util.UUID
+
+// Temporary diagnostic: isolated cache, canceled model loader, fake socket; no microphone or real network.
+class VoiceReservationReproTest {
+    private val instrumentation = InstrumentationRegistry.getInstrumentation()
+    private fun set(target: Any, name: String, value: Any?) = target.javaClass.getDeclaredField(name).apply { isAccessible = true }.set(target, value)
+    private fun get(target: Any, name: String): Any? = target.javaClass.getDeclaredField(name).apply { isAccessible = true }.get(target)
+    private fun main(work: () -> Unit) = instrumentation.runOnMainSync(work)
+    private fun fixture(work: (VoiceController, String) -> Unit) {
+        val target = instrumentation.targetContext
+        val dir = Files.createTempDirectory(target.cacheDir.toPath(), "voice-reservation-repro-").toFile()
+        val context = object : ContextWrapper(target) { override fun getFilesDir() = dir }
+        val id = UUID.randomUUID().toString()
+        lateinit var phone: VoiceController
+        try {
+        main {
+            phone = VoiceController(context) {}
+            (get(phone, "scope") as CoroutineScope).cancel()
+            val store = get(phone, "store") as SecureStore
+            (get(store, "state") as JSONObject).put("storage_version", 3).put("pairing", JSONObject().put("channel_id", "fixture").put("credential", "synthetic-only").put("protocol_version", Wire.PROTOCOL_VERSION).put("url", "ws://127.0.0.1/ws/voice/fixture"))
+            assertTrue(store.compatible); assertNotNull(store.pairing())
+            val connection = get(phone, "connection") as TerminalConnection
+            set(connection, "socket", object : WebSocket {
+                override fun request() = Request.Builder().url("http://127.0.0.1/").build()
+                override fun queueSize() = 0L
+                override fun send(text: String) = true
+                override fun send(bytes: ByteString) = true
+                override fun close(code: Int, reason: String?) = true
+                override fun cancel() {}
+            })
+            set(connection, "ready", true)
+            set(phone, "connectionEpoch", "fixture-epoch")
+            set(phone, "foreground", true); set(phone, "setupComplete", true); set(phone, "servicesConfigured", true)
+            set(phone, "revision", 0L); set(phone, "confirmedRevision", 0L)
+            set(phone, "speechEnabled", true); set(phone, "mode", VoiceController.Mode.WAITING); set(phone, "currentTurn", id)
+            assertTrue(phone.readyForConversation)
+            val prepare = JSONObject().put("playback_id", id).put("context", JSONObject().put("kind", "reply").put("turn_id", id)
+                .put("connection_epoch", "fixture-epoch").put("binding", JSONObject().put("channel_id", "fixture").put("session_id", "fixture").put("response_id", id)))
+            VoiceController::class.java.getDeclaredMethod("preparePlayback", JSONObject::class.java).apply { isAccessible = true }.invoke(phone, prepare)
+            assertEquals(id, get(phone, "reservedPlayback")); assertEquals("closed", phone.microphoneState)
+        }
+        work(phone, id)
+        } finally { main { phone.destroy() }; dir.deleteRecursively() }
+    }
+    @Test fun emptyAttemptCancellationMustNotCancelTheOriginalInputTurn() = fixture { phone, id ->
+        main {
+            VoiceController::class.java.getDeclaredMethod("control", JSONObject::class.java).apply { isAccessible = true }
+                .invoke(phone, JSONObject().put("type", "playback_cancel").put("playback_id", id))
+            assertEquals("empty attempt cancellation must preserve the input for the allowed model retry", id, get(phone, "currentTurn"))
+        }
+    }
+    @Test fun firstAudioWithinFiveSecondBudgetMustNotLoseItsReservationAtThreeSeconds() = fixture { phone, id ->
+        Thread.sleep(3300)
+        main { assertEquals("3.3s is within the existing first-audio budget", id, get(phone, "reservedPlayback")) }
+    }
+}

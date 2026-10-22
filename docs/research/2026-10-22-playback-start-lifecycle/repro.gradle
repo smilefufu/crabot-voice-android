@@ -1,0 +1,7 @@
+allprojects {
+    plugins.withId('com.android.application') {
+        def sourceRoot = System.getenv('VOICE_REPRO_SRC')
+        if (!sourceRoot) throw new GradleException('VOICE_REPRO_SRC is required')
+        extensions.getByName('android').sourceSets.getByName('androidTest').java.srcDir(sourceRoot)
+    }
+}
