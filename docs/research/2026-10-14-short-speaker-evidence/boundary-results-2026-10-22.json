@@ -1,0 +1,3221 @@
+{
+  "scope": "Public fixed independent enrollment/test recordings only. Overlapping crops of three people; not household accuracy or user voice evidence. Synthetic-zero variants diagnose sensitivity and are not a product proposal.",
+  "skipped_multi_speaker_rows": 0,
+  "summary": {
+    "current": {
+      "known": 35,
+      "correct": 34,
+      "wrong_known": 0,
+      "unknown": 9,
+      "false_accept": 0,
+      "known_score_delta_mean": 0.0,
+      "known_score_delta_min": 0.0,
+      "known_score_delta_max": 0.0
+    },
+    "whole": {
+      "known": 35,
+      "correct": 33,
+      "wrong_known": 0,
+      "unknown": 9,
+      "false_accept": 0,
+      "known_score_delta_mean": -0.014505156448909215,
+      "known_score_delta_min": -0.12087011337280273,
+      "known_score_delta_max": 0.08521097898483276
+    },
+    "real_100": {
+      "known": 35,
+      "correct": 34,
+      "wrong_known": 0,
+      "unknown": 9,
+      "false_accept": 0,
+      "known_score_delta_mean": 0.012435036897659301,
+      "known_score_delta_min": -0.027655482292175293,
+      "known_score_delta_max": 0.051954954862594604
+    },
+    "zeros_100": {
+      "known": 35,
+      "correct": 34,
+      "wrong_known": 0,
+      "unknown": 9,
+      "false_accept": 0,
+      "known_score_delta_mean": 0.00354948810168675,
+      "known_score_delta_min": -0.03438764810562134,
+      "known_score_delta_max": 0.04135569930076599
+    },
+    "real_200": {
+      "known": 35,
+      "correct": 34,
+      "wrong_known": 0,
+      "unknown": 9,
+      "false_accept": 0,
+      "known_score_delta_mean": 0.0075309906687055315,
+      "known_score_delta_min": -0.06536930799484253,
+      "known_score_delta_max": 0.07968854904174805
+    },
+    "zeros_200": {
+      "known": 35,
+      "correct": 34,
+      "wrong_known": 0,
+      "unknown": 9,
+      "false_accept": 0,
+      "known_score_delta_mean": -0.0033828488418034147,
+      "known_score_delta_min": -0.06684601306915283,
+      "known_score_delta_max": 0.05939418077468872
+    }
+  },
+  "rows": [
+    {
+      "truth": "A",
+      "file": "fangjun-test-sr-1.wav",
+      "duration": 1,
+      "start": 0,
+      "voiced_s": 0.945,
+      "ranges": [
+        [
+          6436,
+          21556,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 15120,
+          "scores": {
+            "A": 0.5515264868736267,
+            "B": 0.26150885224342346
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9999999403953552
+        },
+        "whole": {
+          "samples": 32800,
+          "scores": {
+            "A": 0.5048477649688721,
+            "B": 0.2506510019302368
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.8568601012229919
+        },
+        "real_100": {
+          "samples": 18320,
+          "scores": {
+            "A": 0.5659800171852112,
+            "B": 0.2571955621242523
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9864145517349243
+        },
+        "zeros_100": {
+          "samples": 18320,
+          "scores": {
+            "A": 0.5602607727050781,
+            "B": 0.24726338684558868
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9805750250816345
+        },
+        "real_200": {
+          "samples": 21520,
+          "scores": {
+            "A": 0.541632354259491,
+            "B": 0.21944589912891388
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9412770867347717
+        },
+        "zeros_200": {
+          "samples": 21520,
+          "scores": {
+            "A": 0.5618946552276611,
+            "B": 0.25636836886405945
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9525629878044128
+        }
+      }
+    },
+    {
+      "truth": "A",
+      "file": "fangjun-test-sr-1.wav",
+      "duration": 1,
+      "start": 0.5,
+      "voiced_s": 1.11375,
+      "ranges": [
+        [
+          2926,
+          20746,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 17820,
+          "scores": {
+            "A": 0.6351890563964844,
+            "B": 0.2556723356246948
+          },
+          "prediction": "A",
+          "cosine_to_current": 1.0000001192092896
+        },
+        "whole": {
+          "samples": 32800,
+          "scores": {
+            "A": 0.6117231845855713,
+            "B": 0.25857245922088623
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.8693174123764038
+        },
+        "real_100": {
+          "samples": 21020,
+          "scores": {
+            "A": 0.6403043866157532,
+            "B": 0.2916557490825653
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9531436562538147
+        },
+        "zeros_100": {
+          "samples": 21020,
+          "scores": {
+            "A": 0.6403043866157532,
+            "B": 0.2916557490825653
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9531436562538147
+        },
+        "real_200": {
+          "samples": 23946,
+          "scores": {
+            "A": 0.6151867508888245,
+            "B": 0.291061669588089
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.916528582572937
+        },
+        "zeros_200": {
+          "samples": 24220,
+          "scores": {
+            "A": 0.6288043260574341,
+            "B": 0.2765187919139862
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9197657704353333
+        }
+      }
+    },
+    {
+      "truth": "A",
+      "file": "fangjun-test-sr-1.wav",
+      "duration": 1,
+      "start": 1,
+      "voiced_s": 0.961875,
+      "ranges": [
+        [
+          3196,
+          18586,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 15390,
+          "scores": {
+            "A": 0.44363150000572205,
+            "B": 0.11514803022146225
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 32800,
+          "scores": {
+            "A": 0.42405739426612854,
+            "B": 0.06144922599196434
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.6941827535629272
+        },
+        "real_100": {
+          "samples": 18590,
+          "scores": {
+            "A": 0.49558645486831665,
+            "B": 0.07967559248209
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.8908402323722839
+        },
+        "zeros_100": {
+          "samples": 18590,
+          "scores": {
+            "A": 0.48498719930648804,
+            "B": 0.03776346147060394
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.8309714198112488
+        },
+        "real_200": {
+          "samples": 21786,
+          "scores": {
+            "A": 0.4716506898403168,
+            "B": 0.06452681124210358
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.7749523520469666
+        },
+        "zeros_200": {
+          "samples": 21790,
+          "scores": {
+            "A": 0.45097464323043823,
+            "B": 0.06121090054512024
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.7781497240066528
+        }
+      }
+    },
+    {
+      "truth": "A",
+      "file": "fangjun-test-sr-1.wav",
+      "duration": 1.77,
+      "start": 0,
+      "voiced_s": 1.35,
+      "ranges": [
+        [
+          6436,
+          28036,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 21600,
+          "scores": {
+            "A": 0.7271748185157776,
+            "B": 0.24659930169582367
+          },
+          "prediction": "A",
+          "cosine_to_current": 1.0000001192092896
+        },
+        "whole": {
+          "samples": 45120,
+          "scores": {
+            "A": 0.6262566447257996,
+            "B": 0.23497457802295685
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.8256784677505493
+        },
+        "real_100": {
+          "samples": 24800,
+          "scores": {
+            "A": 0.7317149639129639,
+            "B": 0.23449689149856567
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9859161972999573
+        },
+        "zeros_100": {
+          "samples": 24800,
+          "scores": {
+            "A": 0.6958399415016174,
+            "B": 0.23257163166999817
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9419145584106445
+        },
+        "real_200": {
+          "samples": 28000,
+          "scores": {
+            "A": 0.6618055105209351,
+            "B": 0.19139127433300018
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9423083662986755
+        },
+        "zeros_200": {
+          "samples": 28000,
+          "scores": {
+            "A": 0.6673653721809387,
+            "B": 0.24419733881950378
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9015107750892639
+        }
+      }
+    },
+    {
+      "truth": "A",
+      "file": "fangjun-test-sr-1.wav",
+      "duration": 1.77,
+      "start": 0.5,
+      "voiced_s": 1.130625,
+      "ranges": [
+        [
+          2656,
+          20746,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 18090,
+          "scores": {
+            "A": 0.65599524974823,
+            "B": 0.2450208216905594
+          },
+          "prediction": "A",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 45120,
+          "scores": {
+            "A": 0.6257724761962891,
+            "B": 0.2433890551328659
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.8660290241241455
+        },
+        "real_100": {
+          "samples": 21290,
+          "scores": {
+            "A": 0.6425341963768005,
+            "B": 0.23287616670131683
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9869778156280518
+        },
+        "zeros_100": {
+          "samples": 21290,
+          "scores": {
+            "A": 0.6259072422981262,
+            "B": 0.2643340826034546
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9715031981468201
+        },
+        "real_200": {
+          "samples": 23946,
+          "scores": {
+            "A": 0.6497121453285217,
+            "B": 0.26423314213752747
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9649300575256348
+        },
+        "zeros_200": {
+          "samples": 24490,
+          "scores": {
+            "A": 0.6083278059959412,
+            "B": 0.26566705107688904
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.936211347579956
+        }
+      }
+    },
+    {
+      "truth": "A",
+      "file": "fangjun-test-sr-1.wav",
+      "duration": 1.77,
+      "start": 1,
+      "voiced_s": 0.421875,
+      "ranges": [
+        [
+          4276,
+          9946,
+          1
+        ],
+        [
+          31006,
+          32086,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 6750,
+          "scores": {
+            "A": 0.535952091217041,
+            "B": 0.19305028021335602
+          },
+          "prediction": "A",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 45120,
+          "scores": {
+            "A": 0.43521976470947266,
+            "B": 0.07975185662508011
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.5246712565422058
+        },
+        "real_100": {
+          "samples": 13150,
+          "scores": {
+            "A": 0.5865212082862854,
+            "B": 0.10722550004720688
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.8431797027587891
+        },
+        "zeros_100": {
+          "samples": 9950,
+          "scores": {
+            "A": 0.5281172394752502,
+            "B": 0.20747171342372894
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.7819759845733643
+        },
+        "real_200": {
+          "samples": 19550,
+          "scores": {
+            "A": 0.52593994140625,
+            "B": 0.07868064939975739
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.7641738653182983
+        },
+        "zeros_200": {
+          "samples": 13150,
+          "scores": {
+            "A": 0.523313581943512,
+            "B": 0.17591474950313568
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.7508847713470459
+        }
+      }
+    },
+    {
+      "truth": "A",
+      "file": "fangjun-test-sr-1.wav",
+      "duration": 3,
+      "start": 0,
+      "voiced_s": 1.569375,
+      "ranges": [
+        [
+          6976,
+          25336,
+          1
+        ],
+        [
+          46396,
+          53146,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 25110,
+          "scores": {
+            "A": 0.7453882694244385,
+            "B": 0.24268288910388947
+          },
+          "prediction": "A",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 64800,
+          "scores": {
+            "A": 0.6466132402420044,
+            "B": 0.23413674533367157
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.8649096488952637
+        },
+        "real_100": {
+          "samples": 31510,
+          "scores": {
+            "A": 0.7448117733001709,
+            "B": 0.2390255182981491
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9708477854728699
+        },
+        "zeros_100": {
+          "samples": 28310,
+          "scores": {
+            "A": 0.7110006213188171,
+            "B": 0.2325756549835205
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9712080359458923
+        },
+        "real_200": {
+          "samples": 37910,
+          "scores": {
+            "A": 0.7464179396629333,
+            "B": 0.28012412786483765
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9185686111450195
+        },
+        "zeros_200": {
+          "samples": 31510,
+          "scores": {
+            "A": 0.6785422563552856,
+            "B": 0.2420663833618164
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9329876899719238
+        }
+      }
+    },
+    {
+      "truth": "A",
+      "file": "fangjun-test-sr-1.wav",
+      "duration": 3,
+      "start": 0.5,
+      "voiced_s": 1.805625,
+      "ranges": [
+        [
+          2926,
+          17236,
+          1
+        ],
+        [
+          38026,
+          52606,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 28890,
+          "scores": {
+            "A": 0.7451263070106506,
+            "B": 0.23189261555671692
+          },
+          "prediction": "A",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 64800,
+          "scores": {
+            "A": 0.7196314334869385,
+            "B": 0.23324531316757202
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.8857008218765259
+        },
+        "real_100": {
+          "samples": 35290,
+          "scores": {
+            "A": 0.7634843587875366,
+            "B": 0.2839815020561218
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9347730278968811
+        },
+        "zeros_100": {
+          "samples": 32090,
+          "scores": {
+            "A": 0.7615026831626892,
+            "B": 0.24498343467712402
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9677904844284058
+        },
+        "real_200": {
+          "samples": 41416,
+          "scores": {
+            "A": 0.7452557682991028,
+            "B": 0.253483384847641
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.8688578605651855
+        },
+        "zeros_200": {
+          "samples": 35290,
+          "scores": {
+            "A": 0.7259113192558289,
+            "B": 0.2718490660190582
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9197401404380798
+        }
+      }
+    },
+    {
+      "truth": "A",
+      "file": "fangjun-test-sr-1.wav",
+      "duration": 3,
+      "start": 1,
+      "voiced_s": 1.6874375,
+      "ranges": [
+        [
+          2926,
+          9675,
+          1
+        ],
+        [
+          29926,
+          50176,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 26999,
+          "scores": {
+            "A": 0.7913908958435059,
+            "B": 0.26162177324295044
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9999998807907104
+        },
+        "whole": {
+          "samples": 64800,
+          "scores": {
+            "A": 0.7263696789741516,
+            "B": 0.2131088525056839
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.8908690214157104
+        },
+        "real_100": {
+          "samples": 33399,
+          "scores": {
+            "A": 0.8091752529144287,
+            "B": 0.2611694931983948
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9633904695510864
+        },
+        "zeros_100": {
+          "samples": 30199,
+          "scores": {
+            "A": 0.7867129445075989,
+            "B": 0.245237797498703
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9680730104446411
+        },
+        "real_200": {
+          "samples": 39525,
+          "scores": {
+            "A": 0.8223754167556763,
+            "B": 0.22454479336738586
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9349924325942993
+        },
+        "zeros_200": {
+          "samples": 33399,
+          "scores": {
+            "A": 0.7676424980163574,
+            "B": 0.24461178481578827
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9484521746635437
+        }
+      }
+    },
+    {
+      "truth": "A",
+      "file": "fangjun-test-sr-1.wav",
+      "duration": null,
+      "start": 0,
+      "voiced_s": 3.695625,
+      "ranges": [
+        [
+          6436,
+          24526,
+          1
+        ],
+        [
+          44776,
+          85816,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 59130,
+          "scores": {
+            "A": 0.8500882983207703,
+            "B": 0.24275840818881989
+          },
+          "prediction": "A",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 105965,
+          "scores": {
+            "A": 0.7934282422065735,
+            "B": 0.23933324217796326
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9246134757995605
+        },
+        "real_100": {
+          "samples": 65530,
+          "scores": {
+            "A": 0.8567137122154236,
+            "B": 0.25980255007743835
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9810320138931274
+        },
+        "zeros_100": {
+          "samples": 62330,
+          "scores": {
+            "A": 0.8273488283157349,
+            "B": 0.22921951115131378
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9713083505630493
+        },
+        "real_200": {
+          "samples": 71930,
+          "scores": {
+            "A": 0.8484569787979126,
+            "B": 0.2549329400062561
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9646008014678955
+        },
+        "zeros_200": {
+          "samples": 65530,
+          "scores": {
+            "A": 0.820996105670929,
+            "B": 0.23459768295288086
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9614008665084839
+        }
+      }
+    },
+    {
+      "truth": "A",
+      "file": "fangjun-test-sr-2.wav",
+      "duration": 1,
+      "start": 0,
+      "voiced_s": 1.08,
+      "ranges": [
+        [
+          4276,
+          21556,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 17280,
+          "scores": {
+            "A": 0.7209990620613098,
+            "B": 0.16428783535957336
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9999999403953552
+        },
+        "whole": {
+          "samples": 32800,
+          "scores": {
+            "A": 0.6572842001914978,
+            "B": 0.16826973855495453
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.8845471143722534
+        },
+        "real_100": {
+          "samples": 20480,
+          "scores": {
+            "A": 0.7158342599868774,
+            "B": 0.1617209017276764
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9857138991355896
+        },
+        "zeros_100": {
+          "samples": 20480,
+          "scores": {
+            "A": 0.7111079692840576,
+            "B": 0.16335958242416382
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9832503199577332
+        },
+        "real_200": {
+          "samples": 23680,
+          "scores": {
+            "A": 0.7124289870262146,
+            "B": 0.1759963482618332
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9708062410354614
+        },
+        "zeros_200": {
+          "samples": 23680,
+          "scores": {
+            "A": 0.7081190943717957,
+            "B": 0.17611995339393616
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9684538841247559
+        }
+      }
+    },
+    {
+      "truth": "A",
+      "file": "fangjun-test-sr-2.wav",
+      "duration": 1,
+      "start": 0.5,
+      "voiced_s": 1.2825625,
+      "ranges": [
+        [
+          495,
+          21016,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 20521,
+          "scores": {
+            "A": 0.6563718318939209,
+            "B": 0.2231704294681549
+          },
+          "prediction": "A",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 32800,
+          "scores": {
+            "A": 0.5524742007255554,
+            "B": 0.2583130896091461
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.8401663303375244
+        },
+        "real_100": {
+          "samples": 22616,
+          "scores": {
+            "A": 0.6287163496017456,
+            "B": 0.2318664789199829
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.974098265171051
+        },
+        "zeros_100": {
+          "samples": 23721,
+          "scores": {
+            "A": 0.6326257586479187,
+            "B": 0.23255017399787903
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9873545169830322
+        },
+        "real_200": {
+          "samples": 24216,
+          "scores": {
+            "A": 0.622750461101532,
+            "B": 0.23729604482650757
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.968221127986908
+        },
+        "zeros_200": {
+          "samples": 26921,
+          "scores": {
+            "A": 0.6239991188049316,
+            "B": 0.2399904429912567
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9704312682151794
+        }
+      }
+    },
+    {
+      "truth": "A",
+      "file": "fangjun-test-sr-2.wav",
+      "duration": 1,
+      "start": 1,
+      "voiced_s": 0.945,
+      "ranges": [
+        [
+          5896,
+          21016,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 15120,
+          "scores": {
+            "A": 0.676006555557251,
+            "B": 0.23872210085391998
+          },
+          "prediction": "A",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 32800,
+          "scores": {
+            "A": 0.5551364421844482,
+            "B": 0.18245576322078705
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.8459545969963074
+        },
+        "real_100": {
+          "samples": 18320,
+          "scores": {
+            "A": 0.6779897809028625,
+            "B": 0.21731168031692505
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9714756608009338
+        },
+        "zeros_100": {
+          "samples": 18320,
+          "scores": {
+            "A": 0.6464338302612305,
+            "B": 0.19913822412490845
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9573794007301331
+        },
+        "real_200": {
+          "samples": 21520,
+          "scores": {
+            "A": 0.6342035531997681,
+            "B": 0.1823025792837143
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9284578561782837
+        },
+        "zeros_200": {
+          "samples": 21520,
+          "scores": {
+            "A": 0.6125500202178955,
+            "B": 0.19317975640296936
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9064480066299438
+        }
+      }
+    },
+    {
+      "truth": "A",
+      "file": "fangjun-test-sr-2.wav",
+      "duration": 1.77,
+      "start": 0,
+      "voiced_s": 1.6875,
+      "ranges": [
+        [
+          6166,
+          33166,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 27000,
+          "scores": {
+            "A": 0.7724080085754395,
+            "B": 0.207031711935997
+          },
+          "prediction": "A",
+          "cosine_to_current": 1.0000001192092896
+        },
+        "whole": {
+          "samples": 45120,
+          "scores": {
+            "A": 0.728329062461853,
+            "B": 0.26901012659072876
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9118165969848633
+        },
+        "real_100": {
+          "samples": 30200,
+          "scores": {
+            "A": 0.7612019777297974,
+            "B": 0.1976914405822754
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9850714206695557
+        },
+        "zeros_100": {
+          "samples": 30200,
+          "scores": {
+            "A": 0.7390061616897583,
+            "B": 0.1900007277727127
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.971022367477417
+        },
+        "real_200": {
+          "samples": 33400,
+          "scores": {
+            "A": 0.7414646148681641,
+            "B": 0.20871035754680634
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9655696153640747
+        },
+        "zeros_200": {
+          "samples": 33400,
+          "scores": {
+            "A": 0.7295166850090027,
+            "B": 0.21606388688087463
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9480997323989868
+        }
+      }
+    },
+    {
+      "truth": "A",
+      "file": "fangjun-test-sr-2.wav",
+      "duration": null,
+      "start": 0,
+      "voiced_s": 1.755,
+      "ranges": [
+        [
+          6166,
+          34246,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 28080,
+          "scores": {
+            "A": 0.7742368578910828,
+            "B": 0.23630571365356445
+          },
+          "prediction": "A",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 51723,
+          "scores": {
+            "A": 0.7362788319587708,
+            "B": 0.2513258755207062
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.8824542164802551
+        },
+        "real_100": {
+          "samples": 31280,
+          "scores": {
+            "A": 0.7738590836524963,
+            "B": 0.2327275574207306
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9901200532913208
+        },
+        "zeros_100": {
+          "samples": 31280,
+          "scores": {
+            "A": 0.7430684566497803,
+            "B": 0.19594918191432953
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9366692304611206
+        },
+        "real_200": {
+          "samples": 34480,
+          "scores": {
+            "A": 0.7739374041557312,
+            "B": 0.23118239641189575
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9663487672805786
+        },
+        "zeros_200": {
+          "samples": 34480,
+          "scores": {
+            "A": 0.7391071915626526,
+            "B": 0.22068436443805695
+          },
+          "prediction": "A",
+          "cosine_to_current": 0.9286180734634399
+        }
+      }
+    },
+    {
+      "truth": "B",
+      "file": "leijun-test-sr-1.wav",
+      "duration": 1,
+      "start": 0,
+      "voiced_s": 0.91125,
+      "ranges": [
+        [
+          7516,
+          22096,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 14580,
+          "scores": {
+            "A": 0.1549161970615387,
+            "B": 0.6819142699241638
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9999999403953552
+        },
+        "whole": {
+          "samples": 32800,
+          "scores": {
+            "A": 0.08402448147535324,
+            "B": 0.7002034783363342
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.8677233457565308
+        },
+        "real_100": {
+          "samples": 17780,
+          "scores": {
+            "A": 0.13206730782985687,
+            "B": 0.6849948167800903
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.982048511505127
+        },
+        "zeros_100": {
+          "samples": 17780,
+          "scores": {
+            "A": 0.1196315735578537,
+            "B": 0.6887275576591492
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9795194864273071
+        },
+        "real_200": {
+          "samples": 20980,
+          "scores": {
+            "A": 0.12515181303024292,
+            "B": 0.7017327547073364
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9610825777053833
+        },
+        "zeros_200": {
+          "samples": 20980,
+          "scores": {
+            "A": 0.08652356266975403,
+            "B": 0.6781430244445801
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.949892520904541
+        }
+      }
+    },
+    {
+      "truth": "B",
+      "file": "leijun-test-sr-1.wav",
+      "duration": 1,
+      "start": 0.5,
+      "voiced_s": 1.130625,
+      "ranges": [
+        [
+          2656,
+          20746,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 18090,
+          "scores": {
+            "A": 0.11371225863695145,
+            "B": 0.6898476481437683
+          },
+          "prediction": "B",
+          "cosine_to_current": 1.0000001192092896
+        },
+        "whole": {
+          "samples": 32800,
+          "scores": {
+            "A": 0.07774070650339127,
+            "B": 0.7163189649581909
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.8446585536003113
+        },
+        "real_100": {
+          "samples": 21290,
+          "scores": {
+            "A": 0.11983049660921097,
+            "B": 0.7204024195671082
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9816009402275085
+        },
+        "zeros_100": {
+          "samples": 21290,
+          "scores": {
+            "A": 0.11983049660921097,
+            "B": 0.7204024195671082
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9816009402275085
+        },
+        "real_200": {
+          "samples": 23946,
+          "scores": {
+            "A": 0.10724452883005142,
+            "B": 0.7324537634849548
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9426530599594116
+        },
+        "zeros_200": {
+          "samples": 24490,
+          "scores": {
+            "A": 0.11454766988754272,
+            "B": 0.7402948141098022
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9436743259429932
+        }
+      }
+    },
+    {
+      "truth": "B",
+      "file": "leijun-test-sr-1.wav",
+      "duration": 1,
+      "start": 1,
+      "voiced_s": 1.130625,
+      "ranges": [
+        [
+          3196,
+          21286,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 18090,
+          "scores": {
+            "A": 0.11556368321180344,
+            "B": 0.6943492293357849
+          },
+          "prediction": "B",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 32800,
+          "scores": {
+            "A": 0.072983019053936,
+            "B": 0.7127743363380432
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.8691520690917969
+        },
+        "real_100": {
+          "samples": 21290,
+          "scores": {
+            "A": 0.12861865758895874,
+            "B": 0.7277132868766785
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9763619899749756
+        },
+        "zeros_100": {
+          "samples": 21290,
+          "scores": {
+            "A": 0.12861865758895874,
+            "B": 0.7277132868766785
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9763619899749756
+        },
+        "real_200": {
+          "samples": 24486,
+          "scores": {
+            "A": 0.11865216493606567,
+            "B": 0.7266413569450378
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9464814066886902
+        },
+        "zeros_200": {
+          "samples": 24490,
+          "scores": {
+            "A": 0.11505318433046341,
+            "B": 0.7250300645828247
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9461542367935181
+        }
+      }
+    },
+    {
+      "truth": "B",
+      "file": "leijun-test-sr-1.wav",
+      "duration": 1.77,
+      "start": 0,
+      "voiced_s": 1.569375,
+      "ranges": [
+        [
+          8056,
+          33166,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 25110,
+          "scores": {
+            "A": 0.1882413625717163,
+            "B": 0.7338324189186096
+          },
+          "prediction": "B",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 45120,
+          "scores": {
+            "A": 0.14426076412200928,
+            "B": 0.7735956907272339
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9329995512962341
+        },
+        "real_100": {
+          "samples": 28310,
+          "scores": {
+            "A": 0.17152322828769684,
+            "B": 0.7509539723396301
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9874028563499451
+        },
+        "zeros_100": {
+          "samples": 28310,
+          "scores": {
+            "A": 0.1509966403245926,
+            "B": 0.7440435886383057
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.985928475856781
+        },
+        "real_200": {
+          "samples": 31510,
+          "scores": {
+            "A": 0.15142321586608887,
+            "B": 0.7508624196052551
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9632331728935242
+        },
+        "zeros_200": {
+          "samples": 31510,
+          "scores": {
+            "A": 0.12162753194570541,
+            "B": 0.7374213337898254
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9558746814727783
+        }
+      }
+    },
+    {
+      "truth": "B",
+      "file": "leijun-test-sr-1.wav",
+      "duration": 1.77,
+      "start": 0.5,
+      "voiced_s": 1.85625,
+      "ranges": [
+        [
+          3196,
+          32896,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 29700,
+          "scores": {
+            "A": 0.17614005506038666,
+            "B": 0.7502638697624207
+          },
+          "prediction": "B",
+          "cosine_to_current": 1.0000001192092896
+        },
+        "whole": {
+          "samples": 45120,
+          "scores": {
+            "A": 0.12664194405078888,
+            "B": 0.787182092666626
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.928155243396759
+        },
+        "real_100": {
+          "samples": 32900,
+          "scores": {
+            "A": 0.1610732078552246,
+            "B": 0.7771983742713928
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9809573292732239
+        },
+        "zeros_100": {
+          "samples": 32900,
+          "scores": {
+            "A": 0.1610732078552246,
+            "B": 0.7771983742713928
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9809573292732239
+        },
+        "real_200": {
+          "samples": 36096,
+          "scores": {
+            "A": 0.17446483671665192,
+            "B": 0.7825873494148254
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9575071334838867
+        },
+        "zeros_200": {
+          "samples": 36100,
+          "scores": {
+            "A": 0.1721302717924118,
+            "B": 0.7858894467353821
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9568877220153809
+        }
+      }
+    },
+    {
+      "truth": "B",
+      "file": "leijun-test-sr-1.wav",
+      "duration": 1.77,
+      "start": 1,
+      "voiced_s": 1.5525,
+      "ranges": [
+        [
+          2926,
+          27766,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 24840,
+          "scores": {
+            "A": 0.20283591747283936,
+            "B": 0.7467693090438843
+          },
+          "prediction": "B",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 45120,
+          "scores": {
+            "A": 0.14715372025966644,
+            "B": 0.7539926767349243
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9117956757545471
+        },
+        "real_100": {
+          "samples": 28040,
+          "scores": {
+            "A": 0.1705036163330078,
+            "B": 0.7553894519805908
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9867329597473145
+        },
+        "zeros_100": {
+          "samples": 28040,
+          "scores": {
+            "A": 0.15990962088108063,
+            "B": 0.7468281388282776
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9830792546272278
+        },
+        "real_200": {
+          "samples": 30966,
+          "scores": {
+            "A": 0.16307199001312256,
+            "B": 0.7556465268135071
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9620190262794495
+        },
+        "zeros_200": {
+          "samples": 31240,
+          "scores": {
+            "A": 0.1294790655374527,
+            "B": 0.7433696389198303
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9598605036735535
+        }
+      }
+    },
+    {
+      "truth": "B",
+      "file": "leijun-test-sr-1.wav",
+      "duration": 3,
+      "start": 0,
+      "voiced_s": 2.0925,
+      "ranges": [
+        [
+          8866,
+          42346,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 33480,
+          "scores": {
+            "A": 0.18420808017253876,
+            "B": 0.761019766330719
+          },
+          "prediction": "B",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 64800,
+          "scores": {
+            "A": 0.1464851349592209,
+            "B": 0.7944784164428711
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9004443883895874
+        },
+        "real_100": {
+          "samples": 36680,
+          "scores": {
+            "A": 0.18153414130210876,
+            "B": 0.7539858222007751
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9807689189910889
+        },
+        "zeros_100": {
+          "samples": 36680,
+          "scores": {
+            "A": 0.1610649675130844,
+            "B": 0.7616052627563477
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9735940098762512
+        },
+        "real_200": {
+          "samples": 39880,
+          "scores": {
+            "A": 0.16807658970355988,
+            "B": 0.73531574010849
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9102439880371094
+        },
+        "zeros_200": {
+          "samples": 39880,
+          "scores": {
+            "A": 0.15033157169818878,
+            "B": 0.7522122263908386
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9375701546669006
+        }
+      }
+    },
+    {
+      "truth": "B",
+      "file": "leijun-test-sr-1.wav",
+      "duration": 3,
+      "start": 0.5,
+      "voiced_s": 2.2275,
+      "ranges": [
+        [
+          3466,
+          33166,
+          1
+        ],
+        [
+          46666,
+          52606,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 35640,
+          "scores": {
+            "A": 0.175332173705101,
+            "B": 0.7529568672180176
+          },
+          "prediction": "B",
+          "cosine_to_current": 1.0000001192092896
+        },
+        "whole": {
+          "samples": 64800,
+          "scores": {
+            "A": 0.1416240930557251,
+            "B": 0.7885667681694031
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9285697340965271
+        },
+        "real_100": {
+          "samples": 42040,
+          "scores": {
+            "A": 0.152553990483284,
+            "B": 0.788208544254303
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9670419096946716
+        },
+        "zeros_100": {
+          "samples": 38840,
+          "scores": {
+            "A": 0.1574954241514206,
+            "B": 0.7721988558769226
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.971905529499054
+        },
+        "real_200": {
+          "samples": 48440,
+          "scores": {
+            "A": 0.13208958506584167,
+            "B": 0.7975676655769348
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9531740546226501
+        },
+        "zeros_200": {
+          "samples": 42040,
+          "scores": {
+            "A": 0.1467854231595993,
+            "B": 0.7766574621200562
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9650334119796753
+        }
+      }
+    },
+    {
+      "truth": "B",
+      "file": "leijun-test-sr-1.wav",
+      "duration": 3,
+      "start": 1,
+      "voiced_s": 2.26125,
+      "ranges": [
+        [
+          3736,
+          25606,
+          1
+        ],
+        [
+          39106,
+          53416,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 36180,
+          "scores": {
+            "A": 0.14142270386219025,
+            "B": 0.744458019733429
+          },
+          "prediction": "B",
+          "cosine_to_current": 1.0000001192092896
+        },
+        "whole": {
+          "samples": 64800,
+          "scores": {
+            "A": 0.12162961065769196,
+            "B": 0.7738631367683411
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9167628288269043
+        },
+        "real_100": {
+          "samples": 42580,
+          "scores": {
+            "A": 0.16355259716510773,
+            "B": 0.7375389933586121
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9602403044700623
+        },
+        "zeros_100": {
+          "samples": 39380,
+          "scores": {
+            "A": 0.15456931293010712,
+            "B": 0.7521425485610962
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9733479619026184
+        },
+        "real_200": {
+          "samples": 48980,
+          "scores": {
+            "A": 0.14123286306858063,
+            "B": 0.7451711893081665
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9566738605499268
+        },
+        "zeros_200": {
+          "samples": 42580,
+          "scores": {
+            "A": 0.1402987390756607,
+            "B": 0.7390455603599548
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9672248959541321
+        }
+      }
+    },
+    {
+      "truth": "B",
+      "file": "leijun-test-sr-1.wav",
+      "duration": null,
+      "start": 0,
+      "voiced_s": 6.04125,
+      "ranges": [
+        [
+          10216,
+          41536,
+          1
+        ],
+        [
+          55846,
+          85546,
+          1
+        ],
+        [
+          90946,
+          100126,
+          1
+        ],
+        [
+          102556,
+          115786,
+          1
+        ],
+        [
+          117946,
+          131176,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 96660,
+          "scores": {
+            "A": 0.17480780184268951,
+            "B": 0.8177621364593506
+          },
+          "prediction": "B",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 148717,
+          "scores": {
+            "A": 0.17097163200378418,
+            "B": 0.867684006690979
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9416886568069458
+        },
+        "real_100": {
+          "samples": 110850,
+          "scores": {
+            "A": 0.18298625946044922,
+            "B": 0.8567093014717102
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9748225808143616
+        },
+        "zeros_100": {
+          "samples": 99860,
+          "scores": {
+            "A": 0.1813841015100479,
+            "B": 0.8377376794815063
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9916974902153015
+        },
+        "real_200": {
+          "samples": 119450,
+          "scores": {
+            "A": 0.1773882657289505,
+            "B": 0.8584397435188293
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9804600477218628
+        },
+        "zeros_200": {
+          "samples": 103060,
+          "scores": {
+            "A": 0.18287412822246552,
+            "B": 0.8524075746536255
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9762132167816162
+        }
+      }
+    },
+    {
+      "truth": "B",
+      "file": "leijun-test-sr-2.wav",
+      "duration": 1,
+      "start": 0,
+      "voiced_s": 0.84375,
+      "ranges": [
+        [
+          8866,
+          22366,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 13500,
+          "scores": {
+            "A": 0.18637719750404358,
+            "B": 0.7184244990348816
+          },
+          "prediction": "B",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 32800,
+          "scores": {
+            "A": 0.08410046994686127,
+            "B": 0.7261821627616882
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.8288359642028809
+        },
+        "real_100": {
+          "samples": 16700,
+          "scores": {
+            "A": 0.1686616688966751,
+            "B": 0.7318643927574158
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9726839661598206
+        },
+        "zeros_100": {
+          "samples": 16700,
+          "scores": {
+            "A": 0.16474585235118866,
+            "B": 0.7289553284645081
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9602964520454407
+        },
+        "real_200": {
+          "samples": 19900,
+          "scores": {
+            "A": 0.14875160157680511,
+            "B": 0.7455363869667053
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9299635291099548
+        },
+        "zeros_200": {
+          "samples": 19900,
+          "scores": {
+            "A": 0.14776049554347992,
+            "B": 0.7234839797019958
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9131151437759399
+        }
+      }
+    },
+    {
+      "truth": "B",
+      "file": "leijun-test-sr-2.wav",
+      "duration": 1,
+      "start": 0.5,
+      "voiced_s": 1.11375,
+      "ranges": [
+        [
+          2926,
+          20746,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 17820,
+          "scores": {
+            "A": 0.1569647192955017,
+            "B": 0.6154331564903259
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9999998807907104
+        },
+        "whole": {
+          "samples": 32800,
+          "scores": {
+            "A": 0.034784652292728424,
+            "B": 0.7006441354751587
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.8002138733863831
+        },
+        "real_100": {
+          "samples": 21020,
+          "scores": {
+            "A": 0.10958072543144226,
+            "B": 0.6555341482162476
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9406996369361877
+        },
+        "zeros_100": {
+          "samples": 21020,
+          "scores": {
+            "A": 0.10958072543144226,
+            "B": 0.6555341482162476
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9406996369361877
+        },
+        "real_200": {
+          "samples": 23946,
+          "scores": {
+            "A": 0.07721024006605148,
+            "B": 0.695121705532074
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.8998545408248901
+        },
+        "zeros_200": {
+          "samples": 24220,
+          "scores": {
+            "A": 0.07407791167497635,
+            "B": 0.6748273372650146
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9000206589698792
+        }
+      }
+    },
+    {
+      "truth": "B",
+      "file": "leijun-test-sr-2.wav",
+      "duration": 1,
+      "start": 1,
+      "voiced_s": 1.11375,
+      "ranges": [
+        [
+          2926,
+          20746,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 17820,
+          "scores": {
+            "A": 0.10617636889219284,
+            "B": 0.6304120421409607
+          },
+          "prediction": "B",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 32800,
+          "scores": {
+            "A": -0.007572860922664404,
+            "B": 0.6142461895942688
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.8182387948036194
+        },
+        "real_100": {
+          "samples": 21020,
+          "scores": {
+            "A": 0.07364563643932343,
+            "B": 0.641367495059967
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9744988679885864
+        },
+        "zeros_100": {
+          "samples": 21020,
+          "scores": {
+            "A": 0.07364563643932343,
+            "B": 0.641367495059967
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9744988679885864
+        },
+        "real_200": {
+          "samples": 23946,
+          "scores": {
+            "A": 0.059539228677749634,
+            "B": 0.6538586020469666
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9429135322570801
+        },
+        "zeros_200": {
+          "samples": 24220,
+          "scores": {
+            "A": 0.05348512902855873,
+            "B": 0.6436601877212524
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9407974481582642
+        }
+      }
+    },
+    {
+      "truth": "B",
+      "file": "leijun-test-sr-2.wav",
+      "duration": 1.77,
+      "start": 0,
+      "voiced_s": 1.501875,
+      "ranges": [
+        [
+          9406,
+          33436,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 24030,
+          "scores": {
+            "A": 0.1316964328289032,
+            "B": 0.6673550009727478
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9999998807907104
+        },
+        "whole": {
+          "samples": 45120,
+          "scores": {
+            "A": 0.07594116032123566,
+            "B": 0.694852888584137
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.8931155800819397
+        },
+        "real_100": {
+          "samples": 27230,
+          "scores": {
+            "A": 0.08719635754823685,
+            "B": 0.6717241406440735
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9785840511322021
+        },
+        "zeros_100": {
+          "samples": 27230,
+          "scores": {
+            "A": 0.09396514296531677,
+            "B": 0.6754667162895203
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9698779582977295
+        },
+        "real_200": {
+          "samples": 30430,
+          "scores": {
+            "A": 0.0649610087275505,
+            "B": 0.6779880523681641
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9574607014656067
+        },
+        "zeros_200": {
+          "samples": 30430,
+          "scores": {
+            "A": 0.05654054507613182,
+            "B": 0.6585444808006287
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.934127151966095
+        }
+      }
+    },
+    {
+      "truth": "B",
+      "file": "leijun-test-sr-2.wav",
+      "duration": 1.77,
+      "start": 0.5,
+      "voiced_s": 1.62,
+      "ranges": [
+        [
+          3196,
+          29116,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 25920,
+          "scores": {
+            "A": 0.13772347569465637,
+            "B": 0.704054594039917
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9999999403953552
+        },
+        "whole": {
+          "samples": 45120,
+          "scores": {
+            "A": 0.11507666856050491,
+            "B": 0.7196470499038696
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9072710871696472
+        },
+        "real_100": {
+          "samples": 29120,
+          "scores": {
+            "A": 0.11899727582931519,
+            "B": 0.7272166609764099
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9803343415260315
+        },
+        "zeros_100": {
+          "samples": 29120,
+          "scores": {
+            "A": 0.11447989195585251,
+            "B": 0.7243809103965759
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9706657528877258
+        },
+        "real_200": {
+          "samples": 32316,
+          "scores": {
+            "A": 0.10284655541181564,
+            "B": 0.7274712324142456
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9489167928695679
+        },
+        "zeros_200": {
+          "samples": 32320,
+          "scores": {
+            "A": 0.0918278843164444,
+            "B": 0.7260907888412476
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.941537082195282
+        }
+      }
+    },
+    {
+      "truth": "B",
+      "file": "leijun-test-sr-2.wav",
+      "duration": 1.77,
+      "start": 1,
+      "voiced_s": 1.89,
+      "ranges": [
+        [
+          3196,
+          33436,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 30240,
+          "scores": {
+            "A": 0.0636073648929596,
+            "B": 0.645585298538208
+          },
+          "prediction": "B",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 45120,
+          "scores": {
+            "A": 0.06486392766237259,
+            "B": 0.6745225191116333
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9305406212806702
+        },
+        "real_100": {
+          "samples": 33440,
+          "scores": {
+            "A": 0.07056887447834015,
+            "B": 0.6634179949760437
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.985743522644043
+        },
+        "zeros_100": {
+          "samples": 33440,
+          "scores": {
+            "A": 0.07056887447834015,
+            "B": 0.6634179949760437
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.985743522644043
+        },
+        "real_200": {
+          "samples": 36636,
+          "scores": {
+            "A": 0.07583844661712646,
+            "B": 0.669861376285553
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9502680897712708
+        },
+        "zeros_200": {
+          "samples": 36640,
+          "scores": {
+            "A": 0.0777410939335823,
+            "B": 0.6713266372680664
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.951287031173706
+        }
+      }
+    },
+    {
+      "truth": "B",
+      "file": "leijun-test-sr-2.wav",
+      "duration": 3,
+      "start": 0,
+      "voiced_s": 2.7675,
+      "ranges": [
+        [
+          9406,
+          53686,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 44280,
+          "scores": {
+            "A": 0.15505702793598175,
+            "B": 0.7261557579040527
+          },
+          "prediction": "B",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 64800,
+          "scores": {
+            "A": 0.09072604775428772,
+            "B": 0.7344023585319519
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9200531840324402
+        },
+        "real_100": {
+          "samples": 47480,
+          "scores": {
+            "A": 0.1396453082561493,
+            "B": 0.742304801940918
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9927408695220947
+        },
+        "zeros_100": {
+          "samples": 47480,
+          "scores": {
+            "A": 0.14855672419071198,
+            "B": 0.7463898658752441
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9906683564186096
+        },
+        "real_200": {
+          "samples": 50680,
+          "scores": {
+            "A": 0.12658637762069702,
+            "B": 0.7465306520462036
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9829517602920532
+        },
+        "zeros_200": {
+          "samples": 50680,
+          "scores": {
+            "A": 0.13281340897083282,
+            "B": 0.744838535785675
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9806690216064453
+        }
+      }
+    },
+    {
+      "truth": "B",
+      "file": "leijun-test-sr-2.wav",
+      "duration": 3,
+      "start": 0.5,
+      "voiced_s": 2.851875,
+      "ranges": [
+        [
+          3196,
+          28036,
+          1
+        ],
+        [
+          32356,
+          53146,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 45630,
+          "scores": {
+            "A": 0.16263090074062347,
+            "B": 0.7571132183074951
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9999999403953552
+        },
+        "whole": {
+          "samples": 64800,
+          "scores": {
+            "A": 0.1025780439376831,
+            "B": 0.757228672504425
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9226827025413513
+        },
+        "real_100": {
+          "samples": 52030,
+          "scores": {
+            "A": 0.1377299576997757,
+            "B": 0.7694348096847534
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9821451902389526
+        },
+        "zeros_100": {
+          "samples": 48830,
+          "scores": {
+            "A": 0.159018874168396,
+            "B": 0.7735511064529419
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9906649589538574
+        },
+        "real_200": {
+          "samples": 56346,
+          "scores": {
+            "A": 0.1256374567747116,
+            "B": 0.7711209654808044
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9591389298439026
+        },
+        "zeros_200": {
+          "samples": 52030,
+          "scores": {
+            "A": 0.12983456254005432,
+            "B": 0.7657960653305054
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9783492684364319
+        }
+      }
+    },
+    {
+      "truth": "B",
+      "file": "leijun-test-sr-2.wav",
+      "duration": 3,
+      "start": 1,
+      "voiced_s": 2.986875,
+      "ranges": [
+        [
+          3196,
+          21556,
+          1
+        ],
+        [
+          23716,
+          53146,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 47790,
+          "scores": {
+            "A": 0.13214880228042603,
+            "B": 0.7510859966278076
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9999999403953552
+        },
+        "whole": {
+          "samples": 64800,
+          "scores": {
+            "A": 0.08356767147779465,
+            "B": 0.7355377078056335
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9315773248672485
+        },
+        "real_100": {
+          "samples": 53150,
+          "scores": {
+            "A": 0.12520939111709595,
+            "B": 0.758667528629303
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9824485778808594
+        },
+        "zeros_100": {
+          "samples": 50990,
+          "scores": {
+            "A": 0.13252167403697968,
+            "B": 0.7625618577003479
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9932979941368103
+        },
+        "real_200": {
+          "samples": 56346,
+          "scores": {
+            "A": 0.10747641324996948,
+            "B": 0.7543699145317078
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.971525251865387
+        },
+        "zeros_200": {
+          "samples": 54190,
+          "scores": {
+            "A": 0.12224364280700684,
+            "B": 0.7673309445381165
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9795488715171814
+        }
+      }
+    },
+    {
+      "truth": "B",
+      "file": "leijun-test-sr-2.wav",
+      "duration": null,
+      "start": 0,
+      "voiced_s": 5.7036875,
+      "ranges": [
+        [
+          9946,
+          77715,
+          1
+        ],
+        [
+          82576,
+          106066,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 91259,
+          "scores": {
+            "A": 0.1686067283153534,
+            "B": 0.8338180184364319
+          },
+          "prediction": "B",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 125714,
+          "scores": {
+            "A": 0.11941847205162048,
+            "B": 0.8270701169967651
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9629453420639038
+        },
+        "real_100": {
+          "samples": 97659,
+          "scores": {
+            "A": 0.15316815674304962,
+            "B": 0.8302679657936096
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9919008612632751
+        },
+        "zeros_100": {
+          "samples": 94459,
+          "scores": {
+            "A": 0.14857417345046997,
+            "B": 0.8338813185691833
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9915871620178223
+        },
+        "real_200": {
+          "samples": 102520,
+          "scores": {
+            "A": 0.16679373383522034,
+            "B": 0.8261851668357849
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9811217188835144
+        },
+        "zeros_200": {
+          "samples": 97659,
+          "scores": {
+            "A": 0.14473706483840942,
+            "B": 0.8322619199752808
+          },
+          "prediction": "B",
+          "cosine_to_current": 0.9863091707229614
+        }
+      }
+    },
+    {
+      "truth": "unknown",
+      "file": "liudehua-test-sr-1.wav",
+      "duration": 1,
+      "start": 0,
+      "voiced_s": 0.860625,
+      "ranges": [
+        [
+          7516,
+          21286,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 13770,
+          "scores": {
+            "A": -0.027739206328988075,
+            "B": 0.17750973999500275
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 1.0000001192092896
+        },
+        "whole": {
+          "samples": 32800,
+          "scores": {
+            "A": -0.06384005397558212,
+            "B": 0.22637444734573364
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.8068192005157471
+        },
+        "real_100": {
+          "samples": 16970,
+          "scores": {
+            "A": -0.03829149901866913,
+            "B": 0.21550540626049042
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9693339467048645
+        },
+        "zeros_100": {
+          "samples": 16970,
+          "scores": {
+            "A": -0.04009122774004936,
+            "B": 0.212787926197052
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9610985517501831
+        },
+        "real_200": {
+          "samples": 20170,
+          "scores": {
+            "A": -0.04278624430298805,
+            "B": 0.2562311291694641
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9396143555641174
+        },
+        "zeros_200": {
+          "samples": 20170,
+          "scores": {
+            "A": -0.04642928019165993,
+            "B": 0.23798350989818573
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9179626107215881
+        }
+      }
+    },
+    {
+      "truth": "unknown",
+      "file": "liudehua-test-sr-1.wav",
+      "duration": 1,
+      "start": 0.5,
+      "voiced_s": 1.11375,
+      "ranges": [
+        [
+          3196,
+          21016,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 17820,
+          "scores": {
+            "A": -0.013684377074241638,
+            "B": 0.2690778374671936
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9999998807907104
+        },
+        "whole": {
+          "samples": 32800,
+          "scores": {
+            "A": -0.0251462385058403,
+            "B": 0.27863454818725586
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.8631908297538757
+        },
+        "real_100": {
+          "samples": 21020,
+          "scores": {
+            "A": -0.014651663601398468,
+            "B": 0.2576756477355957
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9482070207595825
+        },
+        "zeros_100": {
+          "samples": 21020,
+          "scores": {
+            "A": -0.014651663601398468,
+            "B": 0.2576756477355957
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9482070207595825
+        },
+        "real_200": {
+          "samples": 24216,
+          "scores": {
+            "A": -0.02014036476612091,
+            "B": 0.26135239005088806
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9206864833831787
+        },
+        "zeros_200": {
+          "samples": 24220,
+          "scores": {
+            "A": -0.021460754796862602,
+            "B": 0.258794367313385
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9199973940849304
+        }
+      }
+    },
+    {
+      "truth": "unknown",
+      "file": "liudehua-test-sr-1.wav",
+      "duration": 1,
+      "start": 1,
+      "voiced_s": 1.11375,
+      "ranges": [
+        [
+          2926,
+          20746,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 17820,
+          "scores": {
+            "A": -0.00707603944465518,
+            "B": 0.2782491147518158
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 32800,
+          "scores": {
+            "A": -0.04458211362361908,
+            "B": 0.3460443913936615
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.842093825340271
+        },
+        "real_100": {
+          "samples": 21020,
+          "scores": {
+            "A": -0.020593680441379547,
+            "B": 0.31417855620384216
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9734535813331604
+        },
+        "zeros_100": {
+          "samples": 21020,
+          "scores": {
+            "A": -0.020593680441379547,
+            "B": 0.31417855620384216
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9734535813331604
+        },
+        "real_200": {
+          "samples": 23946,
+          "scores": {
+            "A": -0.02843090519309044,
+            "B": 0.3416094183921814
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9315064549446106
+        },
+        "zeros_200": {
+          "samples": 24220,
+          "scores": {
+            "A": -0.02543404884636402,
+            "B": 0.32336732745170593
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9455025792121887
+        }
+      }
+    },
+    {
+      "truth": "unknown",
+      "file": "liudehua-test-sr-1.wav",
+      "duration": 1.77,
+      "start": 0,
+      "voiced_s": 1.5525,
+      "ranges": [
+        [
+          8326,
+          33166,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 24840,
+          "scores": {
+            "A": -0.003719664877280593,
+            "B": 0.1666482836008072
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 45120,
+          "scores": {
+            "A": -0.02725631184875965,
+            "B": 0.28882935643196106
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9220762848854065
+        },
+        "real_100": {
+          "samples": 28040,
+          "scores": {
+            "A": -0.016496526077389717,
+            "B": 0.2066383808851242
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9843907952308655
+        },
+        "zeros_100": {
+          "samples": 28040,
+          "scores": {
+            "A": -0.024366386234760284,
+            "B": 0.19402319192886353
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9717535376548767
+        },
+        "real_200": {
+          "samples": 31240,
+          "scores": {
+            "A": -0.024794280529022217,
+            "B": 0.23298071324825287
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9661343097686768
+        },
+        "zeros_200": {
+          "samples": 31240,
+          "scores": {
+            "A": -0.035287823528051376,
+            "B": 0.21258452534675598
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9535860419273376
+        }
+      }
+    },
+    {
+      "truth": "unknown",
+      "file": "liudehua-test-sr-1.wav",
+      "duration": 1.77,
+      "start": 0.5,
+      "voiced_s": 1.906875,
+      "ranges": [
+        [
+          3196,
+          33706,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 30510,
+          "scores": {
+            "A": -0.06064951792359352,
+            "B": 0.17257054150104523
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 45120,
+          "scores": {
+            "A": -0.05143000930547714,
+            "B": 0.23383808135986328
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9416036009788513
+        },
+        "real_100": {
+          "samples": 33710,
+          "scores": {
+            "A": -0.03163757175207138,
+            "B": 0.22548681497573853
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9732649326324463
+        },
+        "zeros_100": {
+          "samples": 33710,
+          "scores": {
+            "A": -0.03163757175207138,
+            "B": 0.22548681497573853
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9732649326324463
+        },
+        "real_200": {
+          "samples": 36906,
+          "scores": {
+            "A": -0.03648243099451065,
+            "B": 0.22571530938148499
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9473220109939575
+        },
+        "zeros_200": {
+          "samples": 36910,
+          "scores": {
+            "A": -0.03672514855861664,
+            "B": 0.2243620604276657
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9472139477729797
+        }
+      }
+    },
+    {
+      "truth": "unknown",
+      "file": "liudehua-test-sr-1.wav",
+      "duration": 1.77,
+      "start": 1,
+      "voiced_s": 1.89,
+      "ranges": [
+        [
+          2656,
+          32896,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 30240,
+          "scores": {
+            "A": 0.006863478571176529,
+            "B": 0.25791484117507935
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 45120,
+          "scores": {
+            "A": -0.014468887820839882,
+            "B": 0.3185480237007141
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9406496286392212
+        },
+        "real_100": {
+          "samples": 33440,
+          "scores": {
+            "A": 0.016008321195840836,
+            "B": 0.28848975896835327
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9832140803337097
+        },
+        "zeros_100": {
+          "samples": 33440,
+          "scores": {
+            "A": 0.016008321195840836,
+            "B": 0.28848975896835327
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9832140803337097
+        },
+        "real_200": {
+          "samples": 36096,
+          "scores": {
+            "A": -0.017376255244016647,
+            "B": 0.31419435143470764
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9565466642379761
+        },
+        "zeros_200": {
+          "samples": 36640,
+          "scores": {
+            "A": 0.0021914385724812746,
+            "B": 0.30597013235092163
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.96541827917099
+        }
+      }
+    },
+    {
+      "truth": "unknown",
+      "file": "liudehua-test-sr-1.wav",
+      "duration": 3,
+      "start": 0,
+      "voiced_s": 2.80125,
+      "ranges": [
+        [
+          8326,
+          53146,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 44820,
+          "scores": {
+            "A": -0.021674850955605507,
+            "B": 0.2544921338558197
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 1.0
+        },
+        "whole": {
+          "samples": 64800,
+          "scores": {
+            "A": -0.06409281492233276,
+            "B": 0.26992979645729065
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9441895484924316
+        },
+        "real_100": {
+          "samples": 48020,
+          "scores": {
+            "A": -0.02907702699303627,
+            "B": 0.24915577471256256
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9885634779930115
+        },
+        "zeros_100": {
+          "samples": 48020,
+          "scores": {
+            "A": -0.03746233135461807,
+            "B": 0.24128223955631256
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9803821444511414
+        },
+        "real_200": {
+          "samples": 51220,
+          "scores": {
+            "A": -0.04046667367219925,
+            "B": 0.22673891484737396
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9766080975532532
+        },
+        "zeros_200": {
+          "samples": 51220,
+          "scores": {
+            "A": -0.05347492918372154,
+            "B": 0.2190399169921875
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9641953706741333
+        }
+      }
+    },
+    {
+      "truth": "unknown",
+      "file": "liudehua-test-sr-1.wav",
+      "duration": 3,
+      "start": 0.5,
+      "voiced_s": 3.07125,
+      "ranges": [
+        [
+          3466,
+          52606,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 49140,
+          "scores": {
+            "A": -0.03292637690901756,
+            "B": 0.31871089339256287
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 1.0000001192092896
+        },
+        "whole": {
+          "samples": 64800,
+          "scores": {
+            "A": -0.08376239985227585,
+            "B": 0.28993457555770874
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9394257068634033
+        },
+        "real_100": {
+          "samples": 52340,
+          "scores": {
+            "A": -0.05664511024951935,
+            "B": 0.2944556176662445
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9850504994392395
+        },
+        "zeros_100": {
+          "samples": 52340,
+          "scores": {
+            "A": -0.05664511024951935,
+            "B": 0.2944556176662445
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9850504994392395
+        },
+        "real_200": {
+          "samples": 55540,
+          "scores": {
+            "A": -0.06889008730649948,
+            "B": 0.286297470331192
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9723573327064514
+        },
+        "zeros_200": {
+          "samples": 55540,
+          "scores": {
+            "A": -0.06889008730649948,
+            "B": 0.286297470331192
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9723573327064514
+        }
+      }
+    },
+    {
+      "truth": "unknown",
+      "file": "liudehua-test-sr-1.wav",
+      "duration": null,
+      "start": 0,
+      "voiced_s": 3.34125,
+      "ranges": [
+        [
+          8866,
+          62326,
+          1
+        ]
+      ],
+      "variants": {
+        "current": {
+          "samples": 53460,
+          "scores": {
+            "A": -0.013036147691309452,
+            "B": 0.305981308221817
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9999999403953552
+        },
+        "whole": {
+          "samples": 76499,
+          "scores": {
+            "A": -0.06549624353647232,
+            "B": 0.2992000877857208
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9320683479309082
+        },
+        "real_100": {
+          "samples": 56660,
+          "scores": {
+            "A": -0.013766375370323658,
+            "B": 0.2924584448337555
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9922782778739929
+        },
+        "zeros_100": {
+          "samples": 56660,
+          "scores": {
+            "A": -0.046181946992874146,
+            "B": 0.2793891131877899
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9732627272605896
+        },
+        "real_200": {
+          "samples": 59860,
+          "scores": {
+            "A": -0.03376474231481552,
+            "B": 0.2774800658226013
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.97953861951828
+        },
+        "zeros_200": {
+          "samples": 59860,
+          "scores": {
+            "A": -0.053994569927453995,
+            "B": 0.2621300518512726
+          },
+          "prediction": "unknown",
+          "cosine_to_current": 0.9536257386207581
+        }
+      }
+    }
+  ],
+  "embedding_sha256": "f682b514c05d947ee3fa91cd6ec6c5c7543479a128373fa29b1faedccd21fd11",
+  "segmentation_sha256": "220ad67ca923bef2fa91f2390c786097bf305bceb5e261d4af67b38e938e1079",
+  "sherpa_onnx_version": "1.13.8"
+}
