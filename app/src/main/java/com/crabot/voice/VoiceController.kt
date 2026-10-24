@@ -28,7 +28,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
     private val focus = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE)
         .setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ASSISTANT).setContentType(AudioAttributes.CONTENT_TYPE_SPEECH).build())
         .setOnAudioFocusChangeListener { if (it < 0) stop("音频焦点已丢失", disableWake = true) }.build()
-    private val mic = Microphone(context) { reason -> main.post { stop(reason, disableWake = true) } }
+    private val mic: AudioCapture = Microphone(context) { reason -> main.post { stop(reason, disableWake = true) } }
     private var player: Playback? = null
     private var playbackId: String? = null
     private var playbackTextSegments = 0L
@@ -563,6 +563,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         }
     }
     private fun standby() {
+        mic.stop(); captureGeneration++
         mode = Mode.CLOSED
         if (wakeEnabled && foreground && readyForConversation) { mode = Mode.WAKE; startMic(); status += "；恢复本地唤醒待机" }
         else manager.abandonAudioFocusRequest(focus)
@@ -923,8 +924,8 @@ class VoiceController(private val context: Context, private val changed: () -> U
         if (speechEnabled && foreground && readyForConversation) {
             if (playbackReturnMode == Mode.FOLLOWUP && SystemClock.elapsedRealtime() < playbackReturnDeadline) {
                 mode = Mode.FOLLOWUP; deadline = playbackReturnDeadline; startMic()
-                main.postDelayed({ if (mode == Mode.FOLLOWUP && SystemClock.elapsedRealtime() >= deadline) { mic.stop(); captureGeneration++; standby() } }, (deadline - SystemClock.elapsedRealtime()).coerceAtLeast(1))
-            } else if (playbackReturnMode == Mode.WAKE && wakeEnabled) standby()
+                main.postDelayed({ if (mode == Mode.FOLLOWUP && SystemClock.elapsedRealtime() >= deadline) standby() }, (deadline - SystemClock.elapsedRealtime()).coerceAtLeast(1))
+            } else if (playbackReturnMode in listOf(Mode.WAKE, Mode.FOLLOWUP) && wakeEnabled) standby()
         }
         status = if (mode == Mode.WAKE) "等你唤醒" else if (mode == Mode.FOLLOWUP) "可以接着说" else "麦克风已关闭"
         heartbeat(); changed()
@@ -942,7 +943,6 @@ class VoiceController(private val context: Context, private val changed: () -> U
         if (foreground && readyForConversation) try {
             mode = Mode.FOLLOWUP; deadline = SystemClock.elapsedRealtime() + 8000; status = "播放完成；8 秒本地接话窗口"; startMic()
             main.postDelayed({ if (mode == Mode.FOLLOWUP && SystemClock.elapsedRealtime() >= deadline) {
-                mic.stop(); captureGeneration++
                 try { standby() } catch (_: Exception) { stop("无法恢复本地唤醒；麦克风关闭", true) }
             } }, 8000)
         } catch (_: Exception) { stop("无法开启接话窗口；麦克风关闭", true) }

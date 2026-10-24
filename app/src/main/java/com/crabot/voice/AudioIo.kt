@@ -8,7 +8,12 @@ import android.os.SystemClock
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.atomic.AtomicBoolean
 
-class Microphone(private val context: Context, private val failure: (String) -> Unit) {
+internal interface AudioCapture {
+    fun start(frame: (ShortArray) -> Unit)
+    fun stop()
+}
+
+class Microphone(private val context: Context, private val failure: (String) -> Unit) : AudioCapture {
     private var record: AudioRecord? = null
     private var worker: Thread? = null
     private var aec: AcousticEchoCanceler? = null
@@ -21,7 +26,7 @@ class Microphone(private val context: Context, private val failure: (String) -> 
             .setBufferSizeInBytes(size).build()
     }
     @SuppressLint("MissingPermission")
-    @Synchronized fun start(frame: (ShortArray) -> Unit) {
+    @Synchronized override fun start(frame: (ShortArray) -> Unit) {
         check(record == null) { "麦克风已经打开" }
         val rec = createRecorder()
         try {
@@ -48,7 +53,7 @@ class Microphone(private val context: Context, private val failure: (String) -> 
             }, "voice-microphone").apply { start() }
         } catch (e: Exception) { aec?.release(); aec = null; rec.release(); throw e }
     }
-    @Synchronized fun stop() {
+    @Synchronized override fun stop() {
         running.set(false)
         record?.let {
             try { android.util.Log.i("CrabotVoiceInput", "source=${it.audioSource} silenced=${it.activeRecordingConfiguration?.isClientSilenced} route=${it.routedDevice?.type}") } catch (_: Exception) {}

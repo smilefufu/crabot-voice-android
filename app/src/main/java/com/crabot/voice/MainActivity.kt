@@ -3,12 +3,15 @@ package com.crabot.voice
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.StateListDrawable
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
@@ -16,6 +19,7 @@ import android.widget.*
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.doOnLayout
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import org.json.JSONObject
@@ -25,7 +29,9 @@ class MainActivity : ComponentActivity() {
     private lateinit var controller: VoiceController
     private lateinit var content: LinearLayout
     private lateinit var connectionState: TextView
+    private lateinit var settingsAction: Button
     private lateinit var mainAction: Button
+    private lateinit var footer: TextView
     private var page = Page.HOME
     private var renderedKey = ""
     private var selectedId: String? = null
@@ -34,6 +40,7 @@ class MainActivity : ComponentActivity() {
     private var renameDraft = ""
     private var shownTask: String? = null
     private var diagnostics = false
+    private var replyExpanded = false
     private var pendingMicAction: (() -> Unit)? = null
     private val ink = Color.rgb(24, 45, 32)
     private val muted = Color.rgb(82, 102, 87)
@@ -47,6 +54,8 @@ class MainActivity : ComponentActivity() {
     private val scan = registerForActivityResult(ScanContract()) { result -> result.contents?.let { controller.scan(it) } }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.statusBarColor = surface
+        window.navigationBarColor = surface
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
         val root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL; setBackgroundColor(surface)
@@ -55,11 +64,11 @@ class MainActivity : ComponentActivity() {
         }
         val header = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL }
         val brand = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        text(brand, "Crabot", 25f)
-        connectionState = text(brand, "正在连接", 12f, true)
+        text(brand, "Crabot", 26f).setTypeface(null, Typeface.BOLD)
+        connectionState = text(brand, "正在连接", 12f, true).apply { setPadding(0, 0, 0, dp(4)) }
         header.addView(brand, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
-        button(header, "⚙", false) { navigate(if (page == Page.SETTINGS) Page.HOME else Page.SETTINGS) }.apply {
-            contentDescription = "设置"; layoutParams = LinearLayout.LayoutParams(dp(48), dp(48)); textSize = 23f
+        settingsAction = button(header, "设置", false) { navigate(if (page == Page.SETTINGS) Page.HOME else Page.SETTINGS) }.apply {
+            contentDescription = "设置"; layoutParams = LinearLayout.LayoutParams(dp(64), dp(48)); textSize = 14f
         }
         root.addView(header)
         content = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0, dp(18), 0, dp(12)) }
@@ -74,6 +83,7 @@ class MainActivity : ComponentActivity() {
             else if (controller.mode != VoiceController.Mode.CLOSED || controller.enrollmentName != null || controller.pendingManagement) controller.mute()
             else withMicrophone { controller.toggleWake(); navigate(Page.HOME) }
         }
+        footer = text(root, "开启一次，随时唤醒", 12f, true).apply { gravity = Gravity.CENTER; setPadding(0, dp(6), 0, 0) }
         setContentView(root)
         controller = VoiceController(this) { render() }
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -93,13 +103,38 @@ class MainActivity : ComponentActivity() {
     }
     private fun button(parent: LinearLayout, label: String, primary: Boolean = false, action: () -> Unit): Button = Button(this).apply {
         text = label; textSize = 16f; isAllCaps = false; minHeight = dp(52); setPadding(dp(12), dp(8), dp(12), dp(8))
-        setTextColor(ColorStateList(arrayOf(intArrayOf(-android.R.attr.state_enabled), intArrayOf()), intArrayOf(muted, if (primary) Color.WHITE else ink)))
-        background = StateListDrawable().apply {
+        stateListAnimator = null; elevation = 0f
+        styleButton(this, primary)
+        layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(8); bottomMargin = dp(4) }
+        setOnClickListener { action() }; parent.addView(this)
+    }
+    private fun styleButton(view: Button, primary: Boolean) {
+        view.setTextColor(ColorStateList(arrayOf(intArrayOf(-android.R.attr.state_enabled), intArrayOf()), intArrayOf(muted, if (primary) Color.WHITE else ink)))
+        val states = StateListDrawable().apply {
             addState(intArrayOf(-android.R.attr.state_enabled), GradientDrawable().apply { setColor(line); cornerRadius = dp(16).toFloat() })
             addState(intArrayOf(), GradientDrawable().apply { setColor(if (primary) accent else Color.WHITE); cornerRadius = dp(16).toFloat(); if (!primary) setStroke(dp(1), line) })
         }
-        layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(8); bottomMargin = dp(4) }
-        setOnClickListener { action() }; parent.addView(this)
+        view.background = RippleDrawable(ColorStateList.valueOf(Color.argb(35, 36, 94, 60)), states, null)
+    }
+    private fun settingsGroup(title: String): LinearLayout {
+        text(content, title, 13f, true).setPadding(dp(4), dp(18), 0, dp(10))
+        return LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; background = panel(); clipToOutline = true; content.addView(this) }
+    }
+    private fun settingsRow(parent: LinearLayout, title: String, summary: String, action: (() -> Unit)? = null): LinearLayout {
+        if (parent.childCount > 0) parent.addView(View(this).apply { setBackgroundColor(line) }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(1)))
+        return LinearLayout(this).apply {
+            gravity = Gravity.CENTER_VERTICAL; setPadding(dp(18), dp(10), dp(16), dp(10)); minimumHeight = dp(72)
+            val labels = LinearLayout(context).apply { orientation = LinearLayout.VERTICAL }
+            text(labels, title, 17f)
+            text(labels, summary, 13f, true)
+            addView(labels, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+            if (action != null) {
+                text(this, "›", 24f, true).importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+                background = RippleDrawable(ColorStateList.valueOf(Color.argb(35, 36, 94, 60)), null, GradientDrawable().apply { setColor(Color.WHITE) })
+                isFocusable = true; contentDescription = "$title，$summary"; setOnClickListener { action() }
+            }
+            parent.addView(this)
+        }
     }
     private fun input(label: String, initial: String, change: (String) -> Unit): EditText {
         val caption = text(content, label, 14f, true)
@@ -141,7 +176,9 @@ class MainActivity : ComponentActivity() {
         if (controller.needsOwnerEnrollment && page == Page.HOME) page = Page.OWNER
         if (!controller.paired && controller.owner != null && page in listOf(Page.HOME, Page.OWNER)) { page = Page.CONNECT; renderedKey = "" }
         if (page == Page.CONNECT && controller.paired && controller.ownerActivation?.getString("status") == "completed") { page = Page.HOME; renderedKey = "" }
-        connectionState.text = if (!controller.connected) "● 未连接" else if (!controller.synchronizedCatalog) "● 已连接 · 目录同步中" else "● 已连接 · ${if (controller.microphoneState == "closed") "麦克风关闭" else if (mode == VoiceController.Mode.WAKE) "本机唤醒" else "正在收音"}"
+        settingsAction.text = if (page == Page.SETTINGS) "完成" else "设置"
+        settingsAction.contentDescription = if (page == Page.SETTINGS) "返回对话" else "设置"
+        connectionState.text = if (!controller.connected) "● 未连接" else if (!controller.synchronizedCatalog) "● 已连接 · 正在同步" else "● 已连接"
         val taskId = controller.pendingTask?.getJSONObject("registration")?.getString("registration_id")
         if (taskId != null && taskId != shownTask) { shownTask = taskId; page = Page.ENROLL; renderedKey = "" }
         val inactive = mode == VoiceController.Mode.CLOSED && controller.enrollmentName == null && !controller.pendingManagement
@@ -156,10 +193,13 @@ class MainActivity : ComponentActivity() {
         }
         mainAction.isEnabled = if (page == Page.CONNECT) true else if (controller.needsOwnerEnrollment && !controller.ownerEnrollmentActive && page == Page.OWNER) controller.modelReady && ownerDraft.trim().isNotEmpty()
             else !controller.paired || !inactive || controller.modelReady && controller.readyForConversation
+        styleButton(mainAction, inactive || !controller.paired)
+        footer.visibility = if (page == Page.HOME) View.VISIBLE else View.GONE
+        footer.text = if (controller.wakeEnabled && mode != VoiceController.Mode.CLOSED) "待机已开启 · 对话后自动回到本机唤醒" else "开启一次，随时唤醒 · 退出前台后关麦"
         if (controller.keepScreenOn) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) else window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         val key = when (page) {
             Page.NEW_CONTACT, Page.RENAME -> "$page|$selectedId|${controller.synchronizedCatalog}|${controller.modelReady}|${controller.pendingManagement}"
-            else -> "$page|$selectedId|${controller.catalogRevision}|$mode|${controller.lastReply}|${controller.pendingResults}|${controller.status}|${controller.enrollmentStep}|${controller.pendingManagement}|${controller.waitingConfirmation}|$diagnostics"
+            else -> "$page|$selectedId|${controller.catalogRevision}|$mode|${controller.lastReply}|${controller.pendingResults}|${controller.status}|${controller.enrollmentStep}|${controller.pendingManagement}|${controller.waitingConfirmation}|$diagnostics|$replyExpanded"
         }
         if (key == renderedKey) return
         renderedKey = key; content.removeAllViews()
@@ -222,30 +262,48 @@ class MainActivity : ComponentActivity() {
         text(content, "麦克风保持关闭。语音服务在 Crabot 后台配置。", 14f, true)
     }
     private fun home() {
-        val reply = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; background = panel(); setPadding(dp(20), dp(18), dp(20), dp(18)) }
-        text(reply, if (controller.mode == VoiceController.Mode.PLAYING) "Crabot 正在回答" else "最近回答", 13f, true)
-        text(reply, controller.lastReply.ifEmpty { if (controller.readyForConversation) "开启语音待机后，喊唤醒词开始对话。" else "连接和配置就绪后，就可以开始语音对话。" }, 22f)
-        content.addView(reply)
-        val hero = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER; setPadding(0, dp(25), 0, dp(20)) }
-        val orb = button(hero, "▂ ▆ █ ▆ ▂") { withMicrophone { controller.recordButton() } }.apply {
-            contentDescription = "手动开始说话"; textSize = 26f; setTextColor(accent); layoutParams = LinearLayout.LayoutParams(dp(110), dp(110))
-            isEnabled = controller.readyForConversation && controller.mode in listOf(VoiceController.Mode.CLOSED, VoiceController.Mode.WAKE, VoiceController.Mode.FOLLOWUP)
+        val reply = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; background = panel(); setPadding(dp(24), dp(20), dp(24), dp(20)) }
+        val replyHeader = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL }
+        text(replyHeader, "Crabot", 13f, true).layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+        text(replyHeader, if (controller.mode == VoiceController.Mode.PLAYING) "正在回答" else if (controller.lastReply.isEmpty()) "很高兴见到你" else "最近回答", 12f, true)
+        reply.addView(replyHeader)
+        val replyText = text(reply, controller.lastReply.ifEmpty { if (controller.readyForConversation) "想聊什么？\n我在这里。" else "连接你的 Crabot，\n从一句问候开始。" }, 22f).apply {
+            setLineSpacing(dp(4).toFloat(), 1.15f)
+            if (!replyExpanded) { maxLines = 6; ellipsize = TextUtils.TruncateAt.END }
         }
-        orb.background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(Color.WHITE) }
+        replyText.doOnLayout {
+            val lines = replyText.layout ?: return@doOnLayout
+            if (replyExpanded || lines.lineCount > 0 && lines.getEllipsisCount(lines.lineCount - 1) > 0) {
+                button(reply, if (replyExpanded) "收起回答" else "展开完整回答") { replyExpanded = !replyExpanded; render() }
+            }
+        }
+        content.addView(reply)
+        val hero = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER; setPadding(0, dp(32), 0, dp(20)) }
+        hero.addView(VoiceStatusView(this, controller.mode).apply {
+            contentDescription = "手动开始说话"; isFocusable = true
+            layoutParams = LinearLayout.LayoutParams(dp(100), dp(100)).apply { bottomMargin = dp(18) }
+            setOnClickListener { withMicrophone { controller.recordButton() } }
+            isEnabled = controller.readyForConversation && controller.mode in listOf(VoiceController.Mode.CLOSED, VoiceController.Mode.WAKE, VoiceController.Mode.FOLLOWUP)
+        })
         val (title, hint) = when (controller.mode) {
-            VoiceController.Mode.WAKE -> "等你唤醒" to "喊「${controller.wakePhrase}」，看到我在听后说内容。"
+            VoiceController.Mode.WAKE -> "等你唤醒" to "喊「${controller.wakePhrase}」\n看到“我在听”后，就可以说话。"
             VoiceController.Mode.RECORDING -> "我在听" to "说完稍作停顿，会自动结束收音。"
             VoiceController.Mode.PROCESSING, VoiceController.Mode.WAITING -> "正在处理" to "麦克风已关闭，正在准备回答。"
             VoiceController.Mode.PLAYING -> "正在回答" to "需要插话，可以点下面的打断。"
-            VoiceController.Mode.FOLLOWUP -> "可以接着说" to "直接说下一句，不用再喊唤醒词。"
+            VoiceController.Mode.FOLLOWUP -> "可以接着说" to "直接说下一句。暂时不聊，\n我会回到唤醒待机。"
             VoiceController.Mode.GUIDED_PLAYING -> "请听提示" to controller.guidedPromptText
             VoiceController.Mode.GUIDED_WAITING -> "正在记住声音" to controller.status
             VoiceController.Mode.ENROLLING -> "请自然朗读" to "第 ${controller.enrollmentStep}/3 段，说完稍作停顿，会自动继续。"
             else -> if (controller.connected && !controller.readyForConversation) "正在准备语音" to controller.status
                 else "麦克风已关闭" to if (controller.connected) "想聊的时候，开启一次语音待机。" else "请先连接 Crabot。"
         }
-        text(hero, title, 25f).gravity = Gravity.CENTER; text(hero, hint, 15f, true).gravity = Gravity.CENTER
-        text(hero, when (controller.mode) { VoiceController.Mode.WAKE -> "本机唤醒检测"; VoiceController.Mode.FOLLOWUP -> "8 秒本地接话窗口"; else -> if (controller.microphoneState == "closed") "麦克风关闭" else "正在收音" }, 12f, true).gravity = Gravity.CENTER
+        text(hero, title, 25f).apply { gravity = Gravity.CENTER; setTypeface(null, Typeface.BOLD); accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE }
+        text(hero, hint, 15f, true).apply { gravity = Gravity.CENTER; setLineSpacing(dp(3).toFloat(), 1f) }
+        text(hero, when (controller.mode) { VoiceController.Mode.WAKE -> "本机唤醒检测 · 环境音不上传"; VoiceController.Mode.FOLLOWUP -> "8 秒接话 · 之后仍可用唤醒词"; else -> if (controller.microphoneState == "closed") "麦克风关闭" else "正在收音" }, 12f, true).apply {
+            gravity = Gravity.CENTER; setPadding(dp(12), dp(7), dp(12), dp(7))
+            background = GradientDrawable().apply { setColor(line); cornerRadius = dp(18).toFloat() }
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(12) }
+        }
         content.addView(hero)
         if (controller.pendingResults > 0) text(content, "还有一些新进展，等你方便时接着聊。", 13f, true)
         if (controller.speakerSummary.isNotEmpty()) text(content, "本轮识别：${controller.speakerSummary}", 13f, true)
@@ -259,9 +317,19 @@ class MainActivity : ComponentActivity() {
     }
     private fun settings() {
         text(content, "设置", 27f)
-        if (controller.paired) button(content, "声纹与联系人") { navigate(Page.CONTACTS) }
-        text(content, "唤醒词：${controller.wakePhrase}", 16f)
-        text(content, "唤醒词由 Crabot 下发，检测在手机本地进行。", 14f, true)
+        val conversation = settingsGroup("日常使用")
+        if (controller.paired) settingsRow(conversation, "声纹与联系人", "录入、重录和改名，自动同步到 Crabot") { navigate(Page.CONTACTS) }
+        settingsRow(conversation, "唤醒词 · ${controller.wakePhrase}", "Crabot 下发配置，手机本机检测")
+        settingsRow(conversation, "手动说话", "不方便喊唤醒词时，点按开始") { withMicrophone { controller.recordButton(); navigate(Page.HOME) } }.apply {
+            isEnabled = controller.readyForConversation; alpha = if (isEnabled) 1f else .5f
+        }
+        val connection = settingsGroup("连接与诊断")
+        if (controller.paired) settingsRow(connection, "扫描配对二维码", "在 Crabot 后台创建语音渠道") { launchScan() }.apply {
+            isEnabled = controller.owner != null; alpha = if (isEnabled) 1f else .5f
+        }
+        settingsRow(connection, "重新连接", if (controller.connected) "当前已连接" else "检查网络后重试连接") { controller.reconnect() }
+        settingsRow(connection, if (diagnostics) "收起诊断详情" else "查看诊断详情", "连接、声音识别及服务状态") { diagnostics = !diagnostics; renderedKey = ""; render() }
+        if (diagnostics) { text(content, controller.status, 14f, true); text(content, controller.destinations, 13f, true); text(content, controller.detail, 13f, true) }
         controller.owner?.let { owner ->
             text(content, "设备所有者：${owner.getString("display_name")}", 18f)
             text(content, when (controller.ownerActivation?.getString("status")) {
@@ -270,18 +338,12 @@ class MainActivity : ComponentActivity() {
                 else -> "本人声纹已录入。请在 Crabot 后台新建语音渠道，再扫描配对二维码。"
             }, 14f, true)
         }
-        if (controller.paired) button(content, "扫描配对二维码") { launchScan() }.isEnabled = controller.owner != null
-        else text(content, "扫码时请核对名字和代码。语音识别、播报服务在 Crabot 后台配置。", 14f, true)
+        if (!controller.paired) text(content, "扫码时请核对名字和代码。语音识别、播报服务在 Crabot 后台配置。", 14f, true)
         if (controller.ownerActivation?.getString("status") == "pending") button(content, "重试关联同步") { controller.retrySynchronization() }
-        button(content, "重新连接") { controller.reconnect() }
-        button(content, "手动说话") { withMicrophone { controller.recordButton(); navigate(Page.HOME) } }.isEnabled = controller.readyForConversation
-        button(content, "${if (diagnostics) "收起" else "查看"}连接与诊断") { diagnostics = !diagnostics; renderedKey = ""; render() }
-        if (diagnostics) { text(content, controller.status, 14f, true); text(content, controller.destinations, 13f, true); text(content, controller.detail, 13f, true) }
         text(content, "退后台、锁屏或断开连接会关闭麦克风和播放。恢复后需明确重新开启语音。", 14f, true)
-        button(content, "清除本机配对与声纹") {
+        settingsRow(settingsGroup("设备数据"), "清除本机配对与声纹", "清除后需重新连接和登记声音") {
             android.app.AlertDialog.Builder(this).setTitle("清除本机数据？").setMessage("本机配对和声纹将无法恢复。后台联系人与好友绑定保留；之后需重新配对和录入。").setNegativeButton("取消", null).setPositiveButton("确认清除") { _, _ -> controller.forget(); navigate(Page.HOME) }.show()
         }
-        button(content, "返回对话") { navigate(Page.HOME) }
     }
     private fun contacts() {
         text(content, "声纹与联系人", 25f)
