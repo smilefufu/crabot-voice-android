@@ -1,6 +1,6 @@
 # 播放启动时序配套修订
 
-日期：2026-10-22。状态：**待用户确认，未改产品代码**。配套[后端最小修订](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-22-voice-playback-start-lifecycle-design.md)，正式跨端定义仍唯一见protocol-voice。
+日期：2026-10-22。状态：**用户已于2026-10-24确认；后端按正式协议实施，安卓产品代码不变**。配套[后端最小修订](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-22-voice-playback-start-lifecycle-design.md)，正式跨端定义仍唯一见protocol-voice。
 
 ## 问题与选择
 
