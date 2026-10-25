@@ -52,4 +52,29 @@ class NativeShortIdentityTest {
     @Test fun independentShortRegisteredVoiceIsActuallyCompared() = checkQuery("short-a.wav", "matched")
     @Test fun singleProfileDoesNotForceAnotherVoiceToMatch() = checkQuery("short-b.wav", "unknown")
     @Test fun singleProfileKeepsUnregisteredPublicVoiceUnknown() = checkQuery("short-c.wav", "unknown")
+    @Test fun repeatedFollowupResetsKeepNativeSegmentsInsideEachFiniteClip() {
+        val target = InstrumentationRegistry.getInstrumentation().targetContext
+        NativeModels(Models.prepare(target)).use { models ->
+            for (name in listOf("short-a.wav", "short-b.wav", "short-a.wav")) {
+                val query = audio(name)
+                val clip = ShortArray(43200)
+                query.copyInto(clip, 4800)
+                try {
+                    val keyword = "n ǐ h ǎo p áng x iè @你好螃蟹"
+                    models.reset(keyword)
+                    for (at in 0 until 4800 step 320) models.feed(clip.copyOfRange(at, at + 320), true, false)
+                    models.reset(keyword)
+                    for (at in clip.indices step 320) models.feed(clip.copyOfRange(at, at + 320), true, false)
+                    val result = Identity.report(clip, models, JSONObject(), JSONArray())
+                    assertTrue(result.length() > 0)
+                    for (i in 0 until result.length()) {
+                        val segment = result.getJSONObject(i)
+                        assertTrue(segment.getInt("start_sample") >= 0)
+                        assertTrue(segment.getInt("end_sample") <= clip.size)
+                        assertEquals("unknown", segment.getString("identity_status"))
+                    }
+                } finally { query.fill(0); clip.fill(0) }
+            }
+        }
+    }
 }

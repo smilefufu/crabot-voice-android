@@ -344,6 +344,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         connection.send(JSONObject().put("type", "catalog_applied").put("enrollment_revision", revision))
     }
     fun stop(reason: String, disableWake: Boolean = false) {
+        android.util.Log.i("CrabotVoiceLifecycle", "stop from=$mode disable_wake=$disableWake wake_enabled=$wakeEnabled caller=${Throwable().stackTrace.getOrNull(1)?.methodName}")
         val guidedId = guided?.operationId
         guided = null; guidedPlaybackId = null; guidedResumeWake = false; guidedResumeEpoch = null; guidedAwaitingResult = false; guidedPrivateComplete = false; guidedPromptText = ""
         guidedSourceRequest = null; guidedResultPlayback = false
@@ -476,6 +477,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
                 heartbeat(); changed()
             } catch (e: CancellationException) { throw e }
             catch (e: Exception) { if (token == generation) {
+                android.util.Log.w("CrabotVoiceInput", "processing_failed enrollment=$enroll samples=${audio.size}", e)
                 if (guided != null && e !is ExistingVoiceIdentityException && enrollmentVectors.size < 3) retryGuided(e.message ?: "请重新读这一段")
                 else if (localOwner && ownerEnrollmentActive && enrollmentVectors.size < 3) ownerRetry(e.message ?: "本段声音不清楚")
                 else stop(e.message ?: "声纹处理失败；整轮未提交", localOwner)
@@ -656,6 +658,9 @@ class VoiceController(private val context: Context, private val changed: () -> U
     }
     private fun control(c: JSONObject) {
         try {
+            if (c.optString("type") in listOf("hello", "turn_ready", "turn_status", "playback_prepare", "playback_start", "response_end", "error")) {
+                android.util.Log.i("CrabotVoiceLifecycle", "control=${c.getString("type")} mode=$mode wake_enabled=$wakeEnabled")
+            }
             when (c.getString("type")) {
                 "guided_enroll" -> prepareGuided(c.getJSONObject("enrollment"))
                 "guided_prompt_start" -> startGuidedPlayback(c)
