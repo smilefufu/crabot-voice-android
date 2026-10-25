@@ -40,9 +40,10 @@ class VoiceStandbyTest {
         val directory = Files.createTempDirectory(instrumentation.targetContext.cacheDir.toPath(), "voice-standby-").toFile()
         val context = object : ContextWrapper(instrumentation.targetContext) { override fun getFilesDir() = directory }
         val server = MockWebServer()
-        server.enqueue(MockResponse().withWebSocketUpgrade(object : WebSocketListener() {
+        val listener = object : WebSocketListener() {
             override fun onMessage(ws: WebSocket, text: String) {
-                when (JSONObject(text).getString("type")) {
+                val control = JSONObject(text)
+                when (control.getString("type")) {
                     "hello" -> ws.send(JSONObject().put("type", "hello").put("connection_epoch", UUID.randomUUID().toString()).put("setup_status", "complete")
                         .put("config", JSONObject().put("wake_word", "你好螃蟹").put("asr", JSONObject().put("provider_id", "fixture").put("model_id", "asr"))
                             .put("tts", JSONObject().put("provider_id", "fixture").put("model_id", "tts")))
@@ -50,9 +51,12 @@ class VoiceStandbyTest {
                         .put("catalog", JSONObject().put("enrollment_revision", 0).put("contacts", JSONArray()).put("registrations", JSONArray()).put("pending_enrollment", JSONObject.NULL)).toString())
                     "catalog_applied" -> ws.send("{\"type\":\"catalog_confirmed\",\"enrollment_revision\":0}")
                     "heartbeat" -> ws.send("{\"type\":\"heartbeat\"}")
+                    "turn_start" -> ws.send(JSONObject().put("type", "turn_ready").put("turn_id", control.getString("turn_id")).toString())
                 }
             }
-        })); server.start()
+        }
+        repeat(2) { server.enqueue(MockResponse().withWebSocketUpgrade(listener)) }
+        server.start()
         SecureStore(context).savePairing(JSONObject().put("protocol_version", Wire.PROTOCOL_VERSION).put("channel_id", "fixture").put("credential", "isolated-credential")
             .put("url", server.url("/ws/voice/fixture").toString().replace("http:", "ws:")))
         val capture = Capture()
@@ -115,6 +119,76 @@ class VoiceStandbyTest {
             VoiceController::class.java.getDeclaredMethod("restoreAfterNotification", Boolean::class.javaPrimitiveType).apply { isAccessible = true }.invoke(phone, false)
             assertEquals(VoiceController.Mode.WAKE, phone.mode)
             assertTrue(phone.wakeEnabled); assertTrue(capture.active)
+        }
+    }
+    @Test fun completedBlocksWaitForMatchingResponseEndAndDuplicateEndCannotRestartCapture() = fixture { phone, capture ->
+        main {
+            capture.stop()
+            val turn = UUID.randomUUID().toString()
+            field(phone, "currentTurn").set(phone, turn)
+            repeat(2) {
+                val playback = UUID.randomUUID().toString()
+                field(phone, "playbackId").set(phone, playback)
+                field(phone, "mode").set(phone, VoiceController.Mode.PLAYING)
+                VoiceController::class.java.getDeclaredMethod("playbackReceipt", String::class.java, String::class.java, java.lang.Long::class.java).apply { isAccessible = true }
+                    .invoke(phone, playback, "completed", 480L)
+                assertEquals(VoiceController.Mode.WAITING, phone.mode)
+                assertEquals("closed", phone.microphoneState); assertFalse(capture.active)
+                assertEquals(1, capture.starts)
+            }
+            val control = VoiceController::class.java.getDeclaredMethod("control", JSONObject::class.java).apply { isAccessible = true }
+            control.invoke(phone, JSONObject().put("type", "response_end").put("turn_id", UUID.randomUUID().toString()))
+            assertEquals(VoiceController.Mode.WAITING, phone.mode); assertFalse(capture.active)
+            repeat(2) { control.invoke(phone, JSONObject().put("type", "response_end").put("turn_id", turn)) }
+            assertEquals(VoiceController.Mode.FOLLOWUP, phone.mode); assertTrue(capture.active)
+            assertEquals(2, capture.starts)
+        }
+    }
+    @Test fun manualConversationDoesNotGrantPersistentWakeAfterFollowup() = fixture { phone, capture ->
+        main {
+            phone.mute(); phone.recordButton()
+            assertFalse(phone.wakeEnabled); assertTrue(capture.active)
+            capture.stop()
+            val turn = field(phone, "currentTurn").get(phone) as String
+            field(phone, "mode").set(phone, VoiceController.Mode.WAITING)
+            field(phone, "interactionHadPlayback").setBoolean(phone, true)
+            VoiceController::class.java.getDeclaredMethod("control", JSONObject::class.java).apply { isAccessible = true }
+                .invoke(phone, JSONObject().put("type", "response_end").put("turn_id", turn))
+            assertEquals(VoiceController.Mode.FOLLOWUP, phone.mode)
+            field(phone, "deadline").setLong(phone, SystemClock.elapsedRealtime() - 1)
+            VoiceController::class.java.getDeclaredMethod("frame", ShortArray::class.java, Int::class.javaPrimitiveType).apply { isAccessible = true }
+                .invoke(phone, ShortArray(320), 0)
+            assertEquals(VoiceController.Mode.CLOSED, phone.mode)
+            assertFalse(phone.wakeEnabled); assertFalse(capture.active)
+        }
+    }
+    @Test fun wakeWithoutACommandReturnsToWakeRatherThanDisablingStandby() = fixture { phone, capture ->
+        val frame = VoiceController::class.java.getDeclaredMethod("frame", ShortArray::class.java, Int::class.javaPrimitiveType).apply { isAccessible = true }
+        main {
+            frame.invoke(phone, ShortArray(320), 0)
+            assertEquals(0, field(phone, "sentSamples").getInt(phone))
+            frame.invoke(phone, ShortArray(320), 2)
+            assertEquals(VoiceController.Mode.RECORDING, phone.mode)
+        }
+        await { field(phone, "readyTurn").get(phone) == field(phone, "currentTurn").get(phone) }
+        main {
+            field(phone, "startedAt").setLong(phone, SystemClock.elapsedRealtime() - 3001)
+            frame.invoke(phone, ShortArray(320), 0)
+            assertEquals(VoiceController.Mode.WAKE, phone.mode)
+            assertTrue(phone.wakeEnabled); assertTrue(capture.active)
+            assertTrue(phone.status.contains("未检测到有效人声"))
+        }
+    }
+    @Test fun disconnectThenSuccessfulReconnectKeepsMicrophoneClosed() = fixture { phone, capture ->
+        main {
+            (field(phone, "connection").get(phone) as TerminalConnection).disconnect("fixture disconnected")
+            assertEquals(VoiceController.Mode.CLOSED, phone.mode); assertFalse(capture.active)
+            phone.pause(); phone.resume()
+        }
+        await { phone.readyForConversation }
+        main {
+            assertEquals(VoiceController.Mode.CLOSED, phone.mode); assertFalse(phone.wakeEnabled)
+            assertFalse(capture.active); assertEquals(1, capture.starts)
         }
     }
 }
