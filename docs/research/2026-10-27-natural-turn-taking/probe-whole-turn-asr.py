@@ -4,6 +4,7 @@ import hashlib
 import importlib.metadata
 import json
 from pathlib import Path
+import sys
 import time
 
 import sherpa_onnx
@@ -13,6 +14,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--root', required=True, type=Path)
 parser.add_argument('--service-root', required=True, type=Path)
 parser.add_argument('--corpus', required=True, type=Path)
+parser.add_argument('--serve', action='store_true', help='Public-file ASR over owned child stdio, no network listener')
 args = parser.parse_args()
 models = args.service_root / 'models' / 'sensevoice'
 expected = {'model.int8.onnx': 'c71f0ce00bec95b07744e116345e33d8cbbe08cef896382cf907bf4b51a2cd51',
@@ -25,24 +27,41 @@ recognizer = sherpa_onnx.OfflineRecognizer.from_sense_voice(
     num_threads=1, language='zh', use_itn=True)
 load_ms = (time.perf_counter() - start) * 1000
 corpus = json.loads(args.corpus.read_text())
-results = []
+loaded = {}
 for entry in corpus['audio']:
     path = args.root / (entry['id'] + '.flac')
     assert hashlib.sha256(path.read_bytes()).hexdigest() == entry['sha256']
     audio, rate = sf.read(path, dtype='float32')
     assert rate == 16000 and audio.ndim == 1
-    for variant, samples in [('full', audio), ('tail8', audio[-8 * rate:])]:
-        start = time.perf_counter()
-        stream = recognizer.create_stream()
-        stream.accept_waveform(rate, samples)
-        recognizer.decode_stream(stream)
-        elapsed = (time.perf_counter() - start) * 1000
-        result = {'id': entry['id'], 'source_row': entry['row_index'],
-                  'label_complete': entry['label'], 'audio_sha256': entry['sha256'],
-                  'source_seconds': len(audio) / rate,
-                  'exceeds_product_15s_capacity': len(audio) > 15 * rate,
-                  'variant': variant, 'input_seconds': len(samples) / rate,
-                  'text': stream.result.text, 'asr_ms': elapsed}
+    loaded[entry['id']] = (entry, audio)
+
+def transcribe(identity, variant):
+    assert variant in {'full', 'tail8'}
+    entry, audio = loaded[identity]
+    samples = audio if variant == 'full' else audio[-8 * 16000:]
+    start = time.perf_counter()
+    stream = recognizer.create_stream()
+    stream.accept_waveform(16000, samples)
+    recognizer.decode_stream(stream)
+    elapsed = (time.perf_counter() - start) * 1000
+    return {'id': identity, 'source_row': entry['row_index'],
+            'label_complete': entry['label'], 'audio_sha256': entry['sha256'],
+            'source_seconds': len(audio) / 16000,
+            'exceeds_product_15s_capacity': len(audio) > 15 * 16000,
+            'variant': variant, 'input_seconds': len(samples) / 16000,
+            'text': stream.result.text, 'asr_ms': elapsed}
+
+if args.serve:
+    print(json.dumps({'ready': True, 'model_load_ms': load_ms, 'input_preloaded': True}), flush=True)
+    for line in sys.stdin:
+        request = json.loads(line)
+        print(json.dumps(transcribe(request['id'], request['variant']), ensure_ascii=False), flush=True)
+    raise SystemExit(0)
+
+results = []
+for entry in corpus['audio']:
+    for variant in ['full', 'tail8']:
+        result = transcribe(entry['id'], variant)
         results.append(result)
         print(json.dumps(result, ensure_ascii=False), flush=True)
 report = {'scope': 'Public synthetic audio only; ASR text is not a trusted reference transcript',

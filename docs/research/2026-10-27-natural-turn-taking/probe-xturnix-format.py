@@ -54,7 +54,7 @@ for action in ['<|start|>', '<|keep|>', '<|stop|>']:
     action_ids[action] = ids[0]
 weight = next(e for e in metadata if e['path'] == 'model.safetensors')
 partial = folder / 'model.safetensors.part'
-report = {'status': 'format-verified-inference-not-run',
+report = {'status': 'format-verified', 'scope': 'Hash/template verification only; inference recorded separately',
           'repo': 'xcczach/xturnix-zh-base', 'revision': 'b69ac8a4d98e93332ca3452c569a77dd499287a9',
           'license': 'Apache-2.0', 'checked_files': checked,
           'weight_bytes_required': weight['size'], 'weight_sha256_required': weight['lfs']['oid'],

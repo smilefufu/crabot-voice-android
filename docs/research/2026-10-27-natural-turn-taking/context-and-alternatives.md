@@ -32,7 +32,7 @@
 |---|---|---|
 | LiveKit 音频 v1-mini | 官方 `livekit-local-inference` 0.2.7 的原生类型文档规定最多 19,200 个 16kHz 样本，即 1.2 秒；文档写明更长输入抛 ValueError，未作原生运行验证。Agents 主线也使用 1.2 秒固定滚动缓冲。 | 可独立使用原生 EOT 接口，但**不能当作扩大上下文的替换**；这不代表其端点准确率一定较差。未运行准确率对照。 |
 | LiveKit 旧版多语言文本模型 | 需要 ASR 文本，Qwen2.5-0.5B；官方描述限制为 128 tokens/最多六轮，当前 SDK 已将旧插件标记 deprecated。 | 不把八秒问题换成另一个会裁掉句首的默认文本窗口，不优先新增此依赖。 |
-| XTurnix-ZH Base 0.6B | 中文专用文本话轮模型，输入转写对话历史；官方接入示例使用服务端 API 和 `max_model_len=2048`。代码声明 Apache-2.0；实际权重许可、最长输入、CPU/MPS 时延仍待进一步核验。 | **优先做下一轮隔离资格/样本验证的候选**。若使用，只取 listening 下 keep/start 的结束判断，不扩展本期打断/附和含义。需要完整当前轮次 ASR，不能直接装进现有端侧纯音频接口。 |
+| XTurnix-ZH Base 0.6B | 中文文本话轮模型，输入转写历史；后续已确认权重 Apache-2.0、官方管线 2048 token 及固定检查点，完成 CPU/MPS 实测。 | [同批实测未通过](xturnix-findings.md)：原误判纠正，但新增一条抢答、完整句漏判 8/10，不能采用当前组合。只测试 listening，不扩展打断/附和含义；仍与现有纯音频接口不同。 |
 | Easy Turn | 声学与语言联合模型，公开报告 850M 参数、4090 上约 263 ms/约 2.56GB GPU 占用；这些不是本机或手机数据。 | 作为更重的服务端对照候选；不优先上手机，也不承诺本机满足时延。模型/工程许可仍需确认。 |
 | Deepgram Flux Multilingual | 官方 Flux 语言表列十种语言，不含中文；Nova 支持中文不等于 Flux 支持中文端点。 | 本次中文场景不选，未调用服务。 |
 | Krisp VIVA TTv3 | 商业 SDK 的音频/语调模型，官方定位服务端，需门户取得模型；说明扫描最近几秒，完整语义上下文长度没有核实。 | 不能仅凭“多语言/CPU”声称解决整句语义，暂不作为默认开源替代。没有注册、接受许可或调用试用 API。 |
@@ -41,7 +41,7 @@ LiveKit 原生接口通过官方 wheel 的 HTTP Range 读取核查，共约 9KB�
 
 ## 推荐与 spec 影响
 
-建议下一步先验证**完整当前轮次转写＋专用中文语义结束判断**，以现有固定失败及完整/未完整集合为底线，并补充自然中文暂停资料。保留端侧音频线索作为可比较的组成部分，不先规定两个判据如何组合。先核验上下文不被截断、许可、本机内存/冷启动/推理时间与 ASR 额外耗时，再决定是否采用，不能凭模型方榜单选定。
+原推荐的**完整当前轮次转写＋专用中文语义结束判断**已用 XTurnix-ZH 完成首轮固定集对照，当前组合不通过，不能凭纠正一条误判选定。后续候选仍保留相同失败集与完整句漏判作为底线；端侧音频线索可作为比较组成部分，但本次未确定如何组合。准确率、上下文、许可、冷启动及整体成本须实测，不能凭模型方榜单选定。
 
 若要采用，该架构与已确认的“端侧纯音频判断、无需 ASR”不同，**须先修订并确认 spec，再改正式协议/产品**。最小需要说明三点：
 
@@ -49,13 +49,13 @@ LiveKit 原生接口通过官方 wheel 的 HTTP Range 读取核查，共约 9KB�
 - 只在已唤醒的当前输入期间，允许准入前转写/结束判定；中间音频和文本不进入 Manager/Worker、不生成业务请求、不授予联系人或权限。身份、分段及整组接纳仍走最终原流程，不能把检测用的整段转写冒充每位说话人的正式消息。
 - 明确中途恢复说话、迟到判定、断连及检测故障的收口；未确认结束不得靠超时强制提交。原 15 秒容量、待机/静音/后台边界、AEC 与本地唤醒保持，不以此扩大输入/监听范围。
 
-当前只记录推荐与影响，**未修改 spec 或协议来预先认可这个候选**。候选没有实测通过，暂无可联合升级的替代品，也无需真人配合。
+当前记录资格调查及[后续不通过结果](xturnix-findings.md)，**未修改 spec 或协议来认可这个候选**。暂无可联合升级的替代品，也无需真人配合。
 
 ## 主要来源
 
 - [Smart Turn 输入约定](https://github.com/pipecat-ai/smart-turn#notes-on-input-format)，实测模型 SHA 继承原记录。
 - [LiveKit 本地推理固定包 0.2.7](https://pypi.org/project/livekit-local-inference/0.2.7/)，实际 `_native.pyi` 与 Agents [transports.py](https://github.com/livekit/agents/blob/main/livekit-agents/livekit/agents/inference/eot/transports.py)、[AudioArrayBuffer](https://github.com/livekit/agents/blob/main/livekit-agents/livekit/agents/utils/audio.py) 逐项核查；不能把 1.2 秒误解为可增长初始容量。
 - [LiveKit 文本模型卡](https://huggingface.co/livekit/turn-detector)及[当前 SDK 弃用说明](https://github.com/livekit/agents/blob/main/livekit-plugins/livekit-plugins-turn-detector/README.md)。
-- [XTurnix 官方代码](https://github.com/xcc-zach/xturnix)、[论文](https://arxiv.org/abs/2610.04400)。README blob 为 `0332698c54b09e6772dc014767274125e65129c1`；该仓示例的 2048 是配置示例，不伪称已经验证的模型硬上限。此次模型卡/config 读取失败，未用猜测补齐权重资格或性能。
+- [XTurnix 官方代码](https://github.com/xcc-zach/xturnix)、[论文](https://arxiv.org/abs/2610.04400)。README blob 为 `0332698c54b09e6772dc014767274125e65129c1`。最初模型卡/config 读取失败，后续已在固定权重 revision 核实官方管线 2048 上限、许可及实际推理；来源与结果见[完整实测](xturnix-findings.md)，不把服务示例当作权重契约。
 - [Easy Turn 官方代码与测量条件](https://github.com/ASLP-lab/Easy-Turn)，README blob `a7251c0d7bdcd96572006b74f5bae68ff1dad091`。
 - [Deepgram 模型语言表](https://developers.deepgram.com/docs/models-languages-overview/)，只依 Flux 行判断；[Krisp TTv3 文档](https://sdk-docs.krisp.ai/docs/turn-taking)。

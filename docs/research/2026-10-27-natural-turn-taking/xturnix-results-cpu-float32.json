@@ -1,0 +1,1123 @@
+{
+  "scope": "Fixed synthetic public corpus, file-only component test; not field acceptance",
+  "device": "cpu",
+  "dtype": "float32",
+  "threads": 1,
+  "system": "macOS-26.4.1-arm64-arm-64bit",
+  "python": "3.12.3",
+  "packages": {
+    "torch": "2.9.1",
+    "transformers": "4.57.3",
+    "tokenizers": "0.22.2",
+    "safetensors": "0.8.0"
+  },
+  "model_load_ms": 339.8742498829961,
+  "model_revision": "b69ac8a4d98e93332ca3452c569a77dd499287a9",
+  "model_files": [
+    {
+      "file": "LICENSE",
+      "bytes": 623,
+      "sha256": "18f56d5b241d1ed2a4317dfbfe74fe9d42290b25a5dde11b02ccbb025b148d1e"
+    },
+    {
+      "file": "added_tokens.json",
+      "bytes": 850,
+      "sha256": "fa040c364309ce21192e48b382b150e7b3c4f19cb0faf733ac455ba6fd26097e"
+    },
+    {
+      "file": "chat_template.jinja",
+      "bytes": 4905,
+      "sha256": "5da44855ab7e0641774d5ed0ff0b4f89671d01df7d316e54d06557a962211cb4"
+    },
+    {
+      "file": "config.json",
+      "bytes": 1953,
+      "sha256": "fe9425ddfab91d0525bd86dc01c8a6bc13b842043ba13b5d61f8e1b9b90d8270"
+    },
+    {
+      "file": "generation_config.json",
+      "bytes": 158,
+      "sha256": "343063f3494b20363ef85b5119c8cad1ab6227e285f27fa3a319263f2db08a7d"
+    },
+    {
+      "file": "model.safetensors",
+      "bytes": 1192135096,
+      "sha256": "e1826bcccfbb5f07c7e63c105da3bcf9138e6dafd6b933061039ec59d67161df"
+    },
+    {
+      "file": "special_tokens_map.json",
+      "bytes": 493,
+      "sha256": "694703ae36646718bf2b2543aa5d289d45ecf3139c57ff45e714ab5fc915993c"
+    },
+    {
+      "file": "tokenizer.json",
+      "bytes": 11423897,
+      "sha256": "e1cdfc37289f88242660c6694e92e84dbbe3058b4cf45be593d784b658c0aa1d"
+    },
+    {
+      "file": "tokenizer_config.json",
+      "bytes": 6599,
+      "sha256": "5e661aaa48f1e56681a504cb4e28c2da0abfa03d4cb7aadbe30b80795b4a4a6d"
+    },
+    {
+      "file": "turn_pipeline.py",
+      "bytes": 13958,
+      "sha256": "3f61107dd6bca143a10038d51c6957144df8f8ccec5eb020d86dc5df96de515c"
+    }
+  ],
+  "max_length": 2048,
+  "warmups": [
+    {
+      "action": "<|start|>",
+      "scores": {
+        "<|start|>": 0.5920112133026123,
+        "<|keep|>": 0.4079888164997101
+      },
+      "tokens": 86,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 208.68587493896484
+    },
+    {
+      "action": "<|start|>",
+      "scores": {
+        "<|start|>": 0.5567794442176819,
+        "<|keep|>": 0.4432205259799957
+      },
+      "tokens": 91,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 207.26600009948015
+    },
+    {
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.47650474309921265,
+        "<|keep|>": 0.5234953165054321
+      },
+      "tokens": 89,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 197.50587502494454
+    }
+  ],
+  "standard_pipeline_parity": true,
+  "whole_turn_asr_sha256": "098cdc49754ad747d3b901aa69f0c47331523903087ac14d5a6fbf27e03a598e",
+  "summary": {
+    "full": {
+      "cases": 20,
+      "premature": 1,
+      "missed_complete": 8,
+      "input_tokens": {
+        "median": 111.0,
+        "p95": 123.05,
+        "max": 124
+      },
+      "asr_ms": {
+        "median": 339.36818735674024,
+        "p95": 453.3072293736041,
+        "max": 527.6585831306875
+      },
+      "detector_ms": {
+        "median": 249.8817085288465,
+        "p95": 272.0705307787284,
+        "max": 273.24041724205017
+      },
+      "serial_asr_detector_ms": {
+        "median": 583.7132709566504,
+        "p95": 706.6497108899057,
+        "max": 746.1095829494298
+      }
+    },
+    "tail8": {
+      "cases": 20,
+      "premature": 1,
+      "missed_complete": 8,
+      "input_tokens": {
+        "median": 106.0,
+        "p95": 113.25,
+        "max": 118
+      },
+      "asr_ms": {
+        "median": 293.2734584901482,
+        "p95": 297.40678498055786,
+        "max": 300.8876251988113
+      },
+      "detector_ms": {
+        "median": 245.33656309358776,
+        "p95": 267.3523098230362,
+        "max": 268.1522499769926
+      },
+      "serial_asr_detector_ms": {
+        "median": 525.4492699168622,
+        "p95": 563.3090265560895,
+        "max": 564.7590830922127
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+      "source_row": 5,
+      "label_complete": false,
+      "audio_sha256": "64bcfca2239d0294c309d72f7bc8effaa7811dbb0189bc841fcf846243287ec4",
+      "source_seconds": 11.2,
+      "exceeds_product_15s_capacity": false,
+      "variant": "full",
+      "input_seconds": 11.2,
+      "text": "杀伤型T细胞只能识别由I型MHC分子成递的抗原，而辅助型T细胞只能识别二型MHC分子成递的抗原。但是。",
+      "asr_ms": 434.5466666854918,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.003990102559328079,
+        "<|keep|>": 0.9960099458694458
+      },
+      "tokens": 123,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 251.84816680848598,
+      "predicted_complete": false,
+      "correct": true,
+      "serial_asr_detector_ms": 686.3948334939778
+    },
+    {
+      "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+      "source_row": 5,
+      "label_complete": false,
+      "audio_sha256": "64bcfca2239d0294c309d72f7bc8effaa7811dbb0189bc841fcf846243287ec4",
+      "source_seconds": 11.2,
+      "exceeds_product_15s_capacity": false,
+      "variant": "tail8",
+      "input_seconds": 8.0,
+      "text": "MHC分子成递的抗原，而辅助型T细胞只能识别二型MHC分子呈递的抗原。但是。",
+      "asr_ms": 295.8171251229942,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.007421494927257299,
+        "<|keep|>": 0.9925784468650818
+      },
+      "tokens": 113,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 234.16120884940028,
+      "predicted_complete": false,
+      "correct": true,
+      "serial_asr_detector_ms": 529.9783339723945
+    },
+    {
+      "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+      "source_row": 64,
+      "label_complete": false,
+      "audio_sha256": "1648d9afebde331808e7fb8bdc48129528a1f33f61c3733a2eab4a280daeca48",
+      "source_seconds": 6.76,
+      "exceeds_product_15s_capacity": false,
+      "variant": "full",
+      "input_seconds": 6.76,
+      "text": "沿海的岛屿共1404个，总面积约为1200多平方公里嗯。",
+      "asr_ms": 250.1102089881897,
+      "action": "<|start|>",
+      "scores": {
+        "<|start|>": 0.7159184217453003,
+        "<|keep|>": 0.2840815484523773
+      },
+      "tokens": 104,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 256.59841718152165,
+      "predicted_complete": true,
+      "correct": false,
+      "serial_asr_detector_ms": 506.70862616971135
+    },
+    {
+      "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+      "source_row": 64,
+      "label_complete": false,
+      "audio_sha256": "1648d9afebde331808e7fb8bdc48129528a1f33f61c3733a2eab4a280daeca48",
+      "source_seconds": 6.76,
+      "exceeds_product_15s_capacity": false,
+      "variant": "tail8",
+      "input_seconds": 6.76,
+      "text": "沿海的岛屿共1404个，总面积约为1200多平方公里嗯。",
+      "asr_ms": 249.4904170744121,
+      "action": "<|start|>",
+      "scores": {
+        "<|start|>": 0.7159184217453003,
+        "<|keep|>": 0.2840815484523773
+      },
+      "tokens": 104,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 264.21487517654896,
+      "predicted_complete": true,
+      "correct": false,
+      "serial_asr_detector_ms": 513.7052922509611
+    },
+    {
+      "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+      "source_row": 234,
+      "label_complete": false,
+      "audio_sha256": "07dc0e061040ba14183179d14c0403368b22fdfc5f923fd0b6da6c8c44923747",
+      "source_seconds": 10.24,
+      "exceeds_product_15s_capacity": false,
+      "variant": "full",
+      "input_seconds": 10.24,
+      "text": "IDC确定嗯windows2000的TCOU于linux的4个领域是文件打印网络基础设施和就是。",
+      "asr_ms": 388.24104191735387,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.018795549869537354,
+        "<|keep|>": 0.9812043905258179
+      },
+      "tokens": 110,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 273.24041724205017,
+      "predicted_complete": false,
+      "correct": true,
+      "serial_asr_detector_ms": 661.481459159404
+    },
+    {
+      "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+      "source_row": 234,
+      "label_complete": false,
+      "audio_sha256": "07dc0e061040ba14183179d14c0403368b22fdfc5f923fd0b6da6c8c44923747",
+      "source_seconds": 10.24,
+      "exceeds_product_15s_capacity": false,
+      "variant": "tail8",
+      "input_seconds": 8.0,
+      "text": "windows2000的TCOU与linux的四个领域是文件打印网络基础设施和就是。",
+      "asr_ms": 292.4384172074497,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.03033044934272766,
+        "<|keep|>": 0.96966952085495
+      },
+      "tokens": 105,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 258.31316597759724,
+      "predicted_complete": false,
+      "correct": true,
+      "serial_asr_detector_ms": 550.7515831850469
+    },
+    {
+      "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+      "source_row": 311,
+      "label_complete": false,
+      "audio_sha256": "78cf14bd5c723c1ffca89fbd7cc88bf449e34f4f190f13da7f363c5898d520ee",
+      "source_seconds": 8.12,
+      "exceeds_product_15s_capacity": false,
+      "variant": "full",
+      "input_seconds": 8.12,
+      "text": "武帝在位共54年，是清朝康熙皇帝以前以及汉朝在位最久的皇帝那个。",
+      "asr_ms": 304.07695891335607,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.3284715712070465,
+        "<|keep|>": 0.6715283989906311
+      },
+      "tokens": 109,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 260.8903329819441,
+      "predicted_complete": false,
+      "correct": true,
+      "serial_asr_detector_ms": 564.9672918953001
+    },
+    {
+      "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+      "source_row": 311,
+      "label_complete": false,
+      "audio_sha256": "78cf14bd5c723c1ffca89fbd7cc88bf449e34f4f190f13da7f363c5898d520ee",
+      "source_seconds": 8.12,
+      "exceeds_product_15s_capacity": false,
+      "variant": "tail8",
+      "input_seconds": 8.0,
+      "text": "武帝在位共54年，是清朝康熙皇帝以前以及汉朝在位最久的皇帝那个。",
+      "asr_ms": 293.92170906066895,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.3284715712070465,
+        "<|keep|>": 0.6715283989906311
+      },
+      "tokens": 109,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 261.78979221731424,
+      "predicted_complete": false,
+      "correct": true,
+      "serial_asr_detector_ms": 555.7115012779832
+    },
+    {
+      "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+      "source_row": 383,
+      "label_complete": false,
+      "audio_sha256": "877da0d36204ff0baf65d27a5e13fcaeb98d60dd69b5141354e8e7954a109edf",
+      "source_seconds": 8.16,
+      "exceeds_product_15s_capacity": false,
+      "variant": "full",
+      "input_seconds": 8.16,
+      "text": "1965年，摩西夏里特、乌克兰和以色列政治家曾任第二任以色列总理。所以。",
+      "asr_ms": 300.1100840047002,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.00885121151804924,
+        "<|keep|>": 0.991148829460144
+      },
+      "tokens": 109,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 261.1608747392893,
+      "predicted_complete": false,
+      "correct": true,
+      "serial_asr_detector_ms": 561.2709587439895
+    },
+    {
+      "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+      "source_row": 383,
+      "label_complete": false,
+      "audio_sha256": "877da0d36204ff0baf65d27a5e13fcaeb98d60dd69b5141354e8e7954a109edf",
+      "source_seconds": 8.16,
+      "exceeds_product_15s_capacity": false,
+      "variant": "tail8",
+      "input_seconds": 8.0,
+      "text": "1965年，摩西夏里特、乌克兰和以色列政治家曾任第二任以色列总理。所以。",
+      "asr_ms": 293.7063337303698,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.00885121151804924,
+        "<|keep|>": 0.991148829460144
+      },
+      "tokens": 109,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 261.6658341139555,
+      "predicted_complete": false,
+      "correct": true,
+      "serial_asr_detector_ms": 555.3721678443253
+    },
+    {
+      "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+      "source_row": 452,
+      "label_complete": false,
+      "audio_sha256": "b965ea72b84a3a62c4bad885a87562147fc5730381949e893021dd85acf893aa",
+      "source_seconds": 10.84,
+      "exceeds_product_15s_capacity": false,
+      "variant": "full",
+      "input_seconds": 10.84,
+      "text": "清初文学家金圣探把杜甫所作之诗，那个与屈原的离骚庄周的庄子司马迁的史记施耐安的水浒传。",
+      "asr_ms": 411.4564168266952,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.16955797374248505,
+        "<|keep|>": 0.8304420113563538
+      },
+      "tokens": 124,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 272.00895780697465,
+      "predicted_complete": false,
+      "correct": true,
+      "serial_asr_detector_ms": 683.4653746336699
+    },
+    {
+      "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+      "source_row": 452,
+      "label_complete": false,
+      "audio_sha256": "b965ea72b84a3a62c4bad885a87562147fc5730381949e893021dd85acf893aa",
+      "source_seconds": 10.84,
+      "exceeds_product_15s_capacity": false,
+      "variant": "tail8",
+      "input_seconds": 8.0,
+      "text": "府所作之诗，那个与屈原的离骚，庄周的庄子，司马迁的史记，施耐安的水浒传。",
+      "asr_ms": 296.767707914114,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.3852626085281372,
+        "<|keep|>": 0.6147373914718628
+      },
+      "tokens": 118,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 262.5207919627428,
+      "predicted_complete": false,
+      "correct": true,
+      "serial_asr_detector_ms": 559.2884998768568
+    },
+    {
+      "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+      "source_row": 481,
+      "label_complete": false,
+      "audio_sha256": "a0e971d5fc7735720e77ab366d6d1381e87c0f67b0aab2d604962ceb930192c0",
+      "source_seconds": 11.36,
+      "exceeds_product_15s_capacity": false,
+      "variant": "full",
+      "input_seconds": 11.36,
+      "text": "公元前60年，西汉中央政权首次设立西域的护府，将天山南部第一次置于汉庭的势力范围之下。但是。",
+      "asr_ms": 428.55174979195,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.0014630269724875689,
+        "<|keep|>": 0.9985369443893433
+      },
+      "tokens": 115,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 257.6777907088399,
+      "predicted_complete": false,
+      "correct": true,
+      "serial_asr_detector_ms": 686.2295405007899
+    },
+    {
+      "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+      "source_row": 481,
+      "label_complete": false,
+      "audio_sha256": "a0e971d5fc7735720e77ab366d6d1381e87c0f67b0aab2d604962ceb930192c0",
+      "source_seconds": 11.36,
+      "exceeds_product_15s_capacity": false,
+      "variant": "tail8",
+      "input_seconds": 8.0,
+      "text": "首次设立西域的护府，将天山南部第一次置于汉庭的势力范围之下。但是。",
+      "asr_ms": 292.0257500372827,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.003164607100188732,
+        "<|keep|>": 0.9968354105949402
+      },
+      "tokens": 106,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 256.51191733777523,
+      "predicted_complete": false,
+      "correct": true,
+      "serial_asr_detector_ms": 548.5376673750579
+    },
+    {
+      "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+      "source_row": 590,
+      "label_complete": false,
+      "audio_sha256": "99730ea9ff1be72d0fe72933ed988ba1adaa823c52d678f4bfdc3033f782cd45",
+      "source_seconds": 9.28,
+      "exceeds_product_15s_capacity": false,
+      "variant": "full",
+      "input_seconds": 9.28,
+      "text": "10月23日，毛泽东召开中央工作会议。中央文革小组陈伯达作报告，批判刘少奇那个。",
+      "asr_ms": 354.24208268523216,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.01696920208632946,
+        "<|keep|>": 0.9830307960510254
+      },
+      "tokens": 112,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 247.91525024920702,
+      "predicted_complete": false,
+      "correct": true,
+      "serial_asr_detector_ms": 602.1573329344392
+    },
+    {
+      "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+      "source_row": 590,
+      "label_complete": false,
+      "audio_sha256": "99730ea9ff1be72d0fe72933ed988ba1adaa823c52d678f4bfdc3033f782cd45",
+      "source_seconds": 9.28,
+      "exceeds_product_15s_capacity": false,
+      "variant": "tail8",
+      "input_seconds": 8.0,
+      "text": "日，毛泽东召开中央工作会议，中央文革小组陈伯达作报告，批判刘少奇那个。",
+      "asr_ms": 295.0804578140378,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.02878718636929989,
+        "<|keep|>": 0.9712128043174744
+      },
+      "tokens": 107,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 268.1522499769926,
+      "predicted_complete": false,
+      "correct": true,
+      "serial_asr_detector_ms": 563.2327077910304
+    },
+    {
+      "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+      "source_row": 800,
+      "label_complete": false,
+      "audio_sha256": "9f95629f805eae0a147187f1b76f9e34b878051ece6332a22b18cdf9348a252e",
+      "source_seconds": 10.96,
+      "exceeds_product_15s_capacity": false,
+      "variant": "full",
+      "input_seconds": 10.96,
+      "text": "南京一日游是7个地方，南京长江大桥、朝天宫莫愁湖嗯，瞻园夫子庙大城殿。然后。",
+      "asr_ms": 407.496833242476,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.0026773393619805574,
+        "<|keep|>": 0.9973227381706238
+      },
+      "tokens": 115,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 253.6012907512486,
+      "predicted_complete": false,
+      "correct": true,
+      "serial_asr_detector_ms": 661.0981239937246
+    },
+    {
+      "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+      "source_row": 800,
+      "label_complete": false,
+      "audio_sha256": "9f95629f805eae0a147187f1b76f9e34b878051ece6332a22b18cdf9348a252e",
+      "source_seconds": 10.96,
+      "exceeds_product_15s_capacity": false,
+      "variant": "tail8",
+      "input_seconds": 8.0,
+      "text": "长江大桥朝天宫莫愁湖嗯，瞻园夫子庙大城殿。然后。",
+      "asr_ms": 286.6921662352979,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.003861804027110338,
+        "<|keep|>": 0.9961381554603577
+      },
+      "tokens": 105,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 260.6397080235183,
+      "predicted_complete": false,
+      "correct": true,
+      "serial_asr_detector_ms": 547.3318742588162
+    },
+    {
+      "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+      "source_row": 888,
+      "label_complete": false,
+      "audio_sha256": "12433aa1936b85274359cc124fad6c88cb9d31c08c59903964f28326fb6d6e81",
+      "source_seconds": 11.68,
+      "exceeds_product_15s_capacity": false,
+      "variant": "full",
+      "input_seconds": 11.68,
+      "text": "后期历史约翰道尔顿的原子理论主张，所有元素都是单原子物质，而在化合物中不同元素的原子数都成最简单的整数比那个。",
+      "asr_ms": 449.3940002284944,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.16658495366573334,
+        "<|keep|>": 0.8334150314331055
+      },
+      "tokens": 119,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 255.1788752898574,
+      "predicted_complete": false,
+      "correct": true,
+      "serial_asr_detector_ms": 704.5728755183518
+    },
+    {
+      "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+      "source_row": 888,
+      "label_complete": false,
+      "audio_sha256": "12433aa1936b85274359cc124fad6c88cb9d31c08c59903964f28326fb6d6e81",
+      "source_seconds": 11.68,
+      "exceeds_product_15s_capacity": false,
+      "variant": "tail8",
+      "input_seconds": 8.0,
+      "text": "所有元素都是单原子物质，而在化合物中，不同元素的原子数都成最简单的整数比那个。",
+      "asr_ms": 300.8876251988113,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.19824115931987762,
+        "<|keep|>": 0.8017588257789612
+      },
+      "tokens": 109,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 263.8714578934014,
+      "predicted_complete": false,
+      "correct": true,
+      "serial_asr_detector_ms": 564.7590830922127
+    },
+    {
+      "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+      "source_row": 186,
+      "label_complete": true,
+      "audio_sha256": "c7b15b7e7a0251c4da4449c3a095f1853d04fb264c532b2c945d1d18d4045e3c",
+      "source_seconds": 7.04,
+      "exceeds_product_15s_capacity": false,
+      "variant": "full",
+      "input_seconds": 7.04,
+      "text": "其他奇特的碳筒素异形体也被陆续发现了。嗯，例如玻璃碳。",
+      "asr_ms": 261.851167306304,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.008075532503426075,
+        "<|keep|>": 0.9919244647026062
+      },
+      "tokens": 103,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 254.0348330512643,
+      "predicted_complete": false,
+      "correct": false,
+      "serial_asr_detector_ms": 515.8860003575683
+    },
+    {
+      "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+      "source_row": 186,
+      "label_complete": true,
+      "audio_sha256": "c7b15b7e7a0251c4da4449c3a095f1853d04fb264c532b2c945d1d18d4045e3c",
+      "source_seconds": 7.04,
+      "exceeds_product_15s_capacity": false,
+      "variant": "tail8",
+      "input_seconds": 7.04,
+      "text": "其他奇特的碳筒素异形体也被陆续发现了。嗯，例如玻璃碳。",
+      "asr_ms": 256.85708317905664,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.008075532503426075,
+        "<|keep|>": 0.9919244647026062
+      },
+      "tokens": 103,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 267.31020770967007,
+      "predicted_complete": false,
+      "correct": false,
+      "serial_asr_detector_ms": 524.1672908887267
+    },
+    {
+      "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+      "source_row": 202,
+      "label_complete": true,
+      "audio_sha256": "52828af66215670c94cd7b097748ab0d998c8f1be681951c963b8705fd5cfb43",
+      "source_seconds": 8.76,
+      "exceeds_product_15s_capacity": false,
+      "variant": "full",
+      "input_seconds": 8.76,
+      "text": "永出五年，英枪乱势大，东汉政府无力有效管辖，便下诏将边塞四郡迁往关内。",
+      "asr_ms": 324.4942920282483,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.3749891519546509,
+        "<|keep|>": 0.6250108480453491
+      },
+      "tokens": 114,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 240.77491695061326,
+      "predicted_complete": false,
+      "correct": false,
+      "serial_asr_detector_ms": 565.2692089788616
+    },
+    {
+      "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+      "source_row": 202,
+      "label_complete": true,
+      "audio_sha256": "52828af66215670c94cd7b097748ab0d998c8f1be681951c963b8705fd5cfb43",
+      "source_seconds": 8.76,
+      "exceeds_product_15s_capacity": false,
+      "variant": "tail8",
+      "input_seconds": 8.0,
+      "text": "出五年，英枪乱势大，东汉政府无力有效管辖，便下诏将边塞四郡迁往关内。",
+      "asr_ms": 294.6489159949124,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.4105665683746338,
+        "<|keep|>": 0.5894334316253662
+      },
+      "tokens": 113,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 210.90837474912405,
+      "predicted_complete": false,
+      "correct": false,
+      "serial_asr_detector_ms": 505.55729074403644
+    },
+    {
+      "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+      "source_row": 254,
+      "label_complete": true,
+      "audio_sha256": "5eb5605d10f50be46d39d53bf8e85b519e6c7700b5e1bb563ec7aeec6d6bcab2",
+      "source_seconds": 8.04,
+      "exceeds_product_15s_capacity": false,
+      "variant": "full",
+      "input_seconds": 8.04,
+      "text": "英吉利海峡在地质上仍相当年轻，那个大部分曾经是更新式的陆地。",
+      "asr_ms": 290.30858306214213,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.3487408757209778,
+        "<|keep|>": 0.6512591242790222
+      },
+      "tokens": 103,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 216.56175004318357,
+      "predicted_complete": false,
+      "correct": false,
+      "serial_asr_detector_ms": 506.8703331053257
+    },
+    {
+      "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+      "source_row": 254,
+      "label_complete": true,
+      "audio_sha256": "5eb5605d10f50be46d39d53bf8e85b519e6c7700b5e1bb563ec7aeec6d6bcab2",
+      "source_seconds": 8.04,
+      "exceeds_product_15s_capacity": false,
+      "variant": "tail8",
+      "input_seconds": 8.0,
+      "text": "英吉利海峡在地质上仍相当年轻，那个大部分曾经是更新式的陆地。",
+      "asr_ms": 287.1231250464916,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.3487408757209778,
+        "<|keep|>": 0.6512591242790222
+      },
+      "tokens": 103,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 223.93858386203647,
+      "predicted_complete": false,
+      "correct": false,
+      "serial_asr_detector_ms": 511.0617089085281
+    },
+    {
+      "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+      "source_row": 268,
+      "label_complete": true,
+      "audio_sha256": "5c4c616a882f48af7817011ef208ec4013c8512bdf6361f742c3547c87d2a317",
+      "source_seconds": 4.64,
+      "exceeds_product_15s_capacity": false,
+      "variant": "full",
+      "input_seconds": 4.64,
+      "text": "正如我刚才提到的，这里有860亿神经元。",
+      "asr_ms": 173.51412493735552,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.19490014016628265,
+        "<|keep|>": 0.8050998449325562
+      },
+      "tokens": 98,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 229.53445790335536,
+      "predicted_complete": false,
+      "correct": false,
+      "serial_asr_detector_ms": 403.0485828407109
+    },
+    {
+      "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+      "source_row": 268,
+      "label_complete": true,
+      "audio_sha256": "5c4c616a882f48af7817011ef208ec4013c8512bdf6361f742c3547c87d2a317",
+      "source_seconds": 4.64,
+      "exceeds_product_15s_capacity": false,
+      "variant": "tail8",
+      "input_seconds": 4.64,
+      "text": "正如我刚才提到的，这里有860亿神经元。",
+      "asr_ms": 166.7782082222402,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.19490014016628265,
+        "<|keep|>": 0.8050998449325562
+      },
+      "tokens": 98,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 231.24891612678766,
+      "predicted_complete": false,
+      "correct": false,
+      "serial_asr_detector_ms": 398.0271243490279
+    },
+    {
+      "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+      "source_row": 305,
+      "label_complete": true,
+      "audio_sha256": "f5ec9dcb8753f5154288c00938801ebf902fce1e833fd7f350dec022f2c57b20",
+      "source_seconds": 8.36,
+      "exceeds_product_15s_capacity": false,
+      "variant": "full",
+      "input_seconds": 8.36,
+      "text": "学科范畴人工智能是一门边缘学科，属于自然科学和社会科学的交叉。",
+      "asr_ms": 315.1329583488405,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.1643080860376358,
+        "<|keep|>": 0.8356919288635254
+      },
+      "tokens": 99,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 231.36300034821033,
+      "predicted_complete": false,
+      "correct": false,
+      "serial_asr_detector_ms": 546.4959586970508
+    },
+    {
+      "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+      "source_row": 305,
+      "label_complete": true,
+      "audio_sha256": "f5ec9dcb8753f5154288c00938801ebf902fce1e833fd7f350dec022f2c57b20",
+      "source_seconds": 8.36,
+      "exceeds_product_15s_capacity": false,
+      "variant": "tail8",
+      "input_seconds": 8.0,
+      "text": "学科范畴人工智能是一门边缘学科，属于自然科学和社会科学的交叉。",
+      "asr_ms": 294.4332091137767,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.1643080860376358,
+        "<|keep|>": 0.8356919288635254
+      },
+      "tokens": 99,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 212.1082078665495,
+      "predicted_complete": false,
+      "correct": false,
+      "serial_asr_detector_ms": 506.5414169803262
+    },
+    {
+      "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+      "source_row": 473,
+      "label_complete": true,
+      "audio_sha256": "426d60d4e0151733c5ced5f7d23faa4fe204d2b9369ce86d7f273612848dfdf9",
+      "source_seconds": 6.72,
+      "exceeds_product_15s_capacity": false,
+      "variant": "full",
+      "input_seconds": 6.72,
+      "text": "光绪9年，中法战争爆发，嗯，一年签订中法新约。",
+      "asr_ms": 243.97920770570636,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.39483678340911865,
+        "<|keep|>": 0.6051632165908813
+      },
+      "tokens": 103,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 225.31583299860358,
+      "predicted_complete": false,
+      "correct": false,
+      "serial_asr_detector_ms": 469.29504070430994
+    },
+    {
+      "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+      "source_row": 473,
+      "label_complete": true,
+      "audio_sha256": "426d60d4e0151733c5ced5f7d23faa4fe204d2b9369ce86d7f273612848dfdf9",
+      "source_seconds": 6.72,
+      "exceeds_product_15s_capacity": false,
+      "variant": "tail8",
+      "input_seconds": 6.72,
+      "text": "光绪9年，中法战争爆发，嗯，一年签订中法新约。",
+      "asr_ms": 243.25833283364773,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.39483678340911865,
+        "<|keep|>": 0.6051632165908813
+      },
+      "tokens": 103,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 227.46037505567074,
+      "predicted_complete": false,
+      "correct": false,
+      "serial_asr_detector_ms": 470.71870788931847
+    },
+    {
+      "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+      "source_row": 556,
+      "label_complete": true,
+      "audio_sha256": "17a78b810c526f7594a8561b1e50b6f9ba5107d942dcdec1bf94623f65bf159c",
+      "source_seconds": 7.24,
+      "exceeds_product_15s_capacity": false,
+      "variant": "full",
+      "input_seconds": 7.24,
+      "text": "firefoxOS为mozilla于2012年推出基于linux核心的操作系统。",
+      "asr_ms": 266.38612477108836,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.2699964940547943,
+        "<|keep|>": 0.7300034761428833
+      },
+      "tokens": 101,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 225.89195938780904,
+      "predicted_complete": false,
+      "correct": false,
+      "serial_asr_detector_ms": 492.2780841588974
+    },
+    {
+      "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+      "source_row": 556,
+      "label_complete": true,
+      "audio_sha256": "17a78b810c526f7594a8561b1e50b6f9ba5107d942dcdec1bf94623f65bf159c",
+      "source_seconds": 7.24,
+      "exceeds_product_15s_capacity": false,
+      "variant": "tail8",
+      "input_seconds": 7.24,
+      "text": "firefoxOS为mozilla于2012年推出基于linux核心的操作系统。",
+      "asr_ms": 264.3499169498682,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.2699964940547943,
+        "<|keep|>": 0.7300034761428833
+      },
+      "tokens": 101,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 221.04783402755857,
+      "predicted_complete": false,
+      "correct": false,
+      "serial_asr_detector_ms": 485.39775097742677
+    },
+    {
+      "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+      "source_row": 633,
+      "label_complete": true,
+      "audio_sha256": "534bcf12f2e20237b1c7897faf4ff1bb142f8aaf334e941abacb5239e50b6f0b",
+      "source_seconds": 11.52,
+      "exceeds_product_15s_capacity": false,
+      "variant": "full",
+      "input_seconds": 11.52,
+      "text": "另外，诗经中有古宫胆赋来朝走马、绿溪水浒至于旗下的句子。那个帖记载了周太王率领不族迁徙的事情。",
+      "asr_ms": 435.05487497895956,
+      "action": "<|start|>",
+      "scores": {
+        "<|start|>": 0.7527191638946533,
+        "<|keep|>": 0.2472807914018631
+      },
+      "tokens": 120,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 216.78837481886148,
+      "predicted_complete": true,
+      "correct": true,
+      "serial_asr_detector_ms": 651.843249797821
+    },
+    {
+      "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+      "source_row": 633,
+      "label_complete": true,
+      "audio_sha256": "534bcf12f2e20237b1c7897faf4ff1bb142f8aaf334e941abacb5239e50b6f0b",
+      "source_seconds": 11.52,
+      "exceeds_product_15s_capacity": false,
+      "variant": "tail8",
+      "input_seconds": 8.0,
+      "text": "抄走马、绿溪水浒置于旗下的句子。那个姐记载了周太王率领部族迁徙的事情。",
+      "asr_ms": 297.2235828638077,
+      "action": "<|start|>",
+      "scores": {
+        "<|start|>": 0.7426586151123047,
+        "<|keep|>": 0.2573414742946625
+      },
+      "tokens": 110,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 223.34441589191556,
+      "predicted_complete": true,
+      "correct": true,
+      "serial_asr_detector_ms": 520.5679987557232
+    },
+    {
+      "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+      "source_row": 684,
+      "label_complete": true,
+      "audio_sha256": "7922939e297c1cb505d868a4886f5e709cfa8012ccdfb19f4d65f0340925f92d",
+      "source_seconds": 11.52,
+      "exceeds_product_15s_capacity": false,
+      "variant": "full",
+      "input_seconds": 11.52,
+      "text": "柴可夫斯基死后，尼古拉林姆斯基高莎可夫根据同一个故事新号新号嗯，故事新号创作了歌剧平安夜。",
+      "asr_ms": 436.3587908446789,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.37905353307724,
+        "<|keep|>": 0.62094646692276
+      },
+      "tokens": 119,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 223.93100010231137,
+      "predicted_complete": false,
+      "correct": false,
+      "serial_asr_detector_ms": 660.2897909469903
+    },
+    {
+      "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+      "source_row": 684,
+      "label_complete": true,
+      "audio_sha256": "7922939e297c1cb505d868a4886f5e709cfa8012ccdfb19f4d65f0340925f92d",
+      "source_seconds": 11.52,
+      "exceeds_product_15s_capacity": false,
+      "variant": "tail8",
+      "input_seconds": 8.0,
+      "text": "高沙可夫根据同一个故事新号星号嗯故事新号创作了歌剧平安夜。",
+      "asr_ms": 294.59379194304347,
+      "action": "<|keep|>",
+      "scores": {
+        "<|start|>": 0.3400133550167084,
+        "<|keep|>": 0.6599866151809692
+      },
+      "tokens": 106,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 227.41649998351932,
+      "predicted_complete": false,
+      "correct": false,
+      "serial_asr_detector_ms": 522.0102919265628
+    },
+    {
+      "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+      "source_row": 789,
+      "label_complete": true,
+      "audio_sha256": "a7ce5edae7468ca1dfdf11bef8a1234c932f4cac5231508b61cb24981a2e8a09",
+      "source_seconds": 13.52,
+      "exceeds_product_15s_capacity": false,
+      "variant": "full",
+      "input_seconds": 13.52,
+      "text": "禁军负责守卫首都与皇宫，有时会驻访各地以压制地方藩镇。嗯，例如后梁后唐就以禁军压制削弱河北三镇。",
+      "asr_ms": 527.6585831306875,
+      "action": "<|start|>",
+      "scores": {
+        "<|start|>": 0.5295307040214539,
+        "<|keep|>": 0.47046932578086853
+      },
+      "tokens": 121,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 218.45099981874228,
+      "predicted_complete": true,
+      "correct": true,
+      "serial_asr_detector_ms": 746.1095829494298
+    },
+    {
+      "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+      "source_row": 789,
+      "label_complete": true,
+      "audio_sha256": "a7ce5edae7468ca1dfdf11bef8a1234c932f4cac5231508b61cb24981a2e8a09",
+      "source_seconds": 13.52,
+      "exceeds_product_15s_capacity": false,
+      "variant": "tail8",
+      "input_seconds": 8.0,
+      "text": "以压制地方藩镇。嗯，例如后梁后唐就以禁军压制削弱河北三镇。",
+      "asr_ms": 292.84058324992657,
+      "action": "<|start|>",
+      "scores": {
+        "<|start|>": 0.6429116725921631,
+        "<|keep|>": 0.3570883274078369
+      },
+      "tokens": 107,
+      "truncated": false,
+      "standard_pipeline_direct_call": true,
+      "detector_ms": 233.89066569507122,
+      "predicted_complete": true,
+      "correct": true,
+      "serial_asr_detector_ms": 526.7312489449978
+    }
+  ],
+  "combined_asr_ready": null,
+  "combined_cases": [],
+  "combined_summary": null
+}

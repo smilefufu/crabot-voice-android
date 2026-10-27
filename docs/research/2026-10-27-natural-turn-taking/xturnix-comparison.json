@@ -1,0 +1,232 @@
+{
+  "scope": "Fixed original public synthetic set; gate failed; no product or field acceptance",
+  "result_files_sha256": {
+    "labeled-corpus.json": "026e1ccbb3c4bc5a74e3db6baf8fc991d2747b999738ba1eb583646af173fa1a",
+    "whole-turn-asr.json": "098cdc49754ad747d3b901aa69f0c47331523903087ac14d5a6fbf27e03a598e",
+    "xturnix-results-mps.json": "442893a5f6f250309a8fe69141844dabf27ac353d41eed22adaf3a82a12673fa",
+    "xturnix-results-cpu-float32.json": "ab53d9a6d74673cbe63fee03fc38332c101455c269aaef1cf7979c9f65649951"
+  },
+  "smart_turn_baselines": [
+    {
+      "added_silence_seconds": 0.0,
+      "incomplete_false_positive": 1,
+      "incomplete_total": 10,
+      "complete_false_negative": 2,
+      "complete_total": 10
+    },
+    {
+      "added_silence_seconds": 0.2,
+      "incomplete_false_positive": 1,
+      "incomplete_total": 10,
+      "complete_false_negative": 1,
+      "complete_total": 10
+    },
+    {
+      "added_silence_seconds": 0.8,
+      "incomplete_false_positive": 1,
+      "incomplete_total": 10,
+      "complete_false_negative": 0,
+      "complete_total": 10
+    },
+    {
+      "added_silence_seconds": 1.0,
+      "incomplete_false_positive": 1,
+      "incomplete_total": 10,
+      "complete_false_negative": 0,
+      "complete_total": 10
+    },
+    {
+      "added_silence_seconds": 2.0,
+      "incomplete_false_positive": 1,
+      "incomplete_total": 10,
+      "complete_false_negative": 0,
+      "complete_total": 10
+    },
+    {
+      "added_silence_seconds": 3.0,
+      "incomplete_false_positive": 1,
+      "incomplete_total": 10,
+      "complete_false_negative": 1,
+      "complete_total": 10
+    }
+  ],
+  "candidate_mps": {
+    "full": {
+      "cases": 20,
+      "premature": 1,
+      "missed_complete": 8,
+      "input_tokens": {
+        "median": 111.0,
+        "p95": 123.05,
+        "max": 124
+      },
+      "asr_ms": {
+        "median": 339.36818735674024,
+        "p95": 453.3072293736041,
+        "max": 527.6585831306875
+      },
+      "detector_ms": {
+        "median": 84.13962461054325,
+        "p95": 334.3785936245695,
+        "max": 366.2227923050523
+      },
+      "serial_asr_detector_ms": {
+        "median": 463.72168720699847,
+        "p95": 615.132714342326,
+        "max": 720.4648749902844
+      }
+    },
+    "tail8": {
+      "cases": 20,
+      "premature": 1,
+      "missed_complete": 8,
+      "input_tokens": {
+        "median": 106.0,
+        "p95": 113.25,
+        "max": 118
+      },
+      "asr_ms": {
+        "median": 293.2734584901482,
+        "p95": 297.40678498055786,
+        "max": 300.8876251988113
+      },
+      "detector_ms": {
+        "median": 49.800354056060314,
+        "p95": 115.69473543204367,
+        "max": 121.37070903554559
+      },
+      "serial_asr_detector_ms": {
+        "median": 340.80608328804374,
+        "p95": 410.6224578572437,
+        "max": 413.3964590728283
+      }
+    }
+  },
+  "cpu_reference": {
+    "full": {
+      "cases": 20,
+      "premature": 1,
+      "missed_complete": 8,
+      "input_tokens": {
+        "median": 111.0,
+        "p95": 123.05,
+        "max": 124
+      },
+      "asr_ms": {
+        "median": 339.36818735674024,
+        "p95": 453.3072293736041,
+        "max": 527.6585831306875
+      },
+      "detector_ms": {
+        "median": 249.8817085288465,
+        "p95": 272.0705307787284,
+        "max": 273.24041724205017
+      },
+      "serial_asr_detector_ms": {
+        "median": 583.7132709566504,
+        "p95": 706.6497108899057,
+        "max": 746.1095829494298
+      }
+    },
+    "tail8": {
+      "cases": 20,
+      "premature": 1,
+      "missed_complete": 8,
+      "input_tokens": {
+        "median": 106.0,
+        "p95": 113.25,
+        "max": 118
+      },
+      "asr_ms": {
+        "median": 293.2734584901482,
+        "p95": 297.40678498055786,
+        "max": 300.8876251988113
+      },
+      "detector_ms": {
+        "median": 245.33656309358776,
+        "p95": 267.3523098230362,
+        "max": 268.1522499769926
+      },
+      "serial_asr_detector_ms": {
+        "median": 525.4492699168622,
+        "p95": 563.3090265560895,
+        "max": 564.7590830922127
+      }
+    }
+  },
+  "cpu_mps_action_agreement": {
+    "agree": 40,
+    "total": 40
+  },
+  "full_tail_action_agreement": {
+    "agree": 20,
+    "total": 20
+  },
+  "original_failure": {
+    "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+    "source_row": 452,
+    "label_complete": false,
+    "text": "清初文学家金圣探把杜甫所作之诗，那个与屈原的离骚庄周的庄子司马迁的史记施耐安的水浒传。",
+    "action": "<|keep|>",
+    "scores": {
+      "<|start|>": 0.16885696351528168,
+      "<|keep|>": 0.8311430811882019
+    }
+  },
+  "new_premature": {
+    "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+    "source_row": 64,
+    "label_complete": false,
+    "source_seconds": 6.76,
+    "text": "沿海的岛屿共1404个，总面积约为1200多平方公里嗯。",
+    "action": "<|start|>",
+    "scores": {
+      "<|start|>": 0.7185943722724915,
+      "<|keep|>": 0.28140559792518616
+    }
+  },
+  "missed_complete_ids": [
+    "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+    "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+    "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+    "022601f7-6fbd-4894-a8f7-35404825e0b0",
+    "027628ba-e3f3-4841-a208-4fde6487032d",
+    "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+    "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+    "056e5d6d-ac51-4ead-8cbb-24438ec54b11"
+  ],
+  "full_accuracy": {
+    "correct": 11,
+    "total": 20
+  },
+  "combined_measurement": {
+    "samples": 20,
+    "stats": {
+      "asr_ms": {
+        "median": 339.7601875476539,
+        "p95": 464.52871283981955,
+        "max": 530.3424168378115
+      },
+      "detector_ms": {
+        "median": 60.224749613553286,
+        "p95": 74.32461278513077,
+        "max": 106.3005831092596
+      },
+      "serial_wall_ms": {
+        "median": 406.4541249535978,
+        "p95": 543.4488204307854,
+        "max": 588.8277078047395
+      }
+    },
+    "all_agree_with_primary": true
+  },
+  "startup": {
+    "model_load_ms": 330.614167265594,
+    "warmup_ms": [
+      2446.457624901086,
+      115.63804186880589,
+      92.5383330322802
+    ],
+    "asr_model_load_ms": 664.1954169608653
+  }
+}

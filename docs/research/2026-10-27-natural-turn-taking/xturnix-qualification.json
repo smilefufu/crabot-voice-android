@@ -1,5 +1,6 @@
 {
-  "status": "format-verified-inference-not-run",
+  "status": "format-verified",
+  "scope": "Hash/template verification only; inference recorded separately",
   "repo": "xcczach/xturnix-zh-base",
   "revision": "b69ac8a4d98e93332ca3452c569a77dd499287a9",
   "license": "Apache-2.0",
@@ -30,6 +31,11 @@
       "sha256": "343063f3494b20363ef85b5119c8cad1ab6227e285f27fa3a319263f2db08a7d"
     },
     {
+      "file": "model.safetensors",
+      "bytes": 1192135096,
+      "sha256": "e1826bcccfbb5f07c7e63c105da3bcf9138e6dafd6b933061039ec59d67161df"
+    },
+    {
       "file": "special_tokens_map.json",
       "bytes": 493,
       "sha256": "694703ae36646718bf2b2543aa5d289d45ecf3139c57ff45e714ab5fc915993c"
@@ -52,8 +58,8 @@
   ],
   "weight_bytes_required": 1192135096,
   "weight_sha256_required": "e1826bcccfbb5f07c7e63c105da3bcf9138e6dafd6b933061039ec59d67161df",
-  "weight_present_and_verified": false,
-  "partial_download_bytes": 20971520,
+  "weight_present_and_verified": true,
+  "partial_download_bytes": 0,
   "asr_cases": 40,
   "max_seq_length": 2048,
   "action_token_ids": {
@@ -62,8 +68,8 @@
     "<|stop|>": 151673
   },
   "format_only_packages": {
-    "transformers": "5.19.0",
-    "tokenizers": "0.23.3",
+    "transformers": "4.57.3",
+    "tokenizers": "0.22.2",
     "jinja2": "3.1.6",
     "markupsafe": "3.0.4"
   },
