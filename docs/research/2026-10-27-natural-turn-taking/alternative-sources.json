@@ -1,0 +1,39 @@
+{
+  "scope": "Read-only source/package qualification; candidate inference not run",
+  "livekit_local_inference": {
+    "version": "0.2.7",
+    "wheel": "livekit_local_inference-0.2.7-cp312-cp312-macosx_11_0_arm64.whl",
+    "bytes": 35096362,
+    "sha256": "d66a509223e6e1f2ae77c52081969cafb49bd63d7bf4d50153f5bcdf52172865",
+    "api_file": "livekit/local_inference/_native.pyi",
+    "api_sha256": "ccf3f6a7f43996b16a7ed0e7159831629fb82b39063543a01df8953040abc4e0",
+    "documented_max_samples": 19200,
+    "sample_rate": 16000,
+    "public_interface": "single-shot EOT.predict(int16 PCM)",
+    "range_read_bytes": 9119,
+    "native_binary_downloaded": false
+  },
+  "github_blobs": {
+    "livekit/agents/inference/eot/base.py": "3c802943337cec9d215258ce267d534c56917281",
+    "livekit/agents/inference/eot/transports.py": "161201cd5e6b89e8668db27a0df093cbbe8dfe4d",
+    "livekit/agents/utils/audio.py": "2f8fa92d44baa41c445a3887775b2a8438f82625",
+    "xcc-zach/xturnix/README.md": "0332698c54b09e6772dc014767274125e65129c1",
+    "ASLP-lab/Easy-Turn/README.md": "a7251c0d7bdcd96572006b74f5bae68ff1dad091"
+  },
+  "xturnix_zh": {
+    "published_parameter_count": "0.6B",
+    "input": "Transcribed chat history",
+    "official_example_max_model_len": 2048,
+    "weights_config_and_model_license_verified": false,
+    "inference_measured": false
+  },
+  "easy_turn": {
+    "published_parameter_count": "850M",
+    "published_latency_ms": 263,
+    "published_hardware": "NVIDIA RTX 4090",
+    "local_inference_measured": false
+  },
+  "paid_calls": 0,
+  "microphone_or_speaker_use": false,
+  "spec_or_product_changed": false
+}

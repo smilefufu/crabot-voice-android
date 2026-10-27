@@ -1,0 +1,544 @@
+{
+  "scope": "Diagnostic ablations only; no gate relabelling, threshold or timeout changes",
+  "source_id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+  "source_samples": 173440,
+  "source_rate": 16000,
+  "pitch_preserved_sample_count": 123928,
+  "ffmpeg_version": "ffmpeg version 9.0.1 Copyright (c) 2000-2026 the FFmpeg developers",
+  "models": [
+    {
+      "model": "smart-turn-v3.2-cpu.onnx",
+      "model_sha256": "2bb026316b14a660486a75b1733cd3fbab8c2fd0314dc9af7be49f8cca967e4f",
+      "input_metadata": "input_features -1 80 800",
+      "cases": [
+        {
+          "case": "original_official_tail8",
+          "scope": "Original labelled incomplete; official truncation",
+          "feature_sha256": "02569cc15b6eb61a46d3c1541e0732b33782e831a695510c5bf3bf0fa628e9d4",
+          "probability": 0.881712,
+          "complete": true
+        },
+        {
+          "case": "prefix4",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "d24889e9d2acce5552d259e43bdd2801370842e7ab19c2bed48c87e510f58ca7",
+          "probability": 0.0554159,
+          "complete": false
+        },
+        {
+          "case": "prefix4.25",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "b59b7f9c7bf3282a131c5f449f3c77355597599374cd27e14802453db1e64965",
+          "probability": 0.00750977,
+          "complete": false
+        },
+        {
+          "case": "prefix4.5",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "ca893fb380e238575b7dbed6c52400d5a62867f0730f08efaa7b9e07161ed9b8",
+          "probability": 0.0054912,
+          "complete": false
+        },
+        {
+          "case": "prefix4.75",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "f29bc825207dab34945cb606199d2847dc2f638801a4b55f432846b48a40fb6b",
+          "probability": 0.00528026,
+          "complete": false
+        },
+        {
+          "case": "prefix5",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "1a38c668c9857523418144891a4acc2b64b0a42e9dd12da73b9fa52bc2b9374a",
+          "probability": 0.00642213,
+          "complete": false
+        },
+        {
+          "case": "prefix5.25",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "3401305d05ad68da58903a9e50f2cd2b1a34d15b8e61f27952d88a86a4f50845",
+          "probability": 0.00593853,
+          "complete": false
+        },
+        {
+          "case": "prefix5.5",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "1823bbb1eb9573c89685a4d5172a5da4039c036af7eacb04a0186d4593098a49",
+          "probability": 0.0102628,
+          "complete": false
+        },
+        {
+          "case": "prefix5.75",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "b7c95ce1e16ee2da6b4e103136abab9606dc21197f4fab2bc2f71927a845fc6d",
+          "probability": 0.412295,
+          "complete": false
+        },
+        {
+          "case": "prefix6",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "f249478c5385f48386d76592bfed3504e628b3a6f2bc7e9d4cf98161cabd863b",
+          "probability": 0.102818,
+          "complete": false
+        },
+        {
+          "case": "prefix6.25",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "b7c173acc9391e183075c994399db8780b542ab63224adcb52f581815a1391ae",
+          "probability": 0.013477,
+          "complete": false
+        },
+        {
+          "case": "prefix6.5",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "d3f65d9affbfe9eaa7ffc8b34c80c505c1c7f467bb255fdb92e353df34f57c67",
+          "probability": 0.0495459,
+          "complete": false
+        },
+        {
+          "case": "prefix6.75",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "e6bf2911b77306913bf0d13a55eebfe87da3f1d1b2062417d04be5927c1354fe",
+          "probability": 0.0666738,
+          "complete": false
+        },
+        {
+          "case": "prefix7",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "de5b48c52a24e29fb680e9e45bf3ccf23cf61bcca44a4a5d177727c5c03361f8",
+          "probability": 0.38399,
+          "complete": false
+        },
+        {
+          "case": "prefix7.25",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "72056b1e76b6914082dda503fb9bf96a01200827f70a23b4595404a22a1453e0",
+          "probability": 0.32118,
+          "complete": false
+        },
+        {
+          "case": "prefix7.5",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "cb11f6f839a78c7a0a67c99f1d6a7f90166e1dd686c067bd45c3a09c37bba2c6",
+          "probability": 0.431506,
+          "complete": false
+        },
+        {
+          "case": "prefix7.75",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "78b71d652a88174fd7ad63c5ed781103581cbac461dd6cab00f782a567aaf696",
+          "probability": 0.018377,
+          "complete": false
+        },
+        {
+          "case": "prefix8",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "9a62b2f881d2293674bdfd570692fbecf22b83cf00775d379bb8ec659993350e",
+          "probability": 0.00722188,
+          "complete": false
+        },
+        {
+          "case": "head2_tail6",
+          "scope": "Artificial splice; missing middle audio, not causal proof",
+          "feature_sha256": "0f501a249cece29b6d0749d06e05b4db57fa1d78cb573e2da476d231ce5e9032",
+          "probability": 0.91398,
+          "complete": true
+        },
+        {
+          "case": "head3_tail5",
+          "scope": "Artificial splice; missing middle audio, not causal proof",
+          "feature_sha256": "efb84487913284967712d2e4f76eea4b845a875a7ba3aebd241b724ca2959981",
+          "probability": 0.930833,
+          "complete": true
+        },
+        {
+          "case": "head4_tail4",
+          "scope": "Artificial splice; missing middle audio, not causal proof",
+          "feature_sha256": "2a0bc6a979efa84e0a4b8ca735aff74f2395a36229f9807c745f8244d1ecbbdd",
+          "probability": 0.917027,
+          "complete": true
+        },
+        {
+          "case": "compressed_full8",
+          "scope": "All audio resampled to eight seconds; pitch/prosody changed, not a product solution",
+          "feature_sha256": "0576c08fac38149fe7c0f30bd2db3a57ea6b80659e292f3992ccfe4d9b8b6b4e",
+          "probability": 0.98232,
+          "complete": true
+        },
+        {
+          "case": "compressed_muted_head",
+          "scope": "Same compressed tail; missing head replaced with silence; normalization also changes",
+          "feature_sha256": "9a2ee0cbc29117f7e78f571bbb64324d69b93f130698170fa47587fa19e2dd04",
+          "probability": 0.982991,
+          "complete": true
+        },
+        {
+          "case": "pitch_preserved_full_under8",
+          "scope": "All words time-compressed with ffmpeg atempo=1.4, no pitch shift; timing still changed, not causal proof or a product solution",
+          "feature_sha256": "ff77e2a34373851cbec852e5742f76f73ad923710751c579ac9c51693ab8f3f0",
+          "probability": 0.974008,
+          "complete": true
+        }
+      ],
+      "long_input_returncode": 1,
+      "long_input_stdout": "",
+      "long_input_stderr": "Got invalid dimensions for input: input_features for the following indices\n index: 2 Got: 1084 Expected: 800\n Please fix either the inputs/outputs or the model."
+    },
+    {
+      "model": "smart-turn-v3.1-cpu.onnx",
+      "model_sha256": "fb68d55c2d542ce79e44b12013bfd571e90df8594ab096d757198e851b0c6594",
+      "input_metadata": "input_features -1 80 800",
+      "cases": [
+        {
+          "case": "original_official_tail8",
+          "scope": "Original labelled incomplete; official truncation",
+          "feature_sha256": "02569cc15b6eb61a46d3c1541e0732b33782e831a695510c5bf3bf0fa628e9d4",
+          "probability": 0.964627,
+          "complete": true
+        },
+        {
+          "case": "prefix4",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "d24889e9d2acce5552d259e43bdd2801370842e7ab19c2bed48c87e510f58ca7",
+          "probability": 0.310465,
+          "complete": false
+        },
+        {
+          "case": "prefix4.25",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "b59b7f9c7bf3282a131c5f449f3c77355597599374cd27e14802453db1e64965",
+          "probability": 0.919223,
+          "complete": true
+        },
+        {
+          "case": "prefix4.5",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "ca893fb380e238575b7dbed6c52400d5a62867f0730f08efaa7b9e07161ed9b8",
+          "probability": 0.00737929,
+          "complete": false
+        },
+        {
+          "case": "prefix4.75",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "f29bc825207dab34945cb606199d2847dc2f638801a4b55f432846b48a40fb6b",
+          "probability": 0.00925136,
+          "complete": false
+        },
+        {
+          "case": "prefix5",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "1a38c668c9857523418144891a4acc2b64b0a42e9dd12da73b9fa52bc2b9374a",
+          "probability": 0.134484,
+          "complete": false
+        },
+        {
+          "case": "prefix5.25",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "3401305d05ad68da58903a9e50f2cd2b1a34d15b8e61f27952d88a86a4f50845",
+          "probability": 0.117755,
+          "complete": false
+        },
+        {
+          "case": "prefix5.5",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "1823bbb1eb9573c89685a4d5172a5da4039c036af7eacb04a0186d4593098a49",
+          "probability": 0.03806,
+          "complete": false
+        },
+        {
+          "case": "prefix5.75",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "b7c95ce1e16ee2da6b4e103136abab9606dc21197f4fab2bc2f71927a845fc6d",
+          "probability": 0.0409422,
+          "complete": false
+        },
+        {
+          "case": "prefix6",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "f249478c5385f48386d76592bfed3504e628b3a6f2bc7e9d4cf98161cabd863b",
+          "probability": 0.209174,
+          "complete": false
+        },
+        {
+          "case": "prefix6.25",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "b7c173acc9391e183075c994399db8780b542ab63224adcb52f581815a1391ae",
+          "probability": 0.528467,
+          "complete": true
+        },
+        {
+          "case": "prefix6.5",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "d3f65d9affbfe9eaa7ffc8b34c80c505c1c7f467bb255fdb92e353df34f57c67",
+          "probability": 0.809059,
+          "complete": true
+        },
+        {
+          "case": "prefix6.75",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "e6bf2911b77306913bf0d13a55eebfe87da3f1d1b2062417d04be5927c1354fe",
+          "probability": 0.705565,
+          "complete": true
+        },
+        {
+          "case": "prefix7",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "de5b48c52a24e29fb680e9e45bf3ccf23cf61bcca44a4a5d177727c5c03361f8",
+          "probability": 0.927293,
+          "complete": true
+        },
+        {
+          "case": "prefix7.25",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "72056b1e76b6914082dda503fb9bf96a01200827f70a23b4595404a22a1453e0",
+          "probability": 0.153178,
+          "complete": false
+        },
+        {
+          "case": "prefix7.5",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "cb11f6f839a78c7a0a67c99f1d6a7f90166e1dd686c067bd45c3a09c37bba2c6",
+          "probability": 0.148314,
+          "complete": false
+        },
+        {
+          "case": "prefix7.75",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "78b71d652a88174fd7ad63c5ed781103581cbac461dd6cab00f782a567aaf696",
+          "probability": 0.0753108,
+          "complete": false
+        },
+        {
+          "case": "prefix8",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "9a62b2f881d2293674bdfd570692fbecf22b83cf00775d379bb8ec659993350e",
+          "probability": 0.03806,
+          "complete": false
+        },
+        {
+          "case": "head2_tail6",
+          "scope": "Artificial splice; missing middle audio, not causal proof",
+          "feature_sha256": "0f501a249cece29b6d0749d06e05b4db57fa1d78cb573e2da476d231ce5e9032",
+          "probability": 0.94724,
+          "complete": true
+        },
+        {
+          "case": "head3_tail5",
+          "scope": "Artificial splice; missing middle audio, not causal proof",
+          "feature_sha256": "efb84487913284967712d2e4f76eea4b845a875a7ba3aebd241b724ca2959981",
+          "probability": 0.981141,
+          "complete": true
+        },
+        {
+          "case": "head4_tail4",
+          "scope": "Artificial splice; missing middle audio, not causal proof",
+          "feature_sha256": "2a0bc6a979efa84e0a4b8ca735aff74f2395a36229f9807c745f8244d1ecbbdd",
+          "probability": 0.971633,
+          "complete": true
+        },
+        {
+          "case": "compressed_full8",
+          "scope": "All audio resampled to eight seconds; pitch/prosody changed, not a product solution",
+          "feature_sha256": "0576c08fac38149fe7c0f30bd2db3a57ea6b80659e292f3992ccfe4d9b8b6b4e",
+          "probability": 0.972662,
+          "complete": true
+        },
+        {
+          "case": "compressed_muted_head",
+          "scope": "Same compressed tail; missing head replaced with silence; normalization also changes",
+          "feature_sha256": "9a2ee0cbc29117f7e78f571bbb64324d69b93f130698170fa47587fa19e2dd04",
+          "probability": 0.982497,
+          "complete": true
+        },
+        {
+          "case": "pitch_preserved_full_under8",
+          "scope": "All words time-compressed with ffmpeg atempo=1.4, no pitch shift; timing still changed, not causal proof or a product solution",
+          "feature_sha256": "ff77e2a34373851cbec852e5742f76f73ad923710751c579ac9c51693ab8f3f0",
+          "probability": 0.984353,
+          "complete": true
+        }
+      ],
+      "long_input_returncode": 1,
+      "long_input_stdout": "",
+      "long_input_stderr": "Got invalid dimensions for input: input_features for the following indices\n index: 2 Got: 1084 Expected: 800\n Please fix either the inputs/outputs or the model."
+    },
+    {
+      "model": "smart-turn-v3.2-gpu.onnx",
+      "model_sha256": "ab8dc64b88713f90b571c15b714bd1330e6c883cad8763dacf65c9376dc539be",
+      "input_metadata": "input_features -1 80 800",
+      "cases": [
+        {
+          "case": "original_official_tail8",
+          "scope": "Original labelled incomplete; official truncation",
+          "feature_sha256": "02569cc15b6eb61a46d3c1541e0732b33782e831a695510c5bf3bf0fa628e9d4",
+          "probability": 0.97942,
+          "complete": true
+        },
+        {
+          "case": "prefix4",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "d24889e9d2acce5552d259e43bdd2801370842e7ab19c2bed48c87e510f58ca7",
+          "probability": 0.73588,
+          "complete": true
+        },
+        {
+          "case": "prefix4.25",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "b59b7f9c7bf3282a131c5f449f3c77355597599374cd27e14802453db1e64965",
+          "probability": 0.00841868,
+          "complete": false
+        },
+        {
+          "case": "prefix4.5",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "ca893fb380e238575b7dbed6c52400d5a62867f0730f08efaa7b9e07161ed9b8",
+          "probability": 0.00525761,
+          "complete": false
+        },
+        {
+          "case": "prefix4.75",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "f29bc825207dab34945cb606199d2847dc2f638801a4b55f432846b48a40fb6b",
+          "probability": 0.0053657,
+          "complete": false
+        },
+        {
+          "case": "prefix5",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "1a38c668c9857523418144891a4acc2b64b0a42e9dd12da73b9fa52bc2b9374a",
+          "probability": 0.0055995,
+          "complete": false
+        },
+        {
+          "case": "prefix5.25",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "3401305d05ad68da58903a9e50f2cd2b1a34d15b8e61f27952d88a86a4f50845",
+          "probability": 0.00940469,
+          "complete": false
+        },
+        {
+          "case": "prefix5.5",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "1823bbb1eb9573c89685a4d5172a5da4039c036af7eacb04a0186d4593098a49",
+          "probability": 0.0136411,
+          "complete": false
+        },
+        {
+          "case": "prefix5.75",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "b7c95ce1e16ee2da6b4e103136abab9606dc21197f4fab2bc2f71927a845fc6d",
+          "probability": 0.405514,
+          "complete": false
+        },
+        {
+          "case": "prefix6",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "f249478c5385f48386d76592bfed3504e628b3a6f2bc7e9d4cf98161cabd863b",
+          "probability": 0.115559,
+          "complete": false
+        },
+        {
+          "case": "prefix6.25",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "b7c173acc9391e183075c994399db8780b542ab63224adcb52f581815a1391ae",
+          "probability": 0.0324109,
+          "complete": false
+        },
+        {
+          "case": "prefix6.5",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "d3f65d9affbfe9eaa7ffc8b34c80c505c1c7f467bb255fdb92e353df34f57c67",
+          "probability": 0.452517,
+          "complete": false
+        },
+        {
+          "case": "prefix6.75",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "e6bf2911b77306913bf0d13a55eebfe87da3f1d1b2062417d04be5927c1354fe",
+          "probability": 0.248066,
+          "complete": false
+        },
+        {
+          "case": "prefix7",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "de5b48c52a24e29fb680e9e45bf3ccf23cf61bcca44a4a5d177727c5c03361f8",
+          "probability": 0.928936,
+          "complete": true
+        },
+        {
+          "case": "prefix7.25",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "72056b1e76b6914082dda503fb9bf96a01200827f70a23b4595404a22a1453e0",
+          "probability": 0.538051,
+          "complete": true
+        },
+        {
+          "case": "prefix7.5",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "cb11f6f839a78c7a0a67c99f1d6a7f90166e1dd686c067bd45c3a09c37bba2c6",
+          "probability": 0.933208,
+          "complete": true
+        },
+        {
+          "case": "prefix7.75",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "78b71d652a88174fd7ad63c5ed781103581cbac461dd6cab00f782a567aaf696",
+          "probability": 0.0669564,
+          "complete": false
+        },
+        {
+          "case": "prefix8",
+          "scope": "Fixed 0.25-second scan from 4 to 8 seconds, all available context; not separately publisher-labelled",
+          "feature_sha256": "9a62b2f881d2293674bdfd570692fbecf22b83cf00775d379bb8ec659993350e",
+          "probability": 0.0152155,
+          "complete": false
+        },
+        {
+          "case": "head2_tail6",
+          "scope": "Artificial splice; missing middle audio, not causal proof",
+          "feature_sha256": "0f501a249cece29b6d0749d06e05b4db57fa1d78cb573e2da476d231ce5e9032",
+          "probability": 0.98126,
+          "complete": true
+        },
+        {
+          "case": "head3_tail5",
+          "scope": "Artificial splice; missing middle audio, not causal proof",
+          "feature_sha256": "efb84487913284967712d2e4f76eea4b845a875a7ba3aebd241b724ca2959981",
+          "probability": 0.984003,
+          "complete": true
+        },
+        {
+          "case": "head4_tail4",
+          "scope": "Artificial splice; missing middle audio, not causal proof",
+          "feature_sha256": "2a0bc6a979efa84e0a4b8ca735aff74f2395a36229f9807c745f8244d1ecbbdd",
+          "probability": 0.981655,
+          "complete": true
+        },
+        {
+          "case": "compressed_full8",
+          "scope": "All audio resampled to eight seconds; pitch/prosody changed, not a product solution",
+          "feature_sha256": "0576c08fac38149fe7c0f30bd2db3a57ea6b80659e292f3992ccfe4d9b8b6b4e",
+          "probability": 0.989348,
+          "complete": true
+        },
+        {
+          "case": "compressed_muted_head",
+          "scope": "Same compressed tail; missing head replaced with silence; normalization also changes",
+          "feature_sha256": "9a2ee0cbc29117f7e78f571bbb64324d69b93f130698170fa47587fa19e2dd04",
+          "probability": 0.98964,
+          "complete": true
+        },
+        {
+          "case": "pitch_preserved_full_under8",
+          "scope": "All words time-compressed with ffmpeg atempo=1.4, no pitch shift; timing still changed, not causal proof or a product solution",
+          "feature_sha256": "ff77e2a34373851cbec852e5742f76f73ad923710751c579ac9c51693ab8f3f0",
+          "probability": 0.985757,
+          "complete": true
+        }
+      ],
+      "long_input_returncode": 1,
+      "long_input_stdout": "",
+      "long_input_stderr": "Got invalid dimensions for input: input_features for the following indices\n index: 2 Got: 1084 Expected: 800\n Please fix either the inputs/outputs or the model."
+    }
+  ]
+}

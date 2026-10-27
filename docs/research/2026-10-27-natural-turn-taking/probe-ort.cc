@@ -10,7 +10,7 @@
 
 int main(int argc, char **argv) {
   const OrtApi *api = OrtGetApiBase()->GetApi(ORT_API_VERSION);
-  if (!api || argc < 3) return 2;
+  if (!api || argc < 2) return 2;
   auto check = [api](OrtStatus *status) {
     if (!status) return;
     const std::string message = api->GetErrorMessage(status);
@@ -40,13 +40,36 @@ int main(int argc, char **argv) {
     check(api->SessionGetOutputName(session.get(), 0, allocator, &outputName));
     const std::string output(outputName);
     allocator->Free(allocator, outputName);
+    if (argc == 2) {
+      OrtTypeInfo *typeRaw = nullptr;
+      check(api->SessionGetInputTypeInfo(session.get(), 0, &typeRaw));
+      std::unique_ptr<OrtTypeInfo, decltype(api->ReleaseTypeInfo)> info(typeRaw, api->ReleaseTypeInfo);
+      const OrtTensorTypeAndShapeInfo *tensor = nullptr;
+      check(api->CastTypeInfoToTensorInfo(info.get(), &tensor));
+      size_t count = 0;
+      check(api->GetDimensionsCount(tensor, &count));
+      std::vector<int64_t> dimensions(count);
+      check(api->GetDimensions(tensor, dimensions.data(), count));
+      std::cout << "input_features";
+      for (auto dimension : dimensions) std::cout << " " << dimension;
+      std::cout << std::endl;
+      return 0;
+    }
+    int firstFile = 2;
+    size_t frames = 800;
+    if (std::string(argv[2]) == "--frames") {
+      if (argc < 5) throw std::runtime_error("Expected frame count and feature file");
+      frames = std::stoul(argv[3]);
+      if (frames < 1 || frames > 3000) throw std::runtime_error("Frame count outside research limit");
+      firstFile = 4;
+    }
     const char *inputNames[] = {"input_features"}, *outputNames[] = {output.c_str()};
-    for (int i = 2; i < argc; ++i) {
-      std::vector<float> features(80 * 800);
+    for (int i = firstFile; i < argc; ++i) {
+      std::vector<float> features(80 * frames);
       std::ifstream file(argv[i], std::ios::binary);
       file.read(reinterpret_cast<char *>(features.data()), features.size() * sizeof(float));
-      if (!file || file.peek() != std::char_traits<char>::eof()) throw std::runtime_error("Expected exactly 80x800 float32 features");
-      const int64_t shape[] = {1, 80, 800};
+      if (!file || file.peek() != std::char_traits<char>::eof()) throw std::runtime_error("Feature size does not match frame count");
+      const int64_t shape[] = {1, 80, static_cast<int64_t>(frames)};
       OrtValue *inputRaw = nullptr, *outputRaw = nullptr;
       check(api->CreateTensorWithDataAsOrtValue(memory.get(), features.data(), features.size() * sizeof(float), shape, 3, ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT, &inputRaw));
       std::unique_ptr<OrtValue, decltype(api->ReleaseValue)> input(inputRaw, api->ReleaseValue);
@@ -66,7 +89,7 @@ int main(int argc, char **argv) {
       float *probability = nullptr;
       check(api->GetTensorMutableData(result.get(), reinterpret_cast<void **>(&probability)));
       if (!std::isfinite(probability[0]) || probability[0] < 0 || probability[0] > 1) throw std::runtime_error("Invalid probability");
-      std::cout << i - 2 << " " << probability[0] << " " << milliseconds << std::endl;
+      std::cout << i - firstFile << " " << probability[0] << " " << milliseconds << std::endl;
     }
   } catch (const std::exception &error) {
     std::cerr << error.what() << std::endl;

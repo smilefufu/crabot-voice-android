@@ -1,0 +1,32 @@
+[
+  {
+    "case": "lost_head2.84",
+    "text": "清初文学家金圣探把杜。",
+    "scope": "Diagnostic local ASR, not a trusted transcript or new dataset label"
+  },
+  {
+    "case": "tail8",
+    "text": "府所作之诗，那个与屈原的离骚，庄周的庄子，司马迁的史记，施耐安的水浒传。",
+    "scope": "Diagnostic local ASR, not a trusted transcript or new dataset label"
+  },
+  {
+    "case": "prefix4",
+    "text": "清初文学家金圣探把杜甫所作之诗。",
+    "scope": "Diagnostic local ASR, not a trusted transcript or new dataset label"
+  },
+  {
+    "case": "prefix6",
+    "text": "清初文学家金圣探把杜甫所作之诗那个与屈原的离骚。",
+    "scope": "Diagnostic local ASR, not a trusted transcript or new dataset label"
+  },
+  {
+    "case": "prefix7",
+    "text": "清初文学家金圣探把杜甫所作之诗，那个与屈原的离骚庄周的庄。",
+    "scope": "Diagnostic local ASR, not a trusted transcript or new dataset label"
+  },
+  {
+    "case": "prefix8",
+    "text": "清初文学家金圣探把杜甫所作之诗，那个与屈原的离骚庄周的庄子司马。",
+    "scope": "Diagnostic local ASR, not a trusted transcript or new dataset label"
+  }
+]
