@@ -1,0 +1,353 @@
+{
+  "status": "format-verified-inference-not-run",
+  "repo": "xcczach/xturnix-zh-base",
+  "revision": "b69ac8a4d98e93332ca3452c569a77dd499287a9",
+  "license": "Apache-2.0",
+  "checked_files": [
+    {
+      "file": "LICENSE",
+      "bytes": 623,
+      "sha256": "18f56d5b241d1ed2a4317dfbfe74fe9d42290b25a5dde11b02ccbb025b148d1e"
+    },
+    {
+      "file": "added_tokens.json",
+      "bytes": 850,
+      "sha256": "fa040c364309ce21192e48b382b150e7b3c4f19cb0faf733ac455ba6fd26097e"
+    },
+    {
+      "file": "chat_template.jinja",
+      "bytes": 4905,
+      "sha256": "5da44855ab7e0641774d5ed0ff0b4f89671d01df7d316e54d06557a962211cb4"
+    },
+    {
+      "file": "config.json",
+      "bytes": 1953,
+      "sha256": "fe9425ddfab91d0525bd86dc01c8a6bc13b842043ba13b5d61f8e1b9b90d8270"
+    },
+    {
+      "file": "generation_config.json",
+      "bytes": 158,
+      "sha256": "343063f3494b20363ef85b5119c8cad1ab6227e285f27fa3a319263f2db08a7d"
+    },
+    {
+      "file": "special_tokens_map.json",
+      "bytes": 493,
+      "sha256": "694703ae36646718bf2b2543aa5d289d45ecf3139c57ff45e714ab5fc915993c"
+    },
+    {
+      "file": "tokenizer.json",
+      "bytes": 11423897,
+      "sha256": "e1cdfc37289f88242660c6694e92e84dbbe3058b4cf45be593d784b658c0aa1d"
+    },
+    {
+      "file": "tokenizer_config.json",
+      "bytes": 6599,
+      "sha256": "5e661aaa48f1e56681a504cb4e28c2da0abfa03d4cb7aadbe30b80795b4a4a6d"
+    },
+    {
+      "file": "turn_pipeline.py",
+      "bytes": 13958,
+      "sha256": "3f61107dd6bca143a10038d51c6957144df8f8ccec5eb020d86dc5df96de515c"
+    }
+  ],
+  "weight_bytes_required": 1192135096,
+  "weight_sha256_required": "e1826bcccfbb5f07c7e63c105da3bcf9138e6dafd6b933061039ec59d67161df",
+  "weight_present_and_verified": false,
+  "partial_download_bytes": 20971520,
+  "asr_cases": 40,
+  "max_seq_length": 2048,
+  "action_token_ids": {
+    "<|start|>": 151671,
+    "<|keep|>": 151672,
+    "<|stop|>": 151673
+  },
+  "format_only_packages": {
+    "transformers": "5.19.0",
+    "tokenizers": "0.23.3",
+    "jinja2": "3.1.6",
+    "markupsafe": "3.0.4"
+  },
+  "cases": [
+    {
+      "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+      "variant": "full",
+      "input_tokens": 123,
+      "complete_tokens": 126,
+      "truncated": false
+    },
+    {
+      "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+      "variant": "tail8",
+      "input_tokens": 113,
+      "complete_tokens": 116,
+      "truncated": false
+    },
+    {
+      "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+      "variant": "full",
+      "input_tokens": 104,
+      "complete_tokens": 107,
+      "truncated": false
+    },
+    {
+      "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+      "variant": "tail8",
+      "input_tokens": 104,
+      "complete_tokens": 107,
+      "truncated": false
+    },
+    {
+      "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+      "variant": "full",
+      "input_tokens": 110,
+      "complete_tokens": 113,
+      "truncated": false
+    },
+    {
+      "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+      "variant": "tail8",
+      "input_tokens": 105,
+      "complete_tokens": 108,
+      "truncated": false
+    },
+    {
+      "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+      "variant": "full",
+      "input_tokens": 109,
+      "complete_tokens": 112,
+      "truncated": false
+    },
+    {
+      "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+      "variant": "tail8",
+      "input_tokens": 109,
+      "complete_tokens": 112,
+      "truncated": false
+    },
+    {
+      "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+      "variant": "full",
+      "input_tokens": 109,
+      "complete_tokens": 112,
+      "truncated": false
+    },
+    {
+      "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+      "variant": "tail8",
+      "input_tokens": 109,
+      "complete_tokens": 112,
+      "truncated": false
+    },
+    {
+      "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+      "variant": "full",
+      "input_tokens": 124,
+      "complete_tokens": 127,
+      "truncated": false
+    },
+    {
+      "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+      "variant": "tail8",
+      "input_tokens": 118,
+      "complete_tokens": 121,
+      "truncated": false
+    },
+    {
+      "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+      "variant": "full",
+      "input_tokens": 115,
+      "complete_tokens": 118,
+      "truncated": false
+    },
+    {
+      "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+      "variant": "tail8",
+      "input_tokens": 106,
+      "complete_tokens": 109,
+      "truncated": false
+    },
+    {
+      "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+      "variant": "full",
+      "input_tokens": 112,
+      "complete_tokens": 115,
+      "truncated": false
+    },
+    {
+      "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+      "variant": "tail8",
+      "input_tokens": 107,
+      "complete_tokens": 110,
+      "truncated": false
+    },
+    {
+      "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+      "variant": "full",
+      "input_tokens": 115,
+      "complete_tokens": 118,
+      "truncated": false
+    },
+    {
+      "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+      "variant": "tail8",
+      "input_tokens": 105,
+      "complete_tokens": 108,
+      "truncated": false
+    },
+    {
+      "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+      "variant": "full",
+      "input_tokens": 119,
+      "complete_tokens": 122,
+      "truncated": false
+    },
+    {
+      "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+      "variant": "tail8",
+      "input_tokens": 109,
+      "complete_tokens": 112,
+      "truncated": false
+    },
+    {
+      "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+      "variant": "full",
+      "input_tokens": 103,
+      "complete_tokens": 106,
+      "truncated": false
+    },
+    {
+      "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+      "variant": "tail8",
+      "input_tokens": 103,
+      "complete_tokens": 106,
+      "truncated": false
+    },
+    {
+      "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+      "variant": "full",
+      "input_tokens": 114,
+      "complete_tokens": 117,
+      "truncated": false
+    },
+    {
+      "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+      "variant": "tail8",
+      "input_tokens": 113,
+      "complete_tokens": 116,
+      "truncated": false
+    },
+    {
+      "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+      "variant": "full",
+      "input_tokens": 103,
+      "complete_tokens": 106,
+      "truncated": false
+    },
+    {
+      "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+      "variant": "tail8",
+      "input_tokens": 103,
+      "complete_tokens": 106,
+      "truncated": false
+    },
+    {
+      "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+      "variant": "full",
+      "input_tokens": 98,
+      "complete_tokens": 101,
+      "truncated": false
+    },
+    {
+      "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+      "variant": "tail8",
+      "input_tokens": 98,
+      "complete_tokens": 101,
+      "truncated": false
+    },
+    {
+      "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+      "variant": "full",
+      "input_tokens": 99,
+      "complete_tokens": 102,
+      "truncated": false
+    },
+    {
+      "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+      "variant": "tail8",
+      "input_tokens": 99,
+      "complete_tokens": 102,
+      "truncated": false
+    },
+    {
+      "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+      "variant": "full",
+      "input_tokens": 103,
+      "complete_tokens": 106,
+      "truncated": false
+    },
+    {
+      "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+      "variant": "tail8",
+      "input_tokens": 103,
+      "complete_tokens": 106,
+      "truncated": false
+    },
+    {
+      "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+      "variant": "full",
+      "input_tokens": 101,
+      "complete_tokens": 104,
+      "truncated": false
+    },
+    {
+      "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+      "variant": "tail8",
+      "input_tokens": 101,
+      "complete_tokens": 104,
+      "truncated": false
+    },
+    {
+      "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+      "variant": "full",
+      "input_tokens": 120,
+      "complete_tokens": 123,
+      "truncated": false
+    },
+    {
+      "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+      "variant": "tail8",
+      "input_tokens": 110,
+      "complete_tokens": 113,
+      "truncated": false
+    },
+    {
+      "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+      "variant": "full",
+      "input_tokens": 119,
+      "complete_tokens": 122,
+      "truncated": false
+    },
+    {
+      "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+      "variant": "tail8",
+      "input_tokens": 106,
+      "complete_tokens": 109,
+      "truncated": false
+    },
+    {
+      "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+      "variant": "full",
+      "input_tokens": 121,
+      "complete_tokens": 124,
+      "truncated": false
+    },
+    {
+      "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+      "variant": "tail8",
+      "input_tokens": 107,
+      "complete_tokens": 110,
+      "truncated": false
+    }
+  ],
+  "predictions": null
+}
