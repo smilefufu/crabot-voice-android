@@ -1,0 +1,6 @@
+{
+  "scope": "Publisher function extracted without importing Pipecat; feature tensors byte-identical to our probe; no accuracy improvement",
+  "cases": 120,
+  "feature_exact_equal": true,
+  "decision_equal": true
+}

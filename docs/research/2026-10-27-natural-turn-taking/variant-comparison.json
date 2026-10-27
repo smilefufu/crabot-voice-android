@@ -1,0 +1,1784 @@
+[
+  {
+    "model": "smart-turn-v3.1-cpu.onnx",
+    "sha256": "fb68d55c2d542ce79e44b12013bfd571e90df8594ab096d757198e851b0c6594",
+    "runtime": "CPU, one thread, existing ORT 1.28.2",
+    "summary": [
+      {
+        "added_silence_seconds": 0,
+        "incomplete_false_positive": 1,
+        "incomplete_total": 10,
+        "complete_false_negative": 2,
+        "complete_total": 10
+      },
+      {
+        "added_silence_seconds": 0.2,
+        "incomplete_false_positive": 1,
+        "incomplete_total": 10,
+        "complete_false_negative": 1,
+        "complete_total": 10
+      },
+      {
+        "added_silence_seconds": 0.8,
+        "incomplete_false_positive": 1,
+        "incomplete_total": 10,
+        "complete_false_negative": 1,
+        "complete_total": 10
+      },
+      {
+        "added_silence_seconds": 1,
+        "incomplete_false_positive": 1,
+        "incomplete_total": 10,
+        "complete_false_negative": 1,
+        "complete_total": 10
+      },
+      {
+        "added_silence_seconds": 2,
+        "incomplete_false_positive": 1,
+        "incomplete_total": 10,
+        "complete_false_negative": 1,
+        "complete_total": 10
+      },
+      {
+        "added_silence_seconds": 3,
+        "incomplete_false_positive": 1,
+        "incomplete_total": 10,
+        "complete_false_negative": 1,
+        "complete_total": 10
+      }
+    ],
+    "cases": [
+      {
+        "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+        "added_silence_seconds": 0.0,
+        "expected_complete": false,
+        "probability": 0.00658953,
+        "inference_ms": 43.2972
+      },
+      {
+        "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+        "added_silence_seconds": 0.2,
+        "expected_complete": false,
+        "probability": 0.00658953,
+        "inference_ms": 44.5439
+      },
+      {
+        "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+        "added_silence_seconds": 0.8,
+        "expected_complete": false,
+        "probability": 0.00658953,
+        "inference_ms": 43.244
+      },
+      {
+        "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+        "added_silence_seconds": 1.0,
+        "expected_complete": false,
+        "probability": 0.00684291,
+        "inference_ms": 42.1097
+      },
+      {
+        "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+        "added_silence_seconds": 2.0,
+        "expected_complete": false,
+        "probability": 0.00684291,
+        "inference_ms": 42.3069
+      },
+      {
+        "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+        "added_silence_seconds": 3.0,
+        "expected_complete": false,
+        "probability": 0.00766283,
+        "inference_ms": 42.3537
+      },
+      {
+        "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+        "added_silence_seconds": 0.0,
+        "expected_complete": false,
+        "probability": 0.00634536,
+        "inference_ms": 42.0557
+      },
+      {
+        "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+        "added_silence_seconds": 0.2,
+        "expected_complete": false,
+        "probability": 0.00634536,
+        "inference_ms": 42.081
+      },
+      {
+        "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+        "added_silence_seconds": 0.8,
+        "expected_complete": false,
+        "probability": 0.0836435,
+        "inference_ms": 41.6277
+      },
+      {
+        "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+        "added_silence_seconds": 1.0,
+        "expected_complete": false,
+        "probability": 0.00766283,
+        "inference_ms": 42.11
+      },
+      {
+        "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+        "added_silence_seconds": 2.0,
+        "expected_complete": false,
+        "probability": 0.00960618,
+        "inference_ms": 41.8298
+      },
+      {
+        "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+        "added_silence_seconds": 3.0,
+        "expected_complete": false,
+        "probability": 0.00658953,
+        "inference_ms": 41.6077
+      },
+      {
+        "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+        "added_silence_seconds": 0.0,
+        "expected_complete": false,
+        "probability": 0.00684291,
+        "inference_ms": 42.4027
+      },
+      {
+        "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+        "added_silence_seconds": 0.2,
+        "expected_complete": false,
+        "probability": 0.00710607,
+        "inference_ms": 41.6662
+      },
+      {
+        "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+        "added_silence_seconds": 0.8,
+        "expected_complete": false,
+        "probability": 0.00658953,
+        "inference_ms": 41.579
+      },
+      {
+        "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+        "added_silence_seconds": 1.0,
+        "expected_complete": false,
+        "probability": 0.00658953,
+        "inference_ms": 41.6705
+      },
+      {
+        "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+        "added_silence_seconds": 2.0,
+        "expected_complete": false,
+        "probability": 0.00710607,
+        "inference_ms": 42.053
+      },
+      {
+        "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+        "added_silence_seconds": 3.0,
+        "expected_complete": false,
+        "probability": 0.00766283,
+        "inference_ms": 42.0365
+      },
+      {
+        "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+        "added_silence_seconds": 0.0,
+        "expected_complete": false,
+        "probability": 0.00684291,
+        "inference_ms": 41.8392
+      },
+      {
+        "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+        "added_silence_seconds": 0.2,
+        "expected_complete": false,
+        "probability": 0.00684291,
+        "inference_ms": 42.2815
+      },
+      {
+        "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+        "added_silence_seconds": 0.8,
+        "expected_complete": false,
+        "probability": 0.00658953,
+        "inference_ms": 41.9918
+      },
+      {
+        "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+        "added_silence_seconds": 1.0,
+        "expected_complete": false,
+        "probability": 0.00658953,
+        "inference_ms": 42.457
+      },
+      {
+        "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+        "added_silence_seconds": 2.0,
+        "expected_complete": false,
+        "probability": 0.00684291,
+        "inference_ms": 41.9687
+      },
+      {
+        "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+        "added_silence_seconds": 3.0,
+        "expected_complete": false,
+        "probability": 0.00684291,
+        "inference_ms": 41.8729
+      },
+      {
+        "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+        "added_silence_seconds": 0.0,
+        "expected_complete": false,
+        "probability": 0.0150721,
+        "inference_ms": 42.5015
+      },
+      {
+        "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+        "added_silence_seconds": 0.2,
+        "expected_complete": false,
+        "probability": 0.0120364,
+        "inference_ms": 43.4225
+      },
+      {
+        "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+        "added_silence_seconds": 0.8,
+        "expected_complete": false,
+        "probability": 0.352525,
+        "inference_ms": 42.6475
+      },
+      {
+        "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+        "added_silence_seconds": 1.0,
+        "expected_complete": false,
+        "probability": 0.179476,
+        "inference_ms": 42.6377
+      },
+      {
+        "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+        "added_silence_seconds": 2.0,
+        "expected_complete": false,
+        "probability": 0.00795728,
+        "inference_ms": 42.213
+      },
+      {
+        "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+        "added_silence_seconds": 3.0,
+        "expected_complete": false,
+        "probability": 0.030538,
+        "inference_ms": 43.281
+      },
+      {
+        "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+        "added_silence_seconds": 0.0,
+        "expected_complete": false,
+        "probability": 0.964627,
+        "inference_ms": 43.7208
+      },
+      {
+        "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+        "added_silence_seconds": 0.2,
+        "expected_complete": false,
+        "probability": 0.952655,
+        "inference_ms": 43.5914
+      },
+      {
+        "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+        "added_silence_seconds": 0.8,
+        "expected_complete": false,
+        "probability": 0.971633,
+        "inference_ms": 42.9834
+      },
+      {
+        "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+        "added_silence_seconds": 1.0,
+        "expected_complete": false,
+        "probability": 0.945309,
+        "inference_ms": 43.044
+      },
+      {
+        "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+        "added_silence_seconds": 2.0,
+        "expected_complete": false,
+        "probability": 0.95754,
+        "inference_ms": 42.719
+      },
+      {
+        "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+        "added_silence_seconds": 3.0,
+        "expected_complete": false,
+        "probability": 0.965901,
+        "inference_ms": 42.7573
+      },
+      {
+        "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+        "added_silence_seconds": 0.0,
+        "expected_complete": false,
+        "probability": 0.00925136,
+        "inference_ms": 42.685
+      },
+      {
+        "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+        "added_silence_seconds": 0.2,
+        "expected_complete": false,
+        "probability": 0.00658953,
+        "inference_ms": 42.7339
+      },
+      {
+        "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+        "added_silence_seconds": 0.8,
+        "expected_complete": false,
+        "probability": 0.00684291,
+        "inference_ms": 42.0062
+      },
+      {
+        "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+        "added_silence_seconds": 1.0,
+        "expected_complete": false,
+        "probability": 0.00684291,
+        "inference_ms": 42.3233
+      },
+      {
+        "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+        "added_silence_seconds": 2.0,
+        "expected_complete": false,
+        "probability": 0.00826287,
+        "inference_ms": 42.8402
+      },
+      {
+        "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+        "added_silence_seconds": 3.0,
+        "expected_complete": false,
+        "probability": 0.00710607,
+        "inference_ms": 43.2472
+      },
+      {
+        "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+        "added_silence_seconds": 0.0,
+        "expected_complete": false,
+        "probability": 0.00737929,
+        "inference_ms": 42.3619
+      },
+      {
+        "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+        "added_silence_seconds": 0.2,
+        "expected_complete": false,
+        "probability": 0.00658953,
+        "inference_ms": 42.0783
+      },
+      {
+        "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+        "added_silence_seconds": 0.8,
+        "expected_complete": false,
+        "probability": 0.00611022,
+        "inference_ms": 42.1892
+      },
+      {
+        "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+        "added_silence_seconds": 1.0,
+        "expected_complete": false,
+        "probability": 0.00925136,
+        "inference_ms": 41.9456
+      },
+      {
+        "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+        "added_silence_seconds": 2.0,
+        "expected_complete": false,
+        "probability": 0.00710607,
+        "inference_ms": 41.8043
+      },
+      {
+        "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+        "added_silence_seconds": 3.0,
+        "expected_complete": false,
+        "probability": 0.00826287,
+        "inference_ms": 41.8086
+      },
+      {
+        "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+        "added_silence_seconds": 0.0,
+        "expected_complete": false,
+        "probability": 0.00634536,
+        "inference_ms": 42.9023
+      },
+      {
+        "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+        "added_silence_seconds": 0.2,
+        "expected_complete": false,
+        "probability": 0.00611022,
+        "inference_ms": 42.9966
+      },
+      {
+        "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+        "added_silence_seconds": 0.8,
+        "expected_complete": false,
+        "probability": 0.00611022,
+        "inference_ms": 43.0233
+      },
+      {
+        "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+        "added_silence_seconds": 1.0,
+        "expected_complete": false,
+        "probability": 0.00611022,
+        "inference_ms": 43.4403
+      },
+      {
+        "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+        "added_silence_seconds": 2.0,
+        "expected_complete": false,
+        "probability": 0.00634536,
+        "inference_ms": 42.8425
+      },
+      {
+        "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+        "added_silence_seconds": 3.0,
+        "expected_complete": false,
+        "probability": 0.00658953,
+        "inference_ms": 42.6332
+      },
+      {
+        "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+        "added_silence_seconds": 0.0,
+        "expected_complete": false,
+        "probability": 0.00658953,
+        "inference_ms": 41.9687
+      },
+      {
+        "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+        "added_silence_seconds": 0.2,
+        "expected_complete": false,
+        "probability": 0.00710607,
+        "inference_ms": 42.5719
+      },
+      {
+        "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+        "added_silence_seconds": 0.8,
+        "expected_complete": false,
+        "probability": 0.00634536,
+        "inference_ms": 43.1575
+      },
+      {
+        "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+        "added_silence_seconds": 1.0,
+        "expected_complete": false,
+        "probability": 0.00634536,
+        "inference_ms": 43.2633
+      },
+      {
+        "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+        "added_silence_seconds": 2.0,
+        "expected_complete": false,
+        "probability": 0.00634536,
+        "inference_ms": 43.3945
+      },
+      {
+        "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+        "added_silence_seconds": 3.0,
+        "expected_complete": false,
+        "probability": 0.00795728,
+        "inference_ms": 43.4321
+      },
+      {
+        "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+        "added_silence_seconds": 0.0,
+        "expected_complete": true,
+        "probability": 0.0440325,
+        "inference_ms": 42.5364
+      },
+      {
+        "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+        "added_silence_seconds": 0.2,
+        "expected_complete": true,
+        "probability": 0.0928057,
+        "inference_ms": 42.5823
+      },
+      {
+        "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+        "added_silence_seconds": 0.8,
+        "expected_complete": true,
+        "probability": 0.378959,
+        "inference_ms": 42.6111
+      },
+      {
+        "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+        "added_silence_seconds": 1.0,
+        "expected_complete": true,
+        "probability": 0.235426,
+        "inference_ms": 42.9741
+      },
+      {
+        "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+        "added_silence_seconds": 2.0,
+        "expected_complete": true,
+        "probability": 0.0409422,
+        "inference_ms": 43.0668
+      },
+      {
+        "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+        "added_silence_seconds": 3.0,
+        "expected_complete": true,
+        "probability": 0.030538,
+        "inference_ms": 42.3921
+      },
+      {
+        "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+        "added_silence_seconds": 0.0,
+        "expected_complete": true,
+        "probability": 0.978113,
+        "inference_ms": 42.0189
+      },
+      {
+        "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+        "added_silence_seconds": 0.2,
+        "expected_complete": true,
+        "probability": 0.984353,
+        "inference_ms": 42.4802
+      },
+      {
+        "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+        "added_silence_seconds": 0.8,
+        "expected_complete": true,
+        "probability": 0.982497,
+        "inference_ms": 41.7455
+      },
+      {
+        "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+        "added_silence_seconds": 1.0,
+        "expected_complete": true,
+        "probability": 0.987025,
+        "inference_ms": 41.9252
+      },
+      {
+        "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+        "added_silence_seconds": 2.0,
+        "expected_complete": true,
+        "probability": 0.98653,
+        "inference_ms": 42.0987
+      },
+      {
+        "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+        "added_silence_seconds": 3.0,
+        "expected_complete": true,
+        "probability": 0.983757,
+        "inference_ms": 42.2463
+      },
+      {
+        "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+        "added_silence_seconds": 0.0,
+        "expected_complete": true,
+        "probability": 0.95754,
+        "inference_ms": 42.4357
+      },
+      {
+        "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+        "added_silence_seconds": 0.2,
+        "expected_complete": true,
+        "probability": 0.981832,
+        "inference_ms": 42.045
+      },
+      {
+        "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+        "added_silence_seconds": 0.8,
+        "expected_complete": true,
+        "probability": 0.98653,
+        "inference_ms": 41.8523
+      },
+      {
+        "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+        "added_silence_seconds": 1.0,
+        "expected_complete": true,
+        "probability": 0.987503,
+        "inference_ms": 41.6698
+      },
+      {
+        "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+        "added_silence_seconds": 2.0,
+        "expected_complete": true,
+        "probability": 0.988407,
+        "inference_ms": 41.8299
+      },
+      {
+        "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+        "added_silence_seconds": 3.0,
+        "expected_complete": true,
+        "probability": 0.98653,
+        "inference_ms": 42.8165
+      },
+      {
+        "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+        "added_silence_seconds": 0.0,
+        "expected_complete": true,
+        "probability": 0.972662,
+        "inference_ms": 43.1902
+      },
+      {
+        "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+        "added_silence_seconds": 0.2,
+        "expected_complete": true,
+        "probability": 0.980425,
+        "inference_ms": 43.0329
+      },
+      {
+        "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+        "added_silence_seconds": 0.8,
+        "expected_complete": true,
+        "probability": 0.974612,
+        "inference_ms": 42.7184
+      },
+      {
+        "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+        "added_silence_seconds": 1.0,
+        "expected_complete": true,
+        "probability": 0.978113,
+        "inference_ms": 42.7743
+      },
+      {
+        "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+        "added_silence_seconds": 2.0,
+        "expected_complete": true,
+        "probability": 0.985482,
+        "inference_ms": 43.043
+      },
+      {
+        "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+        "added_silence_seconds": 3.0,
+        "expected_complete": true,
+        "probability": 0.987025,
+        "inference_ms": 43.6015
+      },
+      {
+        "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+        "added_silence_seconds": 0.0,
+        "expected_complete": true,
+        "probability": 0.929814,
+        "inference_ms": 43.2745
+      },
+      {
+        "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+        "added_silence_seconds": 0.2,
+        "expected_complete": true,
+        "probability": 0.960524,
+        "inference_ms": 43.6221
+      },
+      {
+        "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+        "added_silence_seconds": 0.8,
+        "expected_complete": true,
+        "probability": 0.955968,
+        "inference_ms": 42.568
+      },
+      {
+        "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+        "added_silence_seconds": 1.0,
+        "expected_complete": true,
+        "probability": 0.974612,
+        "inference_ms": 43.4584
+      },
+      {
+        "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+        "added_silence_seconds": 2.0,
+        "expected_complete": true,
+        "probability": 0.981141,
+        "inference_ms": 42.9219
+      },
+      {
+        "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+        "added_silence_seconds": 3.0,
+        "expected_complete": true,
+        "probability": 0.981141,
+        "inference_ms": 42.7617
+      },
+      {
+        "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+        "added_silence_seconds": 0.0,
+        "expected_complete": true,
+        "probability": 0.397002,
+        "inference_ms": 42.5199
+      },
+      {
+        "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+        "added_silence_seconds": 0.2,
+        "expected_complete": true,
+        "probability": 0.934614,
+        "inference_ms": 42.5243
+      },
+      {
+        "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+        "added_silence_seconds": 0.8,
+        "expected_complete": true,
+        "probability": 0.647475,
+        "inference_ms": 42.6912
+      },
+      {
+        "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+        "added_silence_seconds": 1.0,
+        "expected_complete": true,
+        "probability": 0.846822,
+        "inference_ms": 42.7414
+      },
+      {
+        "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+        "added_silence_seconds": 2.0,
+        "expected_complete": true,
+        "probability": 0.664621,
+        "inference_ms": 43.0768
+      },
+      {
+        "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+        "added_silence_seconds": 3.0,
+        "expected_complete": true,
+        "probability": 0.69761,
+        "inference_ms": 43.2343
+      },
+      {
+        "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+        "added_silence_seconds": 0.0,
+        "expected_complete": true,
+        "probability": 0.970567,
+        "inference_ms": 43.0101
+      },
+      {
+        "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+        "added_silence_seconds": 0.2,
+        "expected_complete": true,
+        "probability": 0.984928,
+        "inference_ms": 42.5684
+      },
+      {
+        "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+        "added_silence_seconds": 0.8,
+        "expected_complete": true,
+        "probability": 0.984353,
+        "inference_ms": 42.8001
+      },
+      {
+        "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+        "added_silence_seconds": 1.0,
+        "expected_complete": true,
+        "probability": 0.985482,
+        "inference_ms": 42.4095
+      },
+      {
+        "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+        "added_silence_seconds": 2.0,
+        "expected_complete": true,
+        "probability": 0.981141,
+        "inference_ms": 42.5662
+      },
+      {
+        "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+        "added_silence_seconds": 3.0,
+        "expected_complete": true,
+        "probability": 0.984928,
+        "inference_ms": 42.9644
+      },
+      {
+        "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+        "added_silence_seconds": 0.0,
+        "expected_complete": true,
+        "probability": 0.986015,
+        "inference_ms": 43.4509
+      },
+      {
+        "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+        "added_silence_seconds": 0.2,
+        "expected_complete": true,
+        "probability": 0.979682,
+        "inference_ms": 42.7595
+      },
+      {
+        "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+        "added_silence_seconds": 0.8,
+        "expected_complete": true,
+        "probability": 0.98653,
+        "inference_ms": 42.9402
+      },
+      {
+        "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+        "added_silence_seconds": 1.0,
+        "expected_complete": true,
+        "probability": 0.98653,
+        "inference_ms": 43.3086
+      },
+      {
+        "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+        "added_silence_seconds": 2.0,
+        "expected_complete": true,
+        "probability": 0.987503,
+        "inference_ms": 43.3173
+      },
+      {
+        "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+        "added_silence_seconds": 3.0,
+        "expected_complete": true,
+        "probability": 0.98653,
+        "inference_ms": 43.9069
+      },
+      {
+        "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+        "added_silence_seconds": 0.0,
+        "expected_complete": true,
+        "probability": 0.547355,
+        "inference_ms": 43.7243
+      },
+      {
+        "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+        "added_silence_seconds": 0.2,
+        "expected_complete": true,
+        "probability": 0.81486,
+        "inference_ms": 43.1623
+      },
+      {
+        "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+        "added_silence_seconds": 0.8,
+        "expected_complete": true,
+        "probability": 0.934614,
+        "inference_ms": 44.1832
+      },
+      {
+        "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+        "added_silence_seconds": 1.0,
+        "expected_complete": true,
+        "probability": 0.959058,
+        "inference_ms": 43.018
+      },
+      {
+        "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+        "added_silence_seconds": 2.0,
+        "expected_complete": true,
+        "probability": 0.929814,
+        "inference_ms": 43.722
+      },
+      {
+        "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+        "added_silence_seconds": 3.0,
+        "expected_complete": true,
+        "probability": 0.95754,
+        "inference_ms": 42.9128
+      },
+      {
+        "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+        "added_silence_seconds": 0.0,
+        "expected_complete": true,
+        "probability": 0.96713,
+        "inference_ms": 42.7612
+      },
+      {
+        "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+        "added_silence_seconds": 0.2,
+        "expected_complete": true,
+        "probability": 0.980425,
+        "inference_ms": 42.6321
+      },
+      {
+        "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+        "added_silence_seconds": 0.8,
+        "expected_complete": true,
+        "probability": 0.978912,
+        "inference_ms": 42.5872
+      },
+      {
+        "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+        "added_silence_seconds": 1.0,
+        "expected_complete": true,
+        "probability": 0.976426,
+        "inference_ms": 42.7337
+      },
+      {
+        "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+        "added_silence_seconds": 2.0,
+        "expected_complete": true,
+        "probability": 0.980425,
+        "inference_ms": 42.582
+      },
+      {
+        "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+        "added_silence_seconds": 3.0,
+        "expected_complete": true,
+        "probability": 0.984928,
+        "inference_ms": 42.9024
+      }
+    ]
+  },
+  {
+    "model": "smart-turn-v3.2-gpu.onnx",
+    "sha256": "ab8dc64b88713f90b571c15b714bd1330e6c883cad8763dacf65c9376dc539be",
+    "runtime": "CPU, one thread, existing ORT 1.28.2",
+    "summary": [
+      {
+        "added_silence_seconds": 0,
+        "incomplete_false_positive": 1,
+        "incomplete_total": 10,
+        "complete_false_negative": 0,
+        "complete_total": 10
+      },
+      {
+        "added_silence_seconds": 0.2,
+        "incomplete_false_positive": 1,
+        "incomplete_total": 10,
+        "complete_false_negative": 0,
+        "complete_total": 10
+      },
+      {
+        "added_silence_seconds": 0.8,
+        "incomplete_false_positive": 1,
+        "incomplete_total": 10,
+        "complete_false_negative": 0,
+        "complete_total": 10
+      },
+      {
+        "added_silence_seconds": 1,
+        "incomplete_false_positive": 1,
+        "incomplete_total": 10,
+        "complete_false_negative": 0,
+        "complete_total": 10
+      },
+      {
+        "added_silence_seconds": 2,
+        "incomplete_false_positive": 1,
+        "incomplete_total": 10,
+        "complete_false_negative": 0,
+        "complete_total": 10
+      },
+      {
+        "added_silence_seconds": 3,
+        "incomplete_false_positive": 1,
+        "incomplete_total": 10,
+        "complete_false_negative": 0,
+        "complete_total": 10
+      }
+    ],
+    "cases": [
+      {
+        "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+        "added_silence_seconds": 0.0,
+        "expected_complete": false,
+        "probability": 0.00606266,
+        "inference_ms": 87.2393
+      },
+      {
+        "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+        "added_silence_seconds": 0.2,
+        "expected_complete": false,
+        "probability": 0.00593364,
+        "inference_ms": 88.8515
+      },
+      {
+        "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+        "added_silence_seconds": 0.8,
+        "expected_complete": false,
+        "probability": 0.00650954,
+        "inference_ms": 88.2037
+      },
+      {
+        "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+        "added_silence_seconds": 1.0,
+        "expected_complete": false,
+        "probability": 0.00800022,
+        "inference_ms": 85.8351
+      },
+      {
+        "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+        "added_silence_seconds": 2.0,
+        "expected_complete": false,
+        "probability": 0.0282394,
+        "inference_ms": 85.8023
+      },
+      {
+        "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+        "added_silence_seconds": 3.0,
+        "expected_complete": false,
+        "probability": 0.0506766,
+        "inference_ms": 85.0
+      },
+      {
+        "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+        "added_silence_seconds": 0.0,
+        "expected_complete": false,
+        "probability": 0.00502351,
+        "inference_ms": 88.0796
+      },
+      {
+        "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+        "added_silence_seconds": 0.2,
+        "expected_complete": false,
+        "probability": 0.00510401,
+        "inference_ms": 87.3016
+      },
+      {
+        "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+        "added_silence_seconds": 0.8,
+        "expected_complete": false,
+        "probability": 0.00761193,
+        "inference_ms": 88.1387
+      },
+      {
+        "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+        "added_silence_seconds": 1.0,
+        "expected_complete": false,
+        "probability": 0.00683144,
+        "inference_ms": 84.8129
+      },
+      {
+        "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+        "added_silence_seconds": 2.0,
+        "expected_complete": false,
+        "probability": 0.0129416,
+        "inference_ms": 85.3647
+      },
+      {
+        "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+        "added_silence_seconds": 3.0,
+        "expected_complete": false,
+        "probability": 0.0258929,
+        "inference_ms": 84.9773
+      },
+      {
+        "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+        "added_silence_seconds": 0.0,
+        "expected_complete": false,
+        "probability": 0.00564519,
+        "inference_ms": 84.7389
+      },
+      {
+        "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+        "added_silence_seconds": 0.2,
+        "expected_complete": false,
+        "probability": 0.00599754,
+        "inference_ms": 85.461
+      },
+      {
+        "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+        "added_silence_seconds": 0.8,
+        "expected_complete": false,
+        "probability": 0.00605538,
+        "inference_ms": 88.5077
+      },
+      {
+        "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+        "added_silence_seconds": 1.0,
+        "expected_complete": false,
+        "probability": 0.0065172,
+        "inference_ms": 88.6254
+      },
+      {
+        "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+        "added_silence_seconds": 2.0,
+        "expected_complete": false,
+        "probability": 0.00854877,
+        "inference_ms": 86.5725
+      },
+      {
+        "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+        "added_silence_seconds": 3.0,
+        "expected_complete": false,
+        "probability": 0.0142264,
+        "inference_ms": 86.599
+      },
+      {
+        "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+        "added_silence_seconds": 0.0,
+        "expected_complete": false,
+        "probability": 0.00539577,
+        "inference_ms": 85.6496
+      },
+      {
+        "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+        "added_silence_seconds": 0.2,
+        "expected_complete": false,
+        "probability": 0.00548124,
+        "inference_ms": 86.1298
+      },
+      {
+        "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+        "added_silence_seconds": 0.8,
+        "expected_complete": false,
+        "probability": 0.00583342,
+        "inference_ms": 84.623
+      },
+      {
+        "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+        "added_silence_seconds": 1.0,
+        "expected_complete": false,
+        "probability": 0.00561345,
+        "inference_ms": 84.8146
+      },
+      {
+        "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+        "added_silence_seconds": 2.0,
+        "expected_complete": false,
+        "probability": 0.00616509,
+        "inference_ms": 84.9525
+      },
+      {
+        "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+        "added_silence_seconds": 3.0,
+        "expected_complete": false,
+        "probability": 0.00708821,
+        "inference_ms": 84.5325
+      },
+      {
+        "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+        "added_silence_seconds": 0.0,
+        "expected_complete": false,
+        "probability": 0.005254,
+        "inference_ms": 84.7417
+      },
+      {
+        "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+        "added_silence_seconds": 0.2,
+        "expected_complete": false,
+        "probability": 0.00522894,
+        "inference_ms": 84.4999
+      },
+      {
+        "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+        "added_silence_seconds": 0.8,
+        "expected_complete": false,
+        "probability": 0.00909656,
+        "inference_ms": 84.5167
+      },
+      {
+        "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+        "added_silence_seconds": 1.0,
+        "expected_complete": false,
+        "probability": 0.0100736,
+        "inference_ms": 84.3324
+      },
+      {
+        "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+        "added_silence_seconds": 2.0,
+        "expected_complete": false,
+        "probability": 0.100323,
+        "inference_ms": 84.9494
+      },
+      {
+        "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+        "added_silence_seconds": 3.0,
+        "expected_complete": false,
+        "probability": 0.190809,
+        "inference_ms": 84.9185
+      },
+      {
+        "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+        "added_silence_seconds": 0.0,
+        "expected_complete": false,
+        "probability": 0.97942,
+        "inference_ms": 84.2087
+      },
+      {
+        "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+        "added_silence_seconds": 0.2,
+        "expected_complete": false,
+        "probability": 0.962677,
+        "inference_ms": 84.9946
+      },
+      {
+        "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+        "added_silence_seconds": 0.8,
+        "expected_complete": false,
+        "probability": 0.988324,
+        "inference_ms": 84.0764
+      },
+      {
+        "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+        "added_silence_seconds": 1.0,
+        "expected_complete": false,
+        "probability": 0.979698,
+        "inference_ms": 85.1806
+      },
+      {
+        "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+        "added_silence_seconds": 2.0,
+        "expected_complete": false,
+        "probability": 0.990214,
+        "inference_ms": 84.9251
+      },
+      {
+        "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+        "added_silence_seconds": 3.0,
+        "expected_complete": false,
+        "probability": 0.985624,
+        "inference_ms": 84.7154
+      },
+      {
+        "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+        "added_silence_seconds": 0.0,
+        "expected_complete": false,
+        "probability": 0.00540149,
+        "inference_ms": 84.8685
+      },
+      {
+        "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+        "added_silence_seconds": 0.2,
+        "expected_complete": false,
+        "probability": 0.00553694,
+        "inference_ms": 84.8663
+      },
+      {
+        "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+        "added_silence_seconds": 0.8,
+        "expected_complete": false,
+        "probability": 0.00628436,
+        "inference_ms": 85.1115
+      },
+      {
+        "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+        "added_silence_seconds": 1.0,
+        "expected_complete": false,
+        "probability": 0.00682521,
+        "inference_ms": 83.9002
+      },
+      {
+        "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+        "added_silence_seconds": 2.0,
+        "expected_complete": false,
+        "probability": 0.00967547,
+        "inference_ms": 84.3917
+      },
+      {
+        "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+        "added_silence_seconds": 3.0,
+        "expected_complete": false,
+        "probability": 0.016682,
+        "inference_ms": 84.8072
+      },
+      {
+        "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+        "added_silence_seconds": 0.0,
+        "expected_complete": false,
+        "probability": 0.00559726,
+        "inference_ms": 84.9721
+      },
+      {
+        "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+        "added_silence_seconds": 0.2,
+        "expected_complete": false,
+        "probability": 0.00554931,
+        "inference_ms": 85.0306
+      },
+      {
+        "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+        "added_silence_seconds": 0.8,
+        "expected_complete": false,
+        "probability": 0.00583318,
+        "inference_ms": 85.0861
+      },
+      {
+        "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+        "added_silence_seconds": 1.0,
+        "expected_complete": false,
+        "probability": 0.00604627,
+        "inference_ms": 85.2903
+      },
+      {
+        "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+        "added_silence_seconds": 2.0,
+        "expected_complete": false,
+        "probability": 0.0180649,
+        "inference_ms": 87.39
+      },
+      {
+        "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+        "added_silence_seconds": 3.0,
+        "expected_complete": false,
+        "probability": 0.0281081,
+        "inference_ms": 85.2472
+      },
+      {
+        "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+        "added_silence_seconds": 0.0,
+        "expected_complete": false,
+        "probability": 0.00505519,
+        "inference_ms": 84.7618
+      },
+      {
+        "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+        "added_silence_seconds": 0.2,
+        "expected_complete": false,
+        "probability": 0.00521162,
+        "inference_ms": 84.9828
+      },
+      {
+        "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+        "added_silence_seconds": 0.8,
+        "expected_complete": false,
+        "probability": 0.00654194,
+        "inference_ms": 85.3123
+      },
+      {
+        "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+        "added_silence_seconds": 1.0,
+        "expected_complete": false,
+        "probability": 0.00714067,
+        "inference_ms": 84.9821
+      },
+      {
+        "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+        "added_silence_seconds": 2.0,
+        "expected_complete": false,
+        "probability": 0.0209815,
+        "inference_ms": 85.0599
+      },
+      {
+        "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+        "added_silence_seconds": 3.0,
+        "expected_complete": false,
+        "probability": 0.0389971,
+        "inference_ms": 85.0871
+      },
+      {
+        "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+        "added_silence_seconds": 0.0,
+        "expected_complete": false,
+        "probability": 0.00550807,
+        "inference_ms": 85.551
+      },
+      {
+        "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+        "added_silence_seconds": 0.2,
+        "expected_complete": false,
+        "probability": 0.0055505,
+        "inference_ms": 85.7033
+      },
+      {
+        "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+        "added_silence_seconds": 0.8,
+        "expected_complete": false,
+        "probability": 0.00583851,
+        "inference_ms": 84.4315
+      },
+      {
+        "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+        "added_silence_seconds": 1.0,
+        "expected_complete": false,
+        "probability": 0.0061551,
+        "inference_ms": 86.9018
+      },
+      {
+        "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+        "added_silence_seconds": 2.0,
+        "expected_complete": false,
+        "probability": 0.00850827,
+        "inference_ms": 85.9216
+      },
+      {
+        "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+        "added_silence_seconds": 3.0,
+        "expected_complete": false,
+        "probability": 0.0480561,
+        "inference_ms": 84.9796
+      },
+      {
+        "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+        "added_silence_seconds": 0.0,
+        "expected_complete": true,
+        "probability": 0.911176,
+        "inference_ms": 84.8898
+      },
+      {
+        "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+        "added_silence_seconds": 0.2,
+        "expected_complete": true,
+        "probability": 0.947012,
+        "inference_ms": 84.9976
+      },
+      {
+        "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+        "added_silence_seconds": 0.8,
+        "expected_complete": true,
+        "probability": 0.91358,
+        "inference_ms": 86.7002
+      },
+      {
+        "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+        "added_silence_seconds": 1.0,
+        "expected_complete": true,
+        "probability": 0.965602,
+        "inference_ms": 87.7127
+      },
+      {
+        "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+        "added_silence_seconds": 2.0,
+        "expected_complete": true,
+        "probability": 0.984208,
+        "inference_ms": 84.3335
+      },
+      {
+        "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+        "added_silence_seconds": 3.0,
+        "expected_complete": true,
+        "probability": 0.987407,
+        "inference_ms": 84.5329
+      },
+      {
+        "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+        "added_silence_seconds": 0.0,
+        "expected_complete": true,
+        "probability": 0.985282,
+        "inference_ms": 84.7454
+      },
+      {
+        "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+        "added_silence_seconds": 0.2,
+        "expected_complete": true,
+        "probability": 0.986346,
+        "inference_ms": 84.3129
+      },
+      {
+        "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+        "added_silence_seconds": 0.8,
+        "expected_complete": true,
+        "probability": 0.985977,
+        "inference_ms": 86.7925
+      },
+      {
+        "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+        "added_silence_seconds": 1.0,
+        "expected_complete": true,
+        "probability": 0.985891,
+        "inference_ms": 85.7506
+      },
+      {
+        "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+        "added_silence_seconds": 2.0,
+        "expected_complete": true,
+        "probability": 0.98791,
+        "inference_ms": 86.4634
+      },
+      {
+        "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+        "added_silence_seconds": 3.0,
+        "expected_complete": true,
+        "probability": 0.976249,
+        "inference_ms": 88.7276
+      },
+      {
+        "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+        "added_silence_seconds": 0.0,
+        "expected_complete": true,
+        "probability": 0.988853,
+        "inference_ms": 87.3921
+      },
+      {
+        "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+        "added_silence_seconds": 0.2,
+        "expected_complete": true,
+        "probability": 0.989821,
+        "inference_ms": 86.3696
+      },
+      {
+        "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+        "added_silence_seconds": 0.8,
+        "expected_complete": true,
+        "probability": 0.985149,
+        "inference_ms": 85.9671
+      },
+      {
+        "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+        "added_silence_seconds": 1.0,
+        "expected_complete": true,
+        "probability": 0.988879,
+        "inference_ms": 84.2587
+      },
+      {
+        "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+        "added_silence_seconds": 2.0,
+        "expected_complete": true,
+        "probability": 0.988023,
+        "inference_ms": 84.0092
+      },
+      {
+        "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+        "added_silence_seconds": 3.0,
+        "expected_complete": true,
+        "probability": 0.985265,
+        "inference_ms": 84.1961
+      },
+      {
+        "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+        "added_silence_seconds": 0.0,
+        "expected_complete": true,
+        "probability": 0.989611,
+        "inference_ms": 85.9028
+      },
+      {
+        "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+        "added_silence_seconds": 0.2,
+        "expected_complete": true,
+        "probability": 0.981027,
+        "inference_ms": 84.705
+      },
+      {
+        "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+        "added_silence_seconds": 0.8,
+        "expected_complete": true,
+        "probability": 0.98542,
+        "inference_ms": 84.3585
+      },
+      {
+        "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+        "added_silence_seconds": 1.0,
+        "expected_complete": true,
+        "probability": 0.987122,
+        "inference_ms": 84.4952
+      },
+      {
+        "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+        "added_silence_seconds": 2.0,
+        "expected_complete": true,
+        "probability": 0.98913,
+        "inference_ms": 84.5274
+      },
+      {
+        "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+        "added_silence_seconds": 3.0,
+        "expected_complete": true,
+        "probability": 0.989507,
+        "inference_ms": 85.957
+      },
+      {
+        "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+        "added_silence_seconds": 0.0,
+        "expected_complete": true,
+        "probability": 0.986722,
+        "inference_ms": 85.5845
+      },
+      {
+        "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+        "added_silence_seconds": 0.2,
+        "expected_complete": true,
+        "probability": 0.974195,
+        "inference_ms": 85.4445
+      },
+      {
+        "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+        "added_silence_seconds": 0.8,
+        "expected_complete": true,
+        "probability": 0.969075,
+        "inference_ms": 84.7776
+      },
+      {
+        "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+        "added_silence_seconds": 1.0,
+        "expected_complete": true,
+        "probability": 0.982104,
+        "inference_ms": 85.9831
+      },
+      {
+        "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+        "added_silence_seconds": 2.0,
+        "expected_complete": true,
+        "probability": 0.98491,
+        "inference_ms": 85.1045
+      },
+      {
+        "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+        "added_silence_seconds": 3.0,
+        "expected_complete": true,
+        "probability": 0.98523,
+        "inference_ms": 84.798
+      },
+      {
+        "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+        "added_silence_seconds": 0.0,
+        "expected_complete": true,
+        "probability": 0.587376,
+        "inference_ms": 87.1372
+      },
+      {
+        "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+        "added_silence_seconds": 0.2,
+        "expected_complete": true,
+        "probability": 0.539519,
+        "inference_ms": 86.1234
+      },
+      {
+        "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+        "added_silence_seconds": 0.8,
+        "expected_complete": true,
+        "probability": 0.954932,
+        "inference_ms": 88.2657
+      },
+      {
+        "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+        "added_silence_seconds": 1.0,
+        "expected_complete": true,
+        "probability": 0.943831,
+        "inference_ms": 89.6095
+      },
+      {
+        "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+        "added_silence_seconds": 2.0,
+        "expected_complete": true,
+        "probability": 0.895529,
+        "inference_ms": 87.642
+      },
+      {
+        "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+        "added_silence_seconds": 3.0,
+        "expected_complete": true,
+        "probability": 0.530007,
+        "inference_ms": 87.1735
+      },
+      {
+        "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+        "added_silence_seconds": 0.0,
+        "expected_complete": true,
+        "probability": 0.984398,
+        "inference_ms": 86.2144
+      },
+      {
+        "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+        "added_silence_seconds": 0.2,
+        "expected_complete": true,
+        "probability": 0.975853,
+        "inference_ms": 85.6716
+      },
+      {
+        "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+        "added_silence_seconds": 0.8,
+        "expected_complete": true,
+        "probability": 0.983916,
+        "inference_ms": 85.7368
+      },
+      {
+        "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+        "added_silence_seconds": 1.0,
+        "expected_complete": true,
+        "probability": 0.978137,
+        "inference_ms": 85.1164
+      },
+      {
+        "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+        "added_silence_seconds": 2.0,
+        "expected_complete": true,
+        "probability": 0.98204,
+        "inference_ms": 84.2953
+      },
+      {
+        "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+        "added_silence_seconds": 3.0,
+        "expected_complete": true,
+        "probability": 0.984112,
+        "inference_ms": 85.2533
+      },
+      {
+        "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+        "added_silence_seconds": 0.0,
+        "expected_complete": true,
+        "probability": 0.97762,
+        "inference_ms": 84.6329
+      },
+      {
+        "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+        "added_silence_seconds": 0.2,
+        "expected_complete": true,
+        "probability": 0.958874,
+        "inference_ms": 84.5106
+      },
+      {
+        "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+        "added_silence_seconds": 0.8,
+        "expected_complete": true,
+        "probability": 0.971881,
+        "inference_ms": 85.7968
+      },
+      {
+        "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+        "added_silence_seconds": 1.0,
+        "expected_complete": true,
+        "probability": 0.948545,
+        "inference_ms": 85.65
+      },
+      {
+        "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+        "added_silence_seconds": 2.0,
+        "expected_complete": true,
+        "probability": 0.979746,
+        "inference_ms": 85.408
+      },
+      {
+        "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+        "added_silence_seconds": 3.0,
+        "expected_complete": true,
+        "probability": 0.972742,
+        "inference_ms": 85.2147
+      },
+      {
+        "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+        "added_silence_seconds": 0.0,
+        "expected_complete": true,
+        "probability": 0.882371,
+        "inference_ms": 84.9362
+      },
+      {
+        "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+        "added_silence_seconds": 0.2,
+        "expected_complete": true,
+        "probability": 0.761762,
+        "inference_ms": 84.5658
+      },
+      {
+        "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+        "added_silence_seconds": 0.8,
+        "expected_complete": true,
+        "probability": 0.935451,
+        "inference_ms": 85.08
+      },
+      {
+        "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+        "added_silence_seconds": 1.0,
+        "expected_complete": true,
+        "probability": 0.972549,
+        "inference_ms": 84.4887
+      },
+      {
+        "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+        "added_silence_seconds": 2.0,
+        "expected_complete": true,
+        "probability": 0.980911,
+        "inference_ms": 84.1022
+      },
+      {
+        "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+        "added_silence_seconds": 3.0,
+        "expected_complete": true,
+        "probability": 0.988202,
+        "inference_ms": 83.904
+      },
+      {
+        "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+        "added_silence_seconds": 0.0,
+        "expected_complete": true,
+        "probability": 0.938644,
+        "inference_ms": 83.8654
+      },
+      {
+        "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+        "added_silence_seconds": 0.2,
+        "expected_complete": true,
+        "probability": 0.983722,
+        "inference_ms": 84.3753
+      },
+      {
+        "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+        "added_silence_seconds": 0.8,
+        "expected_complete": true,
+        "probability": 0.961447,
+        "inference_ms": 84.9443
+      },
+      {
+        "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+        "added_silence_seconds": 1.0,
+        "expected_complete": true,
+        "probability": 0.958954,
+        "inference_ms": 85.1602
+      },
+      {
+        "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+        "added_silence_seconds": 2.0,
+        "expected_complete": true,
+        "probability": 0.984062,
+        "inference_ms": 85.2929
+      },
+      {
+        "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+        "added_silence_seconds": 3.0,
+        "expected_complete": true,
+        "probability": 0.982689,
+        "inference_ms": 84.4602
+      }
+    ]
+  }
+]

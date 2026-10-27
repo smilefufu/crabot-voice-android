@@ -1,0 +1,13 @@
+{
+  "scope": "Public precomputed features; inference only, no microphone or Android frontend; not endpoint accuracy or full phone latency",
+  "model_sha256": "2bb026316b14a660486a75b1733cd3fbab8c2fd0314dc9af7be49f8cca967e4f",
+  "ort_version": "1.28.2",
+  "threads": 1,
+  "count": 30,
+  "p50_ms": 105.08449999999999,
+  "p95_ms": 107.814,
+  "max_ms": 110.168,
+  "wall_seconds": 3.3447680473327637,
+  "device": "OnePlus 7 Pro (arm64)",
+  "percentile_method": "nearest-rank, 30 samples"
+}

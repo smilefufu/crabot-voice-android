@@ -1,6 +1,6 @@
 # 自然轮次、语音打断与前台持续待机
 
-日期：2026-10-27。状态：待确认；未实施产品代码。配套[跨端设计](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-27-natural-voice-turn-taking-design.md)与本文一起确认；正式接口仍以[protocol-voice](https://github.com/smilefufu/crabot-docs/blob/main/protocols/protocol-voice.md)为唯一来源，确认前不修改。
+日期：2026-10-27。状态：2026-10-27 用户确认整套方案；先同步正式协议，再验证组件及实现。配套[跨端设计](https://github.com/smilefufu/crabot-docs/blob/main/superpowers/specs/2026-10-27-natural-voice-turn-taking-design.md)与本文一起确认；正式接口仍以[protocol-voice](https://github.com/smilefufu/crabot-docs/blob/main/protocols/protocol-voice.md)为唯一来源，wire10已先行发布，产品仍为wire9。
 
 ## 目标和范围
 
@@ -61,6 +61,6 @@ AEC后的候选讲话出现时，本地暂停原AudioTrack并保留实际游标�
 5. 隔离自动循环至少30轮，覆盖正常接话、回KWS、空输入、TTS失败、后台通知、ASR取消、旧ID迟到、静音/后台/锁屏/重连。全程核实待机意图与实际mic状态，不只检查某个方法被调用。
 6. 相关构建、定向回归及本次diff review通过后才保留数据联合升级。最后仅集中真人验思考停顿、播放插话、接话/再次唤醒，各失败即停；不重复声纹登记，不以自动样本替代真人听感。
 
-这些门槛只针对预先固定的样本与设备，不宣称开放环境零误判。当前没有执行上述新基准，也没有修改产品、提示词或现有手机。
+这些门槛只针对预先固定的样本与设备，不宣称开放环境零误判。2026-10-27隔离结果见[组件记录](../research/2026-10-27-natural-turn-taking/README.md)：文件推理运行与手机耗时已测，中文未完成句门槛未通过，真实AEC/端点等待及后续生命周期尚未验。未修改产品、提示词或现有手机。
 
 自审：将许可、轮次与输出分开，复用成熟DSP/端点模型；未引入独立业务Agent、工具扩张、隐式监听或身份兼容迁移。

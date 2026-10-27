@@ -1,0 +1,8 @@
+{
+  "version": "1.3",
+  "source": "https://gstreamer.freedesktop.org/src/mirror/webrtc-audio-processing/webrtc-audio-processing-1.3.tar.gz",
+  "bytes": 879768,
+  "sha256": "95552fc17faa0202133707bbb3727e8c2cf64d4266fe31bfdb2298d769c1db75",
+  "license": "BSD-3-Clause; COPYING retained; other bundled component notices must be reviewed before distribution",
+  "stage": "Source pinned only; not compiled, packaged or acoustic-validated"
+}
