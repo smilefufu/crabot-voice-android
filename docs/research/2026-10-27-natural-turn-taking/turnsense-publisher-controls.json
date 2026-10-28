@@ -1,0 +1,77 @@
+{
+  "scope": "Pinned publisher examples, official predict_file; sanity only, not a replacement test set",
+  "results": [
+    {
+      "model": "int8",
+      "file": "complete.wav",
+      "expected_from_publisher_filename": "complete",
+      "prediction": "complete",
+      "probabilities": {
+        "complete": 0.994629442691803,
+        "incomplete": 0.005327874794602394,
+        "invalid": 4.268970951670781e-05
+      },
+      "matches_filename": true
+    },
+    {
+      "model": "int8",
+      "file": "incomplete.wav",
+      "expected_from_publisher_filename": "incomplete",
+      "prediction": "incomplete",
+      "probabilities": {
+        "complete": 0.006493095308542252,
+        "incomplete": 0.9934938549995422,
+        "invalid": 1.3043875696894247e-05
+      },
+      "matches_filename": true
+    },
+    {
+      "model": "int8",
+      "file": "invalid.wav",
+      "expected_from_publisher_filename": "invalid",
+      "prediction": "invalid",
+      "probabilities": {
+        "complete": 2.4656515961396508e-05,
+        "incomplete": 9.504125046078116e-05,
+        "invalid": 0.999880313873291
+      },
+      "matches_filename": true
+    },
+    {
+      "model": "fp32",
+      "file": "complete.wav",
+      "expected_from_publisher_filename": "complete",
+      "prediction": "complete",
+      "probabilities": {
+        "complete": 0.9968972206115723,
+        "incomplete": 0.0030460311099886894,
+        "invalid": 5.6777545978548005e-05
+      },
+      "matches_filename": true
+    },
+    {
+      "model": "fp32",
+      "file": "incomplete.wav",
+      "expected_from_publisher_filename": "incomplete",
+      "prediction": "incomplete",
+      "probabilities": {
+        "complete": 0.00308387097902596,
+        "incomplete": 0.996906578540802,
+        "invalid": 9.452748599869665e-06
+      },
+      "matches_filename": true
+    },
+    {
+      "model": "fp32",
+      "file": "invalid.wav",
+      "expected_from_publisher_filename": "invalid",
+      "prediction": "invalid",
+      "probabilities": {
+        "complete": 2.0771491108462214e-05,
+        "incomplete": 7.275152893271297e-05,
+        "invalid": 0.9999064207077026
+      },
+      "matches_filename": true
+    }
+  ]
+}

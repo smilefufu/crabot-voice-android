@@ -1,0 +1,20 @@
+[
+  {
+    "file": "complete.wav",
+    "git_blob": "391b6b40eb85a53acbba75248f43acdb9cb528b0",
+    "bytes": 104236,
+    "sha256": "2d44a9103574c4477057cf78158716233ba4af2ef3fdef06bd2297221f061d7e"
+  },
+  {
+    "file": "incomplete.wav",
+    "git_blob": "3f607fa35667abd67137852128b6a3337749263f",
+    "bytes": 79404,
+    "sha256": "625e5ed716642e8fe155b7beb43e8f10c4b9e1a710df2d6abcfd66444a9fe372"
+  },
+  {
+    "file": "invalid.wav",
+    "git_blob": "204db8c3deaa493eba697377b19ddc2f3a83ab0d",
+    "bytes": 50228,
+    "sha256": "c4b7eb11c44bda256dcba763a239b453d4cb66b6b8bb66433e981159737c0f9d"
+  }
+]

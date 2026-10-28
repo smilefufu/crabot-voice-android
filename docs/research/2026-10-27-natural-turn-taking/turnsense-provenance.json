@@ -1,0 +1,68 @@
+{
+  "model": {
+    "repo": "brgroup/TurnSense",
+    "revision": "341dd68c9df87d74d35b9cee63a1dcf0fff24966",
+    "version": "TurnSense1.0",
+    "primary": "INT8",
+    "license_model_card": "Apache-2.0",
+    "files": [
+      {
+        "file": "model-int8.onnx",
+        "bytes": 52211266,
+        "sha256": "9ffa8fd0bb423986065afdedcb822fc957bb0794bcb6023c94575d8d82dd8e92"
+      },
+      {
+        "file": "model-fp32.onnx",
+        "bytes": 200320533,
+        "sha256": "82256247dd38f0d9f2f213beec7ede1507347f84422fa48f29d565b613d89976"
+      },
+      {
+        "file": "am.mvn",
+        "bytes": 11203,
+        "sha256": "29b3c740a2c0cfc6b308126d31d7f265fa2be74f3bb095cd2f143ea970896ae5"
+      }
+    ]
+  },
+  "code": {
+    "repo": "Bairong-Xdynamics/TurnSense",
+    "commit": "c6d83e5b0d1355125b05eaf1b4b5c6c1acabb338",
+    "license": "Apache-2.0",
+    "files": [
+      {
+        "file": "infer.py",
+        "sha256": "40295fb42a36ae4ecca30093d6bc37acbca9c75304b1a722dba73fd3b30498df"
+      },
+      {
+        "file": "frontend/audio_frontend.py",
+        "sha256": "22808c254ea2150e290e6bdcf115322a723b67fc4e53b1ef02b8f3f42697187d"
+      },
+      {
+        "file": "frontend/__init__.py",
+        "sha256": "743238918ff66b5ffed449380f6318b8108a3fa7d413d718adcbd8783c7b6fef"
+      },
+      {
+        "file": "LICENSE",
+        "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+      }
+    ]
+  },
+  "dataset": {
+    "repo": "livekit/eot-bench-data",
+    "revision": "ca9d98a9686b920a2d8c9eb984224ba9be74e4dd",
+    "file": "data/zh/validation-00000-of-00001.parquet",
+    "sha256": "5fd7a30919721832642bea7201ea3d9b09fa6ebce13ae7902ec21ad2dbc9f0f8",
+    "bytes": 129303772,
+    "license": "CC-BY-4.0",
+    "attribution": "LiveKit, LiveKit EoT Benchmark dataset, https://huggingface.co/datasets/livekit/eot-bench-data",
+    "original_rows": 344,
+    "selected_rows": 256,
+    "selection": "All source-order Chinese entire audio <=15 seconds, fixed before predictions; 88 excluded for existing capacity, no relabeling."
+  },
+  "transport": {
+    "global_network_changes": false,
+    "certificate_bypass": false,
+    "method": "Official HTTPS redirects and bounded CDN range requests, final publisher SHA checked; slow proxy prefixes reused only after final hash verification."
+  },
+  "product_changed": false,
+  "runner_sha256": "0c4627aff76cd69accd208016ff815fc00bc056042f55b11b63fd4685103db99"
+}

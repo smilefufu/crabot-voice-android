@@ -1,0 +1,91 @@
+{
+  "runtime": "1.31.1",
+  "providers": [
+    "CPUExecutionProvider"
+  ],
+  "threads": 1,
+  "cold": {
+    "int8_load_ms": 576.0600827634335,
+    "fp32_load_ms": 863.1081250496209,
+    "int8_first_pipeline": {
+      "complete": false,
+      "label": "invalid",
+      "probabilities": [
+        3.764164648600854e-05,
+        0.00014220421144273132,
+        0.9998201727867126
+      ],
+      "pipeline_ms": 15.300750266760588
+    },
+    "fp32_first_pipeline": {
+      "complete": false,
+      "label": "invalid",
+      "probabilities": [
+        4.190252730040811e-05,
+        0.00014167252811603248,
+        0.9998164772987366
+      ],
+      "pipeline_ms": 31.882999930530787
+    },
+    "smart_first_pipeline": {
+      "complete": true,
+      "probability": 0.9870367050170898,
+      "pipeline_ms": 293.71504206210375
+    }
+  },
+  "plan_sha256": "80557666e80fa551f16fca9f4d9937723ddfca6dacf98188a97c29179f1cd142",
+  "model_inputs": {
+    "int8": [
+      {
+        "name": "feats",
+        "shape": [
+          "batch_size",
+          "time_steps",
+          560
+        ],
+        "type": "tensor(float)"
+      },
+      {
+        "name": "feat_lengths",
+        "shape": [
+          "batch_size"
+        ],
+        "type": "tensor(int64)"
+      }
+    ],
+    "fp32": [
+      {
+        "name": "feats",
+        "shape": [
+          "batch_size",
+          "time_steps",
+          560
+        ],
+        "type": "tensor(float)"
+      },
+      {
+        "name": "feat_lengths",
+        "shape": [
+          "batch_size"
+        ],
+        "type": "tensor(int64)"
+      }
+    ]
+  },
+  "dependencies": {
+    "numpy": "2.2.6",
+    "onnxruntime": "1.31.1",
+    "kaldi-native-fbank": "1.22.4",
+    "soundfile": "0.13.1",
+    "pyarrow": "26.0.0",
+    "transformers": "5.19.0",
+    "librosa": "0.11.0"
+  },
+  "host": {
+    "cpu": "Apple M2 Ultra",
+    "physical_cores": 24,
+    "memory_bytes": 206158430208,
+    "architecture": "arm64"
+  },
+  "runtime_scope": "Host CPU single-thread research; not Android compatibility, phone speed, VAD, capture, network, business ASR/Agent/TTS"
+}

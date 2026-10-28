@@ -1,0 +1,34 @@
+{
+  "scope": "Isolated public audio comparison only, no deployment, device, business ASR/LLM or paid API",
+  "primary": {
+    "repo": "brgroup/TurnSense",
+    "revision": "341dd68c9df87d74d35b9cee63a1dcf0fff24966",
+    "file": "TurnSense1.0/model_int8.onnx",
+    "reason": "Original Chinese version; published 47M/INT8 profile. Not the larger English-enhanced 1.1."
+  },
+  "precision_reference": {
+    "file": "TurnSense1.0/model_fp32.onnx",
+    "scope": "Same original 20 clips only; not used to select a new threshold or overwrite primary results"
+  },
+  "decision": "Official three-class argmax; complete=0, incomplete=1, invalid=2. Invalid never becomes complete; invalid on a true endpoint counts as missed.",
+  "baseline": "Pinned smart-turn-v3.2-cpu.onnx and official preprocessing, p>0.5; reuse original fixed results and apply same causal replay.",
+  "fixed_set": "Keep all 20 IDs, labels and SHA from labeled-corpus.json. Primary no added silence. Report same historical 0/.2/.8/1/2/3s stress groups separately, no selection of best delay.",
+  "real_dataset": {
+    "repo": "livekit/eot-bench-data",
+    "revision": "ca9d98a9686b920a2d8c9eb984224ba9be74e4dd",
+    "config": "zh",
+    "split": "validation",
+    "path": "data/zh/validation-00000-of-00001.parquet",
+    "selection": "All well-formed Chinese rows in source order with original entire audio duration <=15 seconds. Do not select by predictions. List every exclusion with reason and original duration.",
+    "labels": "Original silence_spans; all before last are hold, last is endpoint. Preserve original annotations; no oracle transcript/messages passed to these audio models."
+  },
+  "causal_replay": {
+    "first_check_s": 0.2,
+    "interval_s": 0.2,
+    "scope": "Every original silence span with at least one complete grid point; use audio prefix through that time only, then official tail-8 preprocessing independently per model. No future waveform/words, no extra silence, no forced timeout. Grid is sampling cadence, not a wait-to-pass parameter.",
+    "metrics": "Per-pause and per-turn early commit; new early commits versus baseline at exact same points; final endpoint missed; late beyond1.5s; invalid counts; all inference/input errors kept. Report rows with short/no eligible pauses separately."
+  },
+  "latency": "Measure from source silence start to decision including model feature extraction+inference; retain actual serial wall timing for each input. Include single-thread execution, cold load/first inference and hot median/P95/max separately. No claim of microphone/network/Agent/TTS or Android latency.",
+  "stop": "Run both fixed and real replay even if fixed fails, as requested; failed gate stops product admission. No thresholds, waiting periods, weights, labels or version swapping to turn a failure into a pass.",
+  "real_cadence_reference": "First 10 eligible Chinese turns in source order, fixed before predictions; actual 1x clock at the same .2s grid, no capture, playback or business messages. Full prefixes remain shadow observations after any premature decision."
+}

@@ -1,0 +1,1088 @@
+{
+  "cases": [
+    {
+      "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+      "silence_s": 0.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00694486,
+      "current_probability": 0.006944864988327026,
+      "action_agrees": true
+    },
+    {
+      "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+      "silence_s": 0.2,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00750977,
+      "current_probability": 0.007509768009185791,
+      "action_agrees": true
+    },
+    {
+      "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+      "silence_s": 0.8,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0280628,
+      "current_probability": 0.028062790632247925,
+      "action_agrees": true
+    },
+    {
+      "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+      "silence_s": 1.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0222879,
+      "current_probability": 0.02228793501853943,
+      "action_agrees": true
+    },
+    {
+      "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+      "silence_s": 2.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0829732,
+      "current_probability": 0.08297324180603027,
+      "action_agrees": true
+    },
+    {
+      "id": "00087e67-1da8-464d-b85a-17c1555e2468",
+      "silence_s": 3.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.347466,
+      "current_probability": 0.3474663496017456,
+      "action_agrees": true
+    },
+    {
+      "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+      "silence_s": 0.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0054912,
+      "current_probability": 0.005491197109222412,
+      "action_agrees": true
+    },
+    {
+      "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+      "silence_s": 0.2,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0054912,
+      "current_probability": 0.005491197109222412,
+      "action_agrees": true
+    },
+    {
+      "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+      "silence_s": 0.8,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0110946,
+      "current_probability": 0.011094629764556885,
+      "action_agrees": true
+    },
+    {
+      "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+      "silence_s": 1.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0222879,
+      "current_probability": 0.02228793501853943,
+      "action_agrees": true
+    },
+    {
+      "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+      "silence_s": 2.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0426318,
+      "current_probability": 0.042631834745407104,
+      "action_agrees": true
+    },
+    {
+      "id": "00914f31-592d-4e54-9f42-fcabc7cd9399",
+      "silence_s": 3.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0891674,
+      "current_probability": 0.08916738629341125,
+      "action_agrees": true
+    },
+    {
+      "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+      "silence_s": 0.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00571051,
+      "current_probability": 0.005710512399673462,
+      "action_agrees": true
+    },
+    {
+      "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+      "silence_s": 0.2,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00593853,
+      "current_probability": 0.005938529968261719,
+      "action_agrees": true
+    },
+    {
+      "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+      "silence_s": 0.8,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00642213,
+      "current_probability": 0.006422132253646851,
+      "action_agrees": true
+    },
+    {
+      "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+      "silence_s": 1.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0078091,
+      "current_probability": 0.007809102535247803,
+      "action_agrees": true
+    },
+    {
+      "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+      "silence_s": 2.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.013477,
+      "current_probability": 0.013476967811584473,
+      "action_agrees": true
+    },
+    {
+      "id": "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+      "silence_s": 3.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0240707,
+      "current_probability": 0.024070680141448975,
+      "action_agrees": true
+    },
+    {
+      "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+      "silence_s": 0.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00528026,
+      "current_probability": 0.005280256271362305,
+      "action_agrees": true
+    },
+    {
+      "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+      "silence_s": 0.2,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0054912,
+      "current_probability": 0.005491197109222412,
+      "action_agrees": true
+    },
+    {
+      "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+      "silence_s": 0.8,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00571051,
+      "current_probability": 0.005710512399673462,
+      "action_agrees": true
+    },
+    {
+      "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+      "silence_s": 1.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00571051,
+      "current_probability": 0.005710512399673462,
+      "action_agrees": true
+    },
+    {
+      "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+      "silence_s": 2.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0078091,
+      "current_probability": 0.007809102535247803,
+      "action_agrees": true
+    },
+    {
+      "id": "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+      "silence_s": 3.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0115352,
+      "current_probability": 0.011535167694091797,
+      "action_agrees": true
+    },
+    {
+      "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+      "silence_s": 0.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00571051,
+      "current_probability": 0.005710512399673462,
+      "action_agrees": true
+    },
+    {
+      "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+      "silence_s": 0.2,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00571051,
+      "current_probability": 0.005710512399673462,
+      "action_agrees": true
+    },
+    {
+      "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+      "silence_s": 0.8,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00912952,
+      "current_probability": 0.009129524230957031,
+      "action_agrees": true
+    },
+    {
+      "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+      "silence_s": 1.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00949278,
+      "current_probability": 0.00949278473854065,
+      "action_agrees": true
+    },
+    {
+      "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+      "silence_s": 2.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0891674,
+      "current_probability": 0.08916738629341125,
+      "action_agrees": true
+    },
+    {
+      "id": "03178674-9ee8-4e75-8283-f500c8c3cf24",
+      "silence_s": 3.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.126754,
+      "current_probability": 0.12675368785858154,
+      "action_agrees": true
+    },
+    {
+      "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+      "silence_s": 0.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.881712,
+      "current_probability": 0.8817123174667358,
+      "action_agrees": true
+    },
+    {
+      "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+      "silence_s": 0.2,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.922827,
+      "current_probability": 0.9228270053863525,
+      "action_agrees": true
+    },
+    {
+      "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+      "silence_s": 0.8,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.980899,
+      "current_probability": 0.9808988571166992,
+      "action_agrees": true
+    },
+    {
+      "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+      "silence_s": 1.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.955731,
+      "current_probability": 0.9557313919067383,
+      "action_agrees": true
+    },
+    {
+      "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+      "silence_s": 2.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.988007,
+      "current_probability": 0.9880069494247437,
+      "action_agrees": true
+    },
+    {
+      "id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+      "silence_s": 3.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.980147,
+      "current_probability": 0.9801466464996338,
+      "action_agrees": true
+    },
+    {
+      "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+      "silence_s": 0.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00642213,
+      "current_probability": 0.006422132253646851,
+      "action_agrees": true
+    },
+    {
+      "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+      "silence_s": 0.2,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00642213,
+      "current_probability": 0.006422132253646851,
+      "action_agrees": true
+    },
+    {
+      "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+      "silence_s": 0.8,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0078091,
+      "current_probability": 0.007809102535247803,
+      "action_agrees": true
+    },
+    {
+      "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+      "silence_s": 1.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00844374,
+      "current_probability": 0.008443742990493774,
+      "action_agrees": true
+    },
+    {
+      "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+      "silence_s": 2.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.018377,
+      "current_probability": 0.018377035856246948,
+      "action_agrees": true
+    },
+    {
+      "id": "03bc7991-38f4-45a2-a7e3-7b652087758f",
+      "silence_s": 3.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.155297,
+      "current_probability": 0.15529656410217285,
+      "action_agrees": true
+    },
+    {
+      "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+      "silence_s": 0.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00617561,
+      "current_probability": 0.006175607442855835,
+      "action_agrees": true
+    },
+    {
+      "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+      "silence_s": 0.2,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00642213,
+      "current_probability": 0.006422132253646851,
+      "action_agrees": true
+    },
+    {
+      "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+      "silence_s": 0.8,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00750977,
+      "current_probability": 0.007509768009185791,
+      "action_agrees": true
+    },
+    {
+      "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+      "silence_s": 1.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00812024,
+      "current_probability": 0.008120238780975342,
+      "action_agrees": true
+    },
+    {
+      "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+      "silence_s": 2.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0250135,
+      "current_probability": 0.025013476610183716,
+      "action_agrees": true
+    },
+    {
+      "id": "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+      "silence_s": 3.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.106509,
+      "current_probability": 0.10650888085365295,
+      "action_agrees": true
+    },
+    {
+      "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+      "silence_s": 0.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00507733,
+      "current_probability": 0.005077332258224487,
+      "action_agrees": true
+    },
+    {
+      "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+      "silence_s": 0.2,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00528026,
+      "current_probability": 0.005280256271362305,
+      "action_agrees": true
+    },
+    {
+      "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+      "silence_s": 0.8,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00912952,
+      "current_probability": 0.009129524230957031,
+      "action_agrees": true
+    },
+    {
+      "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+      "silence_s": 1.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0078091,
+      "current_probability": 0.007809102535247803,
+      "action_agrees": true
+    },
+    {
+      "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+      "silence_s": 2.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0410529,
+      "current_probability": 0.041052937507629395,
+      "action_agrees": true
+    },
+    {
+      "id": "0625756c-dcbe-4020-96b7-a2efa764dd66",
+      "silence_s": 3.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0380614,
+      "current_probability": 0.03806141018867493,
+      "action_agrees": true
+    },
+    {
+      "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+      "silence_s": 0.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00571051,
+      "current_probability": 0.005710512399673462,
+      "action_agrees": true
+    },
+    {
+      "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+      "silence_s": 0.2,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00571051,
+      "current_probability": 0.005710512399673462,
+      "action_agrees": true
+    },
+    {
+      "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+      "silence_s": 0.8,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00912952,
+      "current_probability": 0.009129524230957031,
+      "action_agrees": true
+    },
+    {
+      "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+      "silence_s": 1.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.00949278,
+      "current_probability": 0.00949278473854065,
+      "action_agrees": true
+    },
+    {
+      "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+      "silence_s": 2.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0176798,
+      "current_probability": 0.017679840326309204,
+      "action_agrees": true
+    },
+    {
+      "id": "06e212d1-0c31-4ced-aafe-281d39f04bdc",
+      "silence_s": 3.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.0533899,
+      "current_probability": 0.053389936685562134,
+      "action_agrees": true
+    },
+    {
+      "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+      "silence_s": 0.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.38399,
+      "current_probability": 0.3839901089668274,
+      "action_agrees": true
+    },
+    {
+      "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+      "silence_s": 0.2,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.597214,
+      "current_probability": 0.59721440076828,
+      "action_agrees": true
+    },
+    {
+      "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+      "silence_s": 0.8,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.798758,
+      "current_probability": 0.7987582683563232,
+      "action_agrees": true
+    },
+    {
+      "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+      "silence_s": 1.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.864268,
+      "current_probability": 0.8642676472663879,
+      "action_agrees": true
+    },
+    {
+      "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+      "silence_s": 2.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.975929,
+      "current_probability": 0.975929319858551,
+      "action_agrees": true
+    },
+    {
+      "id": "018fa4bb-f0df-4c44-bcc4-d89a8759d903",
+      "silence_s": 3.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.98426,
+      "current_probability": 0.9842595458030701,
+      "action_agrees": true
+    },
+    {
+      "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+      "silence_s": 0.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.972992,
+      "current_probability": 0.9729918241500854,
+      "action_agrees": true
+    },
+    {
+      "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+      "silence_s": 0.2,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.971937,
+      "current_probability": 0.9719371795654297,
+      "action_agrees": true
+    },
+    {
+      "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+      "silence_s": 0.8,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.958947,
+      "current_probability": 0.9589470624923706,
+      "action_agrees": true
+    },
+    {
+      "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+      "silence_s": 1.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.955731,
+      "current_probability": 0.9557313919067383,
+      "action_agrees": true
+    },
+    {
+      "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+      "silence_s": 2.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.96472,
+      "current_probability": 0.9647200703620911,
+      "action_agrees": true
+    },
+    {
+      "id": "01aa78f4-752d-45b8-91fe-8fbb4f9debff",
+      "silence_s": 3.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.900759,
+      "current_probability": 0.9007586240768433,
+      "action_agrees": true
+    },
+    {
+      "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+      "silence_s": 0.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.974987,
+      "current_probability": 0.9749865531921387,
+      "action_agrees": true
+    },
+    {
+      "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+      "silence_s": 0.2,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.966036,
+      "current_probability": 0.9660363793373108,
+      "action_agrees": true
+    },
+    {
+      "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+      "silence_s": 0.8,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.970843,
+      "current_probability": 0.970842719078064,
+      "action_agrees": true
+    },
+    {
+      "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+      "silence_s": 1.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.974987,
+      "current_probability": 0.9749865531921387,
+      "action_agrees": true
+    },
+    {
+      "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+      "silence_s": 2.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.975929,
+      "current_probability": 0.975929319858551,
+      "action_agrees": true
+    },
+    {
+      "id": "020c63c6-92ef-44eb-90b4-548c93ee96bd",
+      "silence_s": 3.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.96047,
+      "current_probability": 0.9604700207710266,
+      "action_agrees": true
+    },
+    {
+      "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+      "silence_s": 0.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.985989,
+      "current_probability": 0.9859892129898071,
+      "action_agrees": true
+    },
+    {
+      "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+      "silence_s": 0.2,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.98232,
+      "current_probability": 0.9823201894760132,
+      "action_agrees": true
+    },
+    {
+      "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+      "silence_s": 0.8,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.970843,
+      "current_probability": 0.970842719078064,
+      "action_agrees": true
+    },
+    {
+      "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+      "silence_s": 1.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.983637,
+      "current_probability": 0.9836374521255493,
+      "action_agrees": true
+    },
+    {
+      "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+      "silence_s": 2.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.985989,
+      "current_probability": 0.9859892129898071,
+      "action_agrees": true
+    },
+    {
+      "id": "022601f7-6fbd-4894-a8f7-35404825e0b0",
+      "silence_s": 3.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.98426,
+      "current_probability": 0.9842595458030701,
+      "action_agrees": true
+    },
+    {
+      "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+      "silence_s": 0.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.938064,
+      "current_probability": 0.9380639791488647,
+      "action_agrees": true
+    },
+    {
+      "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+      "silence_s": 0.2,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.935736,
+      "current_probability": 0.9357357025146484,
+      "action_agrees": true
+    },
+    {
+      "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+      "silence_s": 0.8,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.969707,
+      "current_probability": 0.9697068929672241,
+      "action_agrees": true
+    },
+    {
+      "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+      "silence_s": 1.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.970843,
+      "current_probability": 0.970842719078064,
+      "action_agrees": true
+    },
+    {
+      "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+      "silence_s": 2.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.977712,
+      "current_probability": 0.9777120351791382,
+      "action_agrees": true
+    },
+    {
+      "id": "027628ba-e3f3-4841-a208-4fde6487032d",
+      "silence_s": 3.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.977712,
+      "current_probability": 0.9777120351791382,
+      "action_agrees": true
+    },
+    {
+      "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+      "silence_s": 0.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.295979,
+      "current_probability": 0.2959793210029602,
+      "action_agrees": true
+    },
+    {
+      "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+      "silence_s": 0.2,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.234762,
+      "current_probability": 0.23476183414459229,
+      "action_agrees": true
+    },
+    {
+      "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+      "silence_s": 0.8,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.881712,
+      "current_probability": 0.8817123174667358,
+      "action_agrees": true
+    },
+    {
+      "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+      "silence_s": 1.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.792352,
+      "current_probability": 0.7923524379730225,
+      "action_agrees": true
+    },
+    {
+      "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+      "silence_s": 2.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.687347,
+      "current_probability": 0.6873466372489929,
+      "action_agrees": true
+    },
+    {
+      "id": "03b48b3f-fd41-4fbe-b493-9c11a184912d",
+      "silence_s": 3.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.287839,
+      "current_probability": 0.28783851861953735,
+      "action_agrees": true
+    },
+    {
+      "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+      "silence_s": 0.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.971937,
+      "current_probability": 0.9719371795654297,
+      "action_agrees": true
+    },
+    {
+      "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+      "silence_s": 0.2,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.935736,
+      "current_probability": 0.9357357025146484,
+      "action_agrees": true
+    },
+    {
+      "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+      "silence_s": 0.8,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.974008,
+      "current_probability": 0.9740077257156372,
+      "action_agrees": true
+    },
+    {
+      "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+      "silence_s": 1.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.974008,
+      "current_probability": 0.9740077257156372,
+      "action_agrees": true
+    },
+    {
+      "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+      "silence_s": 2.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.981623,
+      "current_probability": 0.9816229343414307,
+      "action_agrees": true
+    },
+    {
+      "id": "044dc6a6-521e-4ab3-a69b-6a58d8ea2360",
+      "silence_s": 3.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.980899,
+      "current_probability": 0.9808988571166992,
+      "action_agrees": true
+    },
+    {
+      "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+      "silence_s": 0.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.96472,
+      "current_probability": 0.9647200703620911,
+      "action_agrees": true
+    },
+    {
+      "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+      "silence_s": 0.2,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.967305,
+      "current_probability": 0.9673051834106445,
+      "action_agrees": true
+    },
+    {
+      "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+      "silence_s": 0.8,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.969707,
+      "current_probability": 0.9697068929672241,
+      "action_agrees": true
+    },
+    {
+      "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+      "silence_s": 1.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.935736,
+      "current_probability": 0.9357357025146484,
+      "action_agrees": true
+    },
+    {
+      "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+      "silence_s": 2.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.972992,
+      "current_probability": 0.9729918241500854,
+      "action_agrees": true
+    },
+    {
+      "id": "0509f0f4-2347-4f01-b881-0a138fa42b95",
+      "silence_s": 3.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.958947,
+      "current_probability": 0.9589470624923706,
+      "action_agrees": true
+    },
+    {
+      "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+      "silence_s": 0.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.568494,
+      "current_probability": 0.5684942007064819,
+      "action_agrees": true
+    },
+    {
+      "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+      "silence_s": 0.2,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.539306,
+      "current_probability": 0.5393059253692627,
+      "action_agrees": true
+    },
+    {
+      "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+      "silence_s": 0.8,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.877542,
+      "current_probability": 0.87754225730896,
+      "action_agrees": true
+    },
+    {
+      "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+      "silence_s": 1.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.955731,
+      "current_probability": 0.9557313919067383,
+      "action_agrees": true
+    },
+    {
+      "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+      "silence_s": 2.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.955731,
+      "current_probability": 0.9557313919067383,
+      "action_agrees": true
+    },
+    {
+      "id": "056e5d6d-ac51-4ead-8cbb-24438ec54b11",
+      "silence_s": 3.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.976837,
+      "current_probability": 0.9768373966217041,
+      "action_agrees": true
+    },
+    {
+      "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+      "silence_s": 0.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.900759,
+      "current_probability": 0.9007586240768433,
+      "action_agrees": true
+    },
+    {
+      "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+      "silence_s": 0.2,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.950454,
+      "current_probability": 0.95045405626297,
+      "action_agrees": true
+    },
+    {
+      "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+      "silence_s": 0.8,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.96047,
+      "current_probability": 0.9604700207710266,
+      "action_agrees": true
+    },
+    {
+      "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+      "silence_s": 1.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.952276,
+      "current_probability": 0.9522762298583984,
+      "action_agrees": true
+    },
+    {
+      "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+      "silence_s": 2.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.972992,
+      "current_probability": 0.9729918241500854,
+      "action_agrees": true
+    },
+    {
+      "id": "060d6c35-3c05-4bcc-93f8-9c01df18bcce",
+      "silence_s": 3.0,
+      "feature_exact": true,
+      "feature_max_abs": 0.0,
+      "old_probability": 0.977712,
+      "current_probability": 0.9777120351791382,
+      "action_agrees": true
+    }
+  ],
+  "feature_exact_count": 120,
+  "max_feature_abs": 0.0,
+  "action_disagreements": [],
+  "max_probability_abs": 4.813804626579987e-07
+}
