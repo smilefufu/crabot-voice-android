@@ -1,0 +1,22 @@
+{
+  "sources_read_not_executed": [
+    {
+      "url": "https://github.com/Bairong-Xdynamics/TurnSense/blob/c6d83e5b0d1355125b05eaf1b4b5c6c1acabb338/Turn_benchmark/benchmark.py",
+      "sha256": "3ba2388f6911d98e7d147c1ea13e02623ffba2e249fb563008c6e01799d5a473"
+    },
+    {
+      "url": "https://github.com/livekit/eot-bench/blob/b1cc6abceca916d994c4d044aa8285cba7fab9b2/eot_harness/smart_turn_adapter.py",
+      "sha256": "f1894258106d50b7d570c0415e88dcfeb04d5fea96f43a750463adf663aa6512"
+    },
+    {
+      "url": "https://github.com/livekit/eot-bench/blob/b1cc6abceca916d994c4d044aa8285cba7fab9b2/eot_harness/io.py",
+      "sha256": "51d04684b40a0dcb25fb69edca7c54a84eac536f29db62e4d405b1757b23d9ee"
+    },
+    {
+      "url": "https://github.com/livekit/eot-bench/blob/b1cc6abceca916d994c4d044aa8285cba7fab9b2/eot_harness/metrics.py",
+      "sha256": "01667e8aaebe4f056df589f6e5d8ccc5a0f6a42c218da47305fac45a5544573e"
+    }
+  ],
+  "pipecat_runtime": "Unmodified local wheel 0.0.102; installed VAD source and model equality verified in turn-audit-results.json",
+  "published_benchmark_scores_reproduced": false
+}

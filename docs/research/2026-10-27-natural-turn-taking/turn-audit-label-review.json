@@ -1,0 +1,162 @@
+{
+  "scope": "Source words/timings inspection only, not independent audio listening or replacement labels",
+  "all_labels_unchanged": true,
+  "long_1_3s_reviewed_ids": [
+    {
+      "id": "zh__2299",
+      "span": 0
+    },
+    {
+      "id": "zh__2337",
+      "span": 0
+    },
+    {
+      "id": "zh__2352",
+      "span": 0
+    },
+    {
+      "id": "zh__2384",
+      "span": 1
+    },
+    {
+      "id": "zh__2387",
+      "span": 1
+    },
+    {
+      "id": "zh__2418",
+      "span": 2
+    },
+    {
+      "id": "zh__2431",
+      "span": 2
+    },
+    {
+      "id": "zh__2442",
+      "span": 1
+    },
+    {
+      "id": "zh__2456",
+      "span": 3
+    },
+    {
+      "id": "zh__2459",
+      "span": 1
+    },
+    {
+      "id": "zh__2500",
+      "span": 0
+    },
+    {
+      "id": "zh__2516",
+      "span": 0
+    },
+    {
+      "id": "zh__2520",
+      "span": 0
+    },
+    {
+      "id": "zh__2562",
+      "span": 0
+    },
+    {
+      "id": "zh__2581",
+      "span": 2
+    },
+    {
+      "id": "zh__2584",
+      "span": 1
+    },
+    {
+      "id": "zh__2593",
+      "span": 0
+    }
+  ],
+  "new_premature_review": [
+    {
+      "id": "zh__2282",
+      "span": 0,
+      "source_text_pattern": "identifier_continuation"
+    },
+    {
+      "id": "zh__2282",
+      "span": 2,
+      "source_text_pattern": "identifier_continuation"
+    },
+    {
+      "id": "zh__2294",
+      "span": 0,
+      "source_text_pattern": "identifier_continuation"
+    },
+    {
+      "id": "zh__2297",
+      "span": 1,
+      "source_text_pattern": "identifier_continuation"
+    },
+    {
+      "id": "zh__2298",
+      "span": 0,
+      "source_text_pattern": "identifier_continuation"
+    },
+    {
+      "id": "zh__2317",
+      "span": 1,
+      "source_text_pattern": "identifier_continuation"
+    },
+    {
+      "id": "zh__2413",
+      "span": 2,
+      "source_text_pattern": "identifier_continuation"
+    },
+    {
+      "id": "zh__2418",
+      "span": 1,
+      "source_text_pattern": "identifier_continuation"
+    },
+    {
+      "id": "zh__2593",
+      "span": 1,
+      "source_text_pattern": "identifier_continuation"
+    },
+    {
+      "id": "zh__2598",
+      "span": 1,
+      "source_text_pattern": "identifier_continuation"
+    },
+    {
+      "id": "zh__2331",
+      "span": 0,
+      "source_text_pattern": "possibly_complete_expression_then_continuation"
+    },
+    {
+      "id": "zh__2356",
+      "span": 0,
+      "source_text_pattern": "possibly_complete_expression_then_continuation"
+    },
+    {
+      "id": "zh__2403",
+      "span": 0,
+      "source_text_pattern": "possibly_complete_expression_then_continuation"
+    },
+    {
+      "id": "zh__2516",
+      "span": 1,
+      "source_text_pattern": "possibly_complete_expression_then_continuation"
+    },
+    {
+      "id": "zh__2588",
+      "span": 2,
+      "source_text_pattern": "possibly_complete_expression_then_continuation"
+    },
+    {
+      "id": "zh__2589",
+      "span": 1,
+      "source_text_pattern": "possibly_complete_expression_then_continuation"
+    },
+    {
+      "id": "zh__2431",
+      "span": 1,
+      "source_text_pattern": "explicit_wait_phrase"
+    }
+  ],
+  "timing_caveat": "Source word alignments can overlap annotated silence; do not use them to relabel boundaries."
+}
