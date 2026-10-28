@@ -9,3 +9,5 @@ native-deps/
 .model-cache/
 *.jks
 *.keystore
+.apm-cache/
+native-apm/

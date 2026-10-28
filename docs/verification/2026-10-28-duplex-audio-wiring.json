@@ -1,0 +1,225 @@
+{
+  "date": "2026-10-28",
+  "scope": "Isolated product audio components, fake device transport and host JNI public PCM; not deployment, Android audio effects or EOT acceptance",
+  "jvm": {
+    "tests": 72,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "name": "com.crabot.voice.AtomicStorageTest",
+        "tests": "3",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "com.crabot.voice.AudioClockTest",
+        "tests": "4",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "com.crabot.voice.DuplexAudioSessionTest",
+        "tests": "4",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "com.crabot.voice.DuplexAudioTest",
+        "tests": "4",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "com.crabot.voice.EnrollmentIdentityTest",
+        "tests": "4",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "com.crabot.voice.GuidedEnrollmentTest",
+        "tests": "2",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "com.crabot.voice.IdentityTest",
+        "tests": "3",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "com.crabot.voice.PlaybackAdmissionTest",
+        "tests": "3",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "com.crabot.voice.PlaybackCandidateTest",
+        "tests": "7",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "com.crabot.voice.PlaybackProgressTest",
+        "tests": "4",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "com.crabot.voice.PlaybackReceiptJournalTest",
+        "tests": "3",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "com.crabot.voice.TerminalEndpointTest",
+        "tests": "2",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "com.crabot.voice.TerminalTlsTest",
+        "tests": "2",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "com.crabot.voice.VoiceLifecycleTest",
+        "tests": "23",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      {
+        "name": "com.crabot.voice.WireTest",
+        "tests": "4",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      }
+    ]
+  },
+  "controlled_playback_pause_resume_cycles": 30,
+  "prior_controlled_standby_cycles": 60,
+  "apks": {
+    "app-debug.apk": {
+      "bytes": 55893633,
+      "sha256": "4ecc5e0ea29e6a06ebf29896422440e27f42eeacbb523d44d6e5115b570153ba"
+    },
+    "app-debug-androidTest.apk": {
+      "bytes": 2035034,
+      "sha256": "1eb2c0a4e157d700d4b91d83479b79e92a61c6145a998b1846a825409ff3ea61"
+    }
+  },
+  "native_libraries": {
+    "lib/arm64-v8a/libc++_shared.so": {
+      "bytes": 1253544,
+      "sha256": "cd61762848882a16c8244c964a6f396c0caa0b440588a210ce9cc4ab0e6d9f0c"
+    },
+    "lib/arm64-v8a/libonnxruntime.so": {
+      "bytes": 22249552,
+      "sha256": "7a2fb92eb67037837c3f0e428bd732fd0d05ced0546d9e740090c07573d8249a"
+    },
+    "lib/arm64-v8a/libsherpa-onnx-c-api.so": {
+      "bytes": 3998336,
+      "sha256": "c454707eb1b09e155bb2970b99c703cfdebbcda9cdf2c0224b043b18b7f7f220"
+    },
+    "lib/arm64-v8a/libsherpa-onnx-cxx-api.so": {
+      "bytes": 128440,
+      "sha256": "a5ba12cd5e9e5e3f8bcb16607258b8199f237f6a052a56a7bf5d4e8a44ecf7b0"
+    },
+    "lib/arm64-v8a/libcrabot_voice.so": {
+      "bytes": 1148216,
+      "sha256": "2940f3a5b164ca21be805a58b00988164572efe91a00904f0e62b1e0bf7084c4"
+    }
+  },
+  "native_needed": [
+    "libsherpa-onnx-cxx-api.so",
+    "libsherpa-onnx-c-api.so",
+    "liblog.so",
+    "libm.so",
+    "libc++_shared.so",
+    "libdl.so",
+    "libc.so"
+  ],
+  "existing_cpp_runtime_unchanged": true,
+  "apm_static_archives_regular": 24,
+  "apm_sources": {
+    "webrtc-audio-processing-1.3.tar.gz": "95552fc17faa0202133707bbb3727e8c2cf64d4266fe31bfdb2298d769c1db75",
+    "abseil-cpp-20230125.1.tar.gz": "81311c17599b3712069ded20cca09a62ab0bf2a89dfa16993786c8782b7ed145",
+    "abseil-cpp_20230125.1-4_patch.zip": "112ee72052049d930396c2778fc1c6e184137905dd75d60a97dcfc386426610d"
+  },
+  "host_jni": {
+    "scope": "Actual app APM C++ and JNI on host, fixed PCM16 public controls; not Android hardware or EOT acceptance",
+    "product_sources": {
+      "echo_processor.cpp": "66daa868bcbe44d7f249b67f54ba212a2d4643c31911ab6b2d700f6b7312262f",
+      "echo_processor.h": "9f3de1d8876eb088d470882b6acc539814acf41354dd2658d6ded68b952f38be",
+      "echo_jni.cpp": "1ef951c44e749163dc6a7508481c4bcebddd6b0e24b4aaa9017625fec7990cbe"
+    },
+    "jni_error_checks_per_case": 3,
+    "cases": [
+      {
+        "name": "near_only_on",
+        "samples": 480000,
+        "frames": 3000,
+        "pcm_exactly_equal": true,
+        "app_pcm_sha256": "92272e8a51baeb11cc7fbf3aa1a61ccd4f4e2a56e2f8956ace96c1a4f840004b",
+        "host_jvm_process_seconds": 1.326160832773894
+      },
+      {
+        "name": "echo_only_on",
+        "samples": 480000,
+        "frames": 3000,
+        "pcm_exactly_equal": true,
+        "app_pcm_sha256": "5887ffe6ec91003c0183b3606f1904684ddefa92b09ea1410526df75910b57a0",
+        "host_jvm_process_seconds": 0.29751949990168214
+      },
+      {
+        "name": "echo_only_on_no_reference",
+        "samples": 480000,
+        "frames": 3000,
+        "pcm_exactly_equal": true,
+        "app_pcm_sha256": "66ee584266637cb26061c48e50b7c5799f898a56fde8786005ba6efc8ddec88f",
+        "host_jvm_process_seconds": 0.24347908329218626
+      },
+      {
+        "name": "double_talk_on",
+        "samples": 480000,
+        "frames": 3000,
+        "pcm_exactly_equal": true,
+        "app_pcm_sha256": "3e3c37998cdf3a03f87ef06ad9df39033128d92b19820044fa75a8594b74d028",
+        "host_jvm_process_seconds": 0.2948798746801913
+      }
+    ]
+  },
+  "unchanged": [
+    "VoiceController wire9 selection and endpoint logic",
+    "speaker identity/enrollment input and thresholds",
+    "prompts",
+    "protocol version and persistent data",
+    "local service deployment",
+    "phone app and ADB server"
+  ],
+  "not_accepted": [
+    "actual Android HAL timestamps and drift",
+    "speaker/microphone AEC and double talk",
+    "pause-time near-end speech classification is not connected; synchronized capture blocks are intentionally unavailable during pause",
+    "Chinese EOT",
+    "automatic candidate/controller integration is not connected; wire10 joint release pending"
+  ]
+}

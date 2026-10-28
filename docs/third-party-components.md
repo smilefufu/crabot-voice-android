@@ -10,6 +10,7 @@
 | Silero VAD | 官方 `asr-models/silero_vad.onnx`，SHA 起始 `9e2449e1` | [Silero VAD](https://github.com/snakers4/silero-vad)，MIT |
 | 中文 KWS | `wenetspeech-3.3M-2024-01-01-mobile`；encoder/joiner INT8、decoder FP32 | [发布者模型卡](https://modelscope.cn/models/pkufool/sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01)，Apache-2.0；archive 模型卡原文保留 |
 | ONNX Runtime | sherpa 官方包内实际 `1.28.2` | [该版本许可](https://github.com/microsoft/onnxruntime/blob/v1.28.2/LICENSE)，MIT；保留该版本 `ThirdPartyNotices.txt` |
+| WebRTC Audio Processing | `1.3`，归档SHA起始 `95552fc1`；Abseil `20230125.1`，Meson补丁 `-4`，源码经固定NDK静态链接 | [官方源包](https://freedesktop.org/software/pulseaudio/webrtc-audio-processing/webrtc-audio-processing-1.3.tar.gz)，BSD-3-Clause及内含组件原许可；Abseil Apache-2.0。完整源码归属/许可/专利文本在 `assets/licenses/webrtc-apm.txt`，构建摘要见 `tools/prepare-apm.py`。不新增ONNX Runtime或第二份C++运行库 |
 | Android C++ runtime | NDK `28.2.13676358` 的 `libc++_shared` | AGP/CMake 打包；保留该 NDK 的 `NOTICE.toolchain`，不从其它机器复制运行库 |
 
 Java/Kotlin 层版本在 `app/build.gradle.kts`：AndroidX Activity 1.10.1、OkHttp 4.12.0、Coroutines 1.10.2、ZXing Android Embedded 4.3.0，均为 Apache-2.0 组件；Gradle artifact verification 覆盖编译与测试依赖。JUnit、AndroidX Test、MockWebServer/okhttp-tls 只用于测试，测试 APK不作为产品发布。

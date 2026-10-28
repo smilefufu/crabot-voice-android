@@ -22,10 +22,12 @@ Crabot 的原生 Android 语音终端，负责有限采音、播放、本地唤�
 ```sh
 sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" "ndk;28.2.13676358" "cmake;3.22.1"
 python3 tools/prepare-models.py
+# 在独立构建环境准备 Meson 1.9.1 / Ninja 1.13.0（不要求全局安装）
+python3 tools/prepare-apm.py
 ./gradlew :app:assembleDebug :app:testDebugUnitTest --no-daemon
 ```
 
-模型脚本从官方发行源下载固定版本，先校验 archive SHA-256，再校验所有模型与 `model-files.json` 一致。只复制所需库/模型，不读取研究目录或录音；下载缓存、模型与 native 库均忽略入 Git。第一次下载需联网，已验证缓存可复用。
+模型脚本从官方发行源下载固定版本，先校验 archive SHA-256，再校验所有模型与 `model-files.json` 一致。只复制所需库/模型，不读取研究目录或录音；下载缓存、模型与 native 库均忽略入 Git。第一次下载需联网，已验证缓存可复用。APM脚本另校验固定的WebRTC 1.3、Abseil及Meson补丁摘要，在本机NDK下编译并输出忽略入库的 `native-apm/`；只支持本项目ARM64/API29构建，不下载预编译运行库。自然轮次仍未通过组件/真机发布门槛，新增音频会话仅用于隔离验证，不据此开启持续对话或改用未经验证的声学处理。
 
 Gradle Wrapper 固定 8.11.1 并核验 distribution SHA-256；AGP 8.9.2、Kotlin 2.1.20、NDK/CMake 及依赖固定版本，Maven artifact checksum 由 `gradle/verification-metadata.xml` 校验。正常构建不要重新生成该文件来绕过失败。
 
