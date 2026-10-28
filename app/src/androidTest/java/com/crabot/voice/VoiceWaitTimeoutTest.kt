@@ -29,7 +29,7 @@ class VoiceWaitTimeoutTest {
         assertEquals(VoiceController.Mode.CLOSED, it.mode)
         assertEquals("closed", it.microphoneState)
         assertFalse(it.wakeEnabled)
-        assertTrue(it.status.contains("回答等待超时"))
+        assertTrue(it.status.contains("回答等待已结束"))
         assertTrue(it.status.contains("重新开启语音待机"))
     }
     @Test fun oldTimerCannotStopNewTurn() = checkTimeout(VoiceController.Mode.WAITING, "turn-b", "turn-a") {

@@ -45,12 +45,17 @@ object Models {
     }
 }
 
-class NativeModels(root: String) : SpeakerIdentityModel, AutoCloseable {
+interface VoiceInputModels : SpeakerIdentityModel, AutoCloseable {
+    fun reset(keyword: String)
+    fun feed(samples: ShortArray, vad: Boolean, kws: Boolean): Int
+}
+
+class NativeModels(root: String) : VoiceInputModels {
     private var handle = create(root)
     init { check(handle != 0L) { "端侧模型加载失败" } }
     private fun activeHandle(): Long { check(handle != 0L) { "端侧模型已关闭" }; return handle }
-    @Synchronized fun reset(keyword: String) = reset(activeHandle(), keyword)
-    @Synchronized fun feed(samples: ShortArray, vad: Boolean, kws: Boolean): Int = feed(activeHandle(), samples, vad, kws) // bit 0 VAD; bit 1 KWS
+    @Synchronized override fun reset(keyword: String) = reset(activeHandle(), keyword)
+    @Synchronized override fun feed(samples: ShortArray, vad: Boolean, kws: Boolean): Int = feed(activeHandle(), samples, vad, kws) // bit 0 VAD; bit 1 KWS
     @Synchronized override fun dimension(): Int = dimension(activeHandle())
     @Synchronized override fun embedding(samples: ShortArray): FloatArray = embedding(activeHandle(), samples)
     @Synchronized override fun segments(samples: ShortArray): FloatArray = segments(activeHandle(), samples)

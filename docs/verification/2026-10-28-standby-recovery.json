@@ -1,0 +1,170 @@
+{
+  "scope": "Host controller verification only; fake device I/O and model outputs. No deployment, device install, mic/speaker capture, cloud model or user data.",
+  "baseline": {
+    "baseline_ref": "3d6488a plus behavior-preserving VoiceInputModels test seam",
+    "baseline_controller_sha256": "ff298e810fd72a8fdf69e32767624a8533202a7995afc6756d11a40f1f693a24",
+    "tests": 8,
+    "failures": 5,
+    "errors": 0,
+    "cases": [
+      {
+        "name": "ttsCancellationReturnsToWakeWithoutOpeningFollowup",
+        "failed": true
+      },
+      {
+        "name": "localPlaybackFailureRevokesStandbyRatherThanPretendingItIsStillEnabled",
+        "failed": true
+      },
+      {
+        "name": "oldDetectorFailureCannotDisableANewCapture",
+        "failed": true
+      },
+      {
+        "name": "staleReservationTimerCannotStopNewRecording",
+        "failed": false
+      },
+      {
+        "name": "thirtyControlledResponsesKeepStandbyButMuteAndBackgroundRevokeIt",
+        "failed": false
+      },
+      {
+        "name": "emptyResponseReturnsToWakeAndLateEndCannotStopANewInput",
+        "failed": true
+      },
+      {
+        "name": "reservationExpiryReturnsToWakeWithoutInventingAReply",
+        "failed": true
+      },
+      {
+        "name": "rejectedAsrTurnKeepsItsReasonAndReturnsToWake",
+        "failed": false
+      }
+    ],
+    "old_dependency_components_unchanged": 347,
+    "new_pinned_dependency_components": 37
+  },
+  "final": {
+    "tests": 53,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "controller_cases": [
+    "ttsCancellationReturnsToWakeWithoutOpeningFollowup",
+    "missingLocalModelRevokesStandbyRatherThanRetryingIt",
+    "localPlaybackFailureRevokesStandbyRatherThanPretendingItIsStillEnabled",
+    "oldDetectorFailureCannotDisableANewCapture",
+    "manualEmptyResponseDoesNotGrantWakeOrFollowupPermission",
+    "disconnectAndNewConnectionDoNotRestoreMicrophonePermission",
+    "lateResponseAndCatalogAcknowledgementKeepTheActualFailureVisible",
+    "staleReservationTimerCannotStopNewRecording",
+    "localProcessingFailureDoesNotReuseServerFailureRecovery",
+    "aQueuedOldDetectorErrorCannotStopTheNextInput",
+    "thirtyControlledResponsesKeepStandbyButMuteAndBackgroundRevokeIt",
+    "invalidCatalogRevokesPermissionAndConfirmationDoesNotReopenIt",
+    "currentDetectorFailureRevokesPermission",
+    "cancelledManagementResultDoesNotGrantOrdinaryWakeRecovery",
+    "protocolOrDirectoryErrorDoesNotAutomaticallyRecover",
+    "oldPlaybackFailureReceiptDoesNotStopNewRecording",
+    "thirtyMixedOutcomesPreserveOnlyTheOriginalWakePermission",
+    "notificationsRestoreTheOriginalFollowupDeadlineWithoutExtendingIt",
+    "emptyResponseReturnsToWakeAndLateEndCannotStopANewInput",
+    "reservationExpiryReturnsToWakeWithoutInventingAReply",
+    "rejectedAsrTurnKeepsItsReasonAndReturnsToWake",
+    "expiredAnswerWaitReturnsToWakeWithoutCancellingTheBusinessTask",
+    "speechInsideFollowupIsNotCutOffByTheOldWindowDeadline"
+  ],
+  "controlled_cycles": {
+    "completed_playback_to_followup_to_kws": 30,
+    "mixed_empty_asr_rejected_tts_cancelled_to_kws": 30
+  },
+  "dependency_verification": {
+    "original_components_unchanged": 347,
+    "new_components": 37,
+    "configuration_unchanged": true,
+    "new": [
+      "androidx.test:monitor:1.8.0",
+      "androidx.test.espresso:espresso-idling-resource:3.7.0",
+      "com.almworks.sqlite4java:sqlite4java:1.0.392",
+      "com.google.auto.value:auto-value-annotations:1.11.1",
+      "com.google.auto.value:auto-value-parent:1.11.1",
+      "com.google.errorprone:error_prone_annotations:2.47.0",
+      "com.google.errorprone:error_prone_parent:2.47.0",
+      "com.google.guava:failureaccess:1.0.3",
+      "com.google.guava:guava:33.6.0-jre",
+      "com.google.guava:guava-parent:33.4.0-android",
+      "com.google.guava:guava-parent:33.6.0-jre",
+      "com.google.j2objc:j2objc-annotations:3.1",
+      "com.google.testparameterinjector:test-parameter-injector:1.22",
+      "com.google.testparameterinjector:test-parameter-injector-parent:1.22",
+      "com.ibm.icu:icu4j:78.3",
+      "org.bouncycastle:bc-jdk18on-bom:1.85",
+      "org.bouncycastle:bcprov-jdk18on:1.85",
+      "org.conscrypt:conscrypt-openjdk-uber:2.6.2",
+      "org.jspecify:jspecify:1.0.0",
+      "org.ow2.asm:asm:9.10.1",
+      "org.ow2.asm:asm-commons:9.10.1",
+      "org.ow2.asm:asm-tree:9.10.1",
+      "org.robolectric:annotations:4.17",
+      "org.robolectric:junit:4.17",
+      "org.robolectric:nativeruntime:4.17",
+      "org.robolectric:nativeruntime-dist-compat:1.0.19",
+      "org.robolectric:pluginapi:4.17",
+      "org.robolectric:plugins-maven-dependency-resolver:4.17",
+      "org.robolectric:resources:4.17",
+      "org.robolectric:robolectric:4.17",
+      "org.robolectric:sandbox:4.17",
+      "org.robolectric:shadowapi:4.17",
+      "org.robolectric:shadows-framework:4.17",
+      "org.robolectric:utils:4.17",
+      "org.robolectric:utils-reflector:4.17",
+      "org.sonatype.oss:oss-parent:4",
+      "org.yaml:snakeyaml:2.6"
+    ]
+  },
+  "files": {
+    "app/src/main/java/com/crabot/voice/VoiceController.kt": {
+      "sha256": "09d8b357b1afab9a1f4a706e0f3730b67df949d6147a67ccc73591ee74a0a0e0",
+      "bytes": 68318
+    },
+    "app/src/main/java/com/crabot/voice/Models.kt": {
+      "sha256": "5d04a1e323a39afef272754f68cf1e554b4456d959bb449da031d9f3a6e68ce0",
+      "bytes": 4523
+    },
+    "app/src/main/java/com/crabot/voice/MainActivity.kt": {
+      "sha256": "de08078e2dd590e9217cfc6f1e598b30799c7a1b31b6e6879dfa89af93fc3a2e",
+      "bytes": 33861
+    },
+    "app/src/test/java/com/crabot/voice/VoiceLifecycleTest.kt": {
+      "sha256": "1c41ae7a53ef178ab2bf45c6dafee1e477f0ad4de3f75f0f605e561df684e0ad",
+      "bytes": 18239
+    },
+    "gradle/verification-metadata.xml": {
+      "sha256": "a388e7133f491627530b51ecb02163d24e0e80809dc1b1fa8031a78362722e6e",
+      "bytes": 176329
+    },
+    "app/build/outputs/apk/debug/app-debug.apk": {
+      "sha256": "977d8e79078354e201d9a2d21b469a9398ac081a65d6a22b8776d62e94a8965c",
+      "bytes": 54975353
+    },
+    "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk": {
+      "sha256": "e432639377613b5bff173931180ef407d06d04c25e9fecec0e60e9ba5d2fbf47",
+      "bytes": 2034786
+    }
+  },
+  "build": {
+    "tasks": [
+      ":app:testDebugUnitTest",
+      ":app:assembleDebug",
+      ":app:assembleDebugAndroidTest"
+    ],
+    "offline": true,
+    "result": "BUILD SUCCESSFUL",
+    "elapsed_seconds": 11,
+    "version_name": "0.8.2",
+    "version_code": 19,
+    "wire": 9,
+    "release": false,
+    "instrumentation_executed": false
+  }
+}

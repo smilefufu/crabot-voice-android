@@ -199,7 +199,7 @@ class MainActivity : ComponentActivity() {
         if (controller.keepScreenOn) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) else window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         val key = when (page) {
             Page.NEW_CONTACT, Page.RENAME -> "$page|$selectedId|${controller.synchronizedCatalog}|${controller.modelReady}|${controller.pendingManagement}"
-            else -> "$page|$selectedId|${controller.catalogRevision}|$mode|${controller.lastReply}|${controller.pendingResults}|${controller.status}|${controller.enrollmentStep}|${controller.pendingManagement}|${controller.waitingConfirmation}|$diagnostics|$replyExpanded"
+            else -> "$page|$selectedId|${controller.catalogRevision}|$mode|${controller.lastReply}|${controller.pendingResults}|${controller.status}|${controller.lastOutcome}|${controller.enrollmentStep}|${controller.pendingManagement}|${controller.waitingConfirmation}|$diagnostics|$replyExpanded"
         }
         if (key == renderedKey) return
         renderedKey = key; content.removeAllViews()
@@ -313,7 +313,9 @@ class MainActivity : ComponentActivity() {
         if (controller.mode == VoiceController.Mode.RECORDING) button(content, "结束说话") { controller.recordButton() }
         if (controller.guidedEnrollmentActive) button(content, "取消本次录入") { controller.cancelEnrollment() }
         if (!controller.readyForConversation && controller.connected) text(content, controller.status, 14f, true)
-        if (listOf("失败", "拒绝", "未检测", "失效", "过期", "超时", "尚未确认", "无法", "错误", "不兼容", "中断").any { controller.status.contains(it) }) text(content, controller.status, 14f)
+        if (controller.lastOutcome.isNotEmpty()) text(content, "上一轮：${controller.lastOutcome}", 14f)
+        if ((controller.lastOutcome.isEmpty() || !controller.status.startsWith(controller.lastOutcome)) &&
+            listOf("失败", "拒绝", "未检测", "失效", "过期", "超时", "尚未确认", "无法", "错误", "不兼容", "中断").any { controller.status.contains(it) }) text(content, controller.status, 14f)
     }
     private fun settings() {
         text(content, "设置", 27f)
