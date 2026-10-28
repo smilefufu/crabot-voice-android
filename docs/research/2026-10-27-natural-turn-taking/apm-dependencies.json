@@ -1,0 +1,14 @@
+{
+  "scope": "isolated research venv only; no production/service environment changed",
+  "packages": {
+    "meson": "1.9.1",
+    "ninja": "1.13.0",
+    "numpy": "2.2.6",
+    "scipy": "1.16.3",
+    "soundfile": "0.13.1",
+    "cffi": "2.1.1",
+    "pycparser": "3.12",
+    "sherpa-onnx": "1.13.8",
+    "sherpa-onnx-core": "1.13.8"
+  }
+}

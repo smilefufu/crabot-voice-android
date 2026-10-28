@@ -1,0 +1,92 @@
+{
+  "sources": {
+    "fangjun-sr-1.wav": {
+      "sha256": "33c24061180224d2350143ee19e3af031446995c676bd25996325d34bb20a4d5",
+      "bytes": 73606,
+      "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/fangjun-sr-1.wav"
+    },
+    "leijun-test-sr-1.wav": {
+      "sha256": "36cda04ee4d10e38095de73b77c99e8e7c54347232967a9cde4cf54f7d496bab",
+      "bytes": 263878,
+      "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/leijun-test-sr-1.wav"
+    }
+  },
+  "rate_capture": 16000,
+  "rate_render": 24000,
+  "seconds": 30,
+  "echo_taps_ms_gain": [
+    [
+      80,
+      0.45
+    ],
+    [
+      95,
+      0.15
+    ],
+    [
+      110,
+      0.08
+    ]
+  ],
+  "reported_delay_ms": 80,
+  "near_intervals_seconds": [
+    [
+      10,
+      16
+    ],
+    [
+      22,
+      28
+    ]
+  ],
+  "far_pause_seconds": [
+    14,
+    14.6
+  ],
+  "clip_rms": 0.05,
+  "config": "APM defaults with echo_canceller.enabled varied; mobile_mode=false; no AGC or NS",
+  "cases": [
+    {
+      "name": "near_only_off",
+      "aec": false,
+      "capture_sha256": "eb7c8c7eb168be0bdfd87b1daccfa9c1bfb49ee4654b2526d9e1c762e8d8708b",
+      "render_sha256": "1b97524801d8c93d65973ee64c84ce13cf8ab979672b2666f225f8591f02a5b3"
+    },
+    {
+      "name": "near_only_on",
+      "aec": true,
+      "capture_sha256": "eb7c8c7eb168be0bdfd87b1daccfa9c1bfb49ee4654b2526d9e1c762e8d8708b",
+      "render_sha256": "1b97524801d8c93d65973ee64c84ce13cf8ab979672b2666f225f8591f02a5b3"
+    },
+    {
+      "name": "echo_only_off",
+      "aec": false,
+      "capture_sha256": "94f7788fda613e7266e8af6fe32fc08568a8ad19014528a4168d22e24f96cdb8",
+      "render_sha256": "3b810a2ca6d3df21306f66149895d9ccc36d27a4e6d2dc0208a19e61239dc0b3"
+    },
+    {
+      "name": "echo_only_on",
+      "aec": true,
+      "capture_sha256": "94f7788fda613e7266e8af6fe32fc08568a8ad19014528a4168d22e24f96cdb8",
+      "render_sha256": "3b810a2ca6d3df21306f66149895d9ccc36d27a4e6d2dc0208a19e61239dc0b3"
+    },
+    {
+      "name": "echo_only_on_no_reference",
+      "aec": true,
+      "capture_sha256": "94f7788fda613e7266e8af6fe32fc08568a8ad19014528a4168d22e24f96cdb8",
+      "render_sha256": "1b97524801d8c93d65973ee64c84ce13cf8ab979672b2666f225f8591f02a5b3"
+    },
+    {
+      "name": "double_talk_off",
+      "aec": false,
+      "capture_sha256": "10b05f8ba83b2643e8c91353e19c42edac6c7e801fadc5d61d970c6d5d8a6b45",
+      "render_sha256": "3b810a2ca6d3df21306f66149895d9ccc36d27a4e6d2dc0208a19e61239dc0b3"
+    },
+    {
+      "name": "double_talk_on",
+      "aec": true,
+      "capture_sha256": "10b05f8ba83b2643e8c91353e19c42edac6c7e801fadc5d61d970c6d5d8a6b45",
+      "render_sha256": "3b810a2ca6d3df21306f66149895d9ccc36d27a4e6d2dc0208a19e61239dc0b3"
+    }
+  ]
+}

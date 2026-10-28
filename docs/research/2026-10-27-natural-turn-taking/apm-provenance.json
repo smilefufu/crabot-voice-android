@@ -4,5 +4,11 @@
   "bytes": 879768,
   "sha256": "95552fc17faa0202133707bbb3727e8c2cf64d4266fe31bfdb2298d769c1db75",
   "license": "BSD-3-Clause; COPYING retained; other bundled component notices must be reviewed before distribution",
-  "stage": "Source pinned only; not compiled, packaged or acoustic-validated"
+  "stage": "Isolated macOS/Android build and public software echo/VAD replay completed; no app integration or physical acceptance",
+  "abseil": {
+    "version": "20230125.1",
+    "source_sha256": "81311c17599b3712069ded20cca09a62ab0bf2a89dfa16993786c8782b7ed145",
+    "meson_patch_sha256": "112ee72052049d930396c2778fc1c6e184137905dd75d60a97dcfc386426610d",
+    "patch_source": "https://github.com/mesonbuild/wrapdb/releases/download/abseil-cpp_20230125.1-4/abseil-cpp_20230125.1-4_patch.zip"
+  }
 }

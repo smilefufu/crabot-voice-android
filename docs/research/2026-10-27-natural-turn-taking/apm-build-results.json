@@ -1,0 +1,31 @@
+{
+  "scope": "isolated build/link only, no Android execution",
+  "apm_version": "1.3",
+  "source_archive_sha256": "95552fc17faa0202133707bbb3727e8c2cf64d4266fe31bfdb2298d769c1db75",
+  "probe_source_sha256": "73e8ea2b789d354226a131db0a584aed826601279565c3373c5d331893060750",
+  "platform": "macOS-26.4.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "jobs": 4,
+  "builds": [
+    {
+      "target": "host",
+      "cold_build_directory": false,
+      "build_seconds": 0.41382179176434875,
+      "link_seconds": 0.9002752499654889,
+      "archives": 24,
+      "archive_bytes": 9088264,
+      "probe_bytes": 1060104,
+      "probe_sha256": "e2c7c98a5fa0f0183e8ceee1e1a9007f34cd18b59c30b46224a2fe6546d857b1"
+    },
+    {
+      "target": "android",
+      "cold_build_directory": false,
+      "build_seconds": 1.3186846659518778,
+      "link_seconds": 0.7646716251038015,
+      "archives": 24,
+      "archive_bytes": 8611500,
+      "probe_bytes": 1111360,
+      "probe_sha256": "fc28963976aaa85b00d6722c08c10d2f907ee7d9f5d49260c8d3dc66715aec28"
+    }
+  ]
+}

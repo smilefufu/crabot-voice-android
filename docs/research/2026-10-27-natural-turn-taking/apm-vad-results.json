@@ -1,0 +1,469 @@
+{
+  "scope": "Public software echo path and app-matching VAD only; no business turn, device, ASR, identity or listening acceptance",
+  "model_sha256": "9e2449e1087496d8d4caba907f23e0bd3f78d91fa552479bb9c23ac09cbb1fd6",
+  "sherpa_version": "1.13.8",
+  "config_without_model_path": "VadModelConfig(silero_vad=SileroVadModelConfig(model=\"<fixed-model>\", threshold=0.5, min_silence_duration=0.05, min_speech_duration=0.05, max_speech_duration=16, window_size=512, neg_threshold=-1), ten_vad=TenVadModelConfig(model=\"\", threshold=0.5, min_silence_duration=0.5, min_speech_duration=0.25, max_speech_duration=20, window_size=256), sample_rate=16000, num_threads=1, provider=\"cpu\", debug=False)",
+  "input": "round/clamp to PCM16, then divide by 32768 as NativeModels; no loudness normalization",
+  "frame_samples": 320,
+  "cases": [
+    {
+      "name": "near_only_off",
+      "source_sha256": "eb7c8c7eb168be0bdfd87b1daccfa9c1bfb49ee4654b2526d9e1c762e8d8708b",
+      "frames": 1500,
+      "positive_frames": 554,
+      "positive_seconds": 11.08,
+      "positive_intervals_seconds": [
+        [
+          10.540000000000001,
+          12.86
+        ],
+        [
+          13.36,
+          16.62
+        ],
+        [
+          22.54,
+          24.82
+        ],
+        [
+          25.34,
+          28.560000000000002
+        ]
+      ],
+      "frame_ms": {
+        "p50": 0.09364564903080463,
+        "p95": 0.10429804679006338,
+        "max": 0.4115831106901169
+      },
+      "near_windows": [
+        {
+          "start_seconds": 10,
+          "positive_frames": 248,
+          "already_positive_before_near": false,
+          "first_positive_after_start_ms": 560
+        },
+        {
+          "start_seconds": 22,
+          "positive_frames": 247,
+          "already_positive_before_near": false,
+          "first_positive_after_start_ms": 560
+        }
+      ]
+    },
+    {
+      "name": "near_only_on",
+      "source_sha256": "e8414bcb4407fd2e40f1e34927158df1243238b6feb08f4baf9230fe40c4998a",
+      "frames": 1500,
+      "positive_frames": 558,
+      "positive_seconds": 11.16,
+      "positive_intervals_seconds": [
+        [
+          10.540000000000001,
+          12.86
+        ],
+        [
+          13.36,
+          16.66
+        ],
+        [
+          22.54,
+          24.82
+        ],
+        [
+          25.34,
+          28.6
+        ]
+      ],
+      "frame_ms": {
+        "p50": 0.09337486699223518,
+        "p95": 0.10576278436928986,
+        "max": 0.27791690081357956
+      },
+      "near_windows": [
+        {
+          "start_seconds": 10,
+          "positive_frames": 248,
+          "already_positive_before_near": false,
+          "first_positive_after_start_ms": 560
+        },
+        {
+          "start_seconds": 22,
+          "positive_frames": 247,
+          "already_positive_before_near": false,
+          "first_positive_after_start_ms": 560
+        }
+      ]
+    },
+    {
+      "name": "echo_only_off",
+      "source_sha256": "94f7788fda613e7266e8af6fe32fc08568a8ad19014528a4168d22e24f96cdb8",
+      "frames": 1500,
+      "positive_frames": 963,
+      "positive_seconds": 19.26,
+      "positive_intervals_seconds": [
+        [
+          0.44,
+          1.98
+        ],
+        [
+          2.74,
+          4.28
+        ],
+        [
+          5.04,
+          6.58
+        ],
+        [
+          7.34,
+          8.88
+        ],
+        [
+          9.66,
+          11.16
+        ],
+        [
+          11.96,
+          13.46
+        ],
+        [
+          14.780000000000001,
+          15.76
+        ],
+        [
+          16.54,
+          18.06
+        ],
+        [
+          18.84,
+          20.38
+        ],
+        [
+          21.14,
+          22.64
+        ],
+        [
+          23.44,
+          24.94
+        ],
+        [
+          25.740000000000002,
+          27.26
+        ],
+        [
+          28.02,
+          29.560000000000002
+        ]
+      ],
+      "frame_ms": {
+        "p50": 0.09408360347151756,
+        "p95": 0.10454445146024227,
+        "max": 0.28462521731853485
+      }
+    },
+    {
+      "name": "echo_only_on",
+      "source_sha256": "52506957ce714f88c119a898fce4f2fc3ca5b85690f31cc20a92c8c6d4627968",
+      "frames": 1500,
+      "positive_frames": 0,
+      "positive_seconds": 0.0,
+      "positive_intervals_seconds": [],
+      "frame_ms": {
+        "p50": 0.0927918590605259,
+        "p95": 0.10325014591217041,
+        "max": 0.24129217490553856
+      }
+    },
+    {
+      "name": "echo_only_on_no_reference",
+      "source_sha256": "021fb350bb4c8f9493c88a0106535b2871d4c0a42caaf3736789bae3a688c2a2",
+      "frames": 1500,
+      "positive_frames": 963,
+      "positive_seconds": 19.26,
+      "positive_intervals_seconds": [
+        [
+          0.46,
+          2.0
+        ],
+        [
+          2.74,
+          4.28
+        ],
+        [
+          5.04,
+          6.58
+        ],
+        [
+          7.34,
+          8.88
+        ],
+        [
+          9.66,
+          11.18
+        ],
+        [
+          11.96,
+          13.46
+        ],
+        [
+          14.8,
+          15.76
+        ],
+        [
+          16.54,
+          18.06
+        ],
+        [
+          18.84,
+          20.38
+        ],
+        [
+          21.14,
+          22.68
+        ],
+        [
+          23.44,
+          24.94
+        ],
+        [
+          25.740000000000002,
+          27.26
+        ],
+        [
+          28.060000000000002,
+          29.560000000000002
+        ]
+      ],
+      "frame_ms": {
+        "p50": 0.09379093535244465,
+        "p95": 0.10287484619766474,
+        "max": 0.2711252309381962
+      }
+    },
+    {
+      "name": "double_talk_off",
+      "source_sha256": "10b05f8ba83b2643e8c91353e19c42edac6c7e801fadc5d61d970c6d5d8a6b45",
+      "frames": 1500,
+      "positive_frames": 1236,
+      "positive_seconds": 24.72,
+      "positive_intervals_seconds": [
+        [
+          0.44,
+          1.98
+        ],
+        [
+          2.74,
+          4.28
+        ],
+        [
+          5.04,
+          6.58
+        ],
+        [
+          7.34,
+          8.88
+        ],
+        [
+          9.66,
+          16.080000000000002
+        ],
+        [
+          16.5,
+          18.1
+        ],
+        [
+          18.8,
+          20.44
+        ],
+        [
+          21.1,
+          30.0
+        ]
+      ],
+      "frame_ms": {
+        "p50": 0.09752041660249233,
+        "p95": 0.1151332864537835,
+        "max": 0.2643750049173832
+      },
+      "near_windows": [
+        {
+          "start_seconds": 10,
+          "positive_frames": 300,
+          "already_positive_before_near": true,
+          "first_positive_after_start_ms": null
+        },
+        {
+          "start_seconds": 22,
+          "positive_frames": 300,
+          "already_positive_before_near": true,
+          "first_positive_after_start_ms": null
+        }
+      ]
+    },
+    {
+      "name": "double_talk_on",
+      "source_sha256": "85f0a92f5037a578e67817ba840d842ce86d29fe033efea1590fdfc730ea65cf",
+      "frames": 1500,
+      "positive_frames": 435,
+      "positive_seconds": 8.700000000000001,
+      "positive_intervals_seconds": [
+        [
+          10.58,
+          12.4
+        ],
+        [
+          13.42,
+          15.18
+        ],
+        [
+          15.66,
+          16.44
+        ],
+        [
+          22.62,
+          24.46
+        ],
+        [
+          25.36,
+          26.38
+        ],
+        [
+          26.54,
+          27.16
+        ],
+        [
+          27.48,
+          28.34
+        ]
+      ],
+      "frame_ms": {
+        "p50": 0.09418744593858719,
+        "p95": 0.10550229344516993,
+        "max": 0.22320915013551712
+      },
+      "near_windows": [
+        {
+          "start_seconds": 10,
+          "positive_frames": 196,
+          "already_positive_before_near": false,
+          "first_positive_after_start_ms": 600
+        },
+        {
+          "start_seconds": 22,
+          "positive_frames": 200,
+          "already_positive_before_near": false,
+          "first_positive_after_start_ms": 640
+        }
+      ]
+    },
+    {
+      "name": "near_only_on_linear",
+      "source_sha256": "34a22a36033d1f94aac6dc9e1b7b1ad37a59e2fba5a03dd6d043822a2b6b9ec7",
+      "frames": 1500,
+      "positive_frames": 560,
+      "positive_seconds": 11.200000000000001,
+      "positive_intervals_seconds": [
+        [
+          10.540000000000001,
+          12.88
+        ],
+        [
+          13.4,
+          16.7
+        ],
+        [
+          22.54,
+          24.86
+        ],
+        [
+          25.36,
+          28.6
+        ]
+      ],
+      "frame_ms": {
+        "p50": 0.09372900240123272,
+        "p95": 0.10450202971696854,
+        "max": 0.2542496658861637
+      },
+      "near_windows": [
+        {
+          "start_seconds": 10,
+          "positive_frames": 247,
+          "already_positive_before_near": false,
+          "first_positive_after_start_ms": 560
+        },
+        {
+          "start_seconds": 22,
+          "positive_frames": 248,
+          "already_positive_before_near": false,
+          "first_positive_after_start_ms": 560
+        }
+      ]
+    },
+    {
+      "name": "echo_only_on_linear",
+      "source_sha256": "fe53d8bee4f75963abe0a7a2cc11d255419f457072cd24d518f19315400fb381",
+      "frames": 1500,
+      "positive_frames": 1464,
+      "positive_seconds": 29.28,
+      "positive_intervals_seconds": [
+        [
+          0.46,
+          2.52
+        ],
+        [
+          2.7800000000000002,
+          30.0
+        ]
+      ],
+      "frame_ms": {
+        "p50": 0.10337471030652523,
+        "p95": 0.22218155208975077,
+        "max": 0.5659167654812336
+      }
+    },
+    {
+      "name": "double_talk_on_linear",
+      "source_sha256": "eb756868695a2b1a30707bf62f3c510d4a6cb6d7223f10c929213521e3842e8c",
+      "frames": 1500,
+      "positive_frames": 1452,
+      "positive_seconds": 29.04,
+      "positive_intervals_seconds": [
+        [
+          0.46,
+          2.52
+        ],
+        [
+          2.7800000000000002,
+          18.8
+        ],
+        [
+          18.900000000000002,
+          21.04
+        ],
+        [
+          21.18,
+          30.0
+        ]
+      ],
+      "frame_ms": {
+        "p50": 0.09870808571577072,
+        "p95": 0.12334452476352452,
+        "max": 0.33833272755146027
+      },
+      "near_windows": [
+        {
+          "start_seconds": 10,
+          "positive_frames": 300,
+          "already_positive_before_near": true,
+          "first_positive_after_start_ms": null
+        },
+        {
+          "start_seconds": 22,
+          "positive_frames": 300,
+          "already_positive_before_near": true,
+          "first_positive_after_start_ms": null
+        }
+      ]
+    }
+  ]
+}

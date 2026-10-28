@@ -1,0 +1,67 @@
+{
+  "scope": "Diagnostic only; original cases/scores retained. No tuning or product integration.",
+  "manifest_sha256": "59feee850ef7a68f0ddd8c7fa55193d9c16db0e68862f7bb54c50d0e61f6246a",
+  "probe_sha256": "e2c7c98a5fa0f0183e8ceee1e1a9007f34cd18b59c30b46224a2fe6546d857b1",
+  "cases": [
+    {
+      "name": "near_only_on",
+      "normal_output_unchanged": true,
+      "linear_sha256": "34a22a36033d1f94aac6dc9e1b7b1ad37a59e2fba5a03dd6d043822a2b6b9ec7",
+      "linear_peak": 0.5686959624290466,
+      "linear_near_windows": [
+        {
+          "unaligned_cosine": 0.09262307417824851,
+          "aligned_cosine": 0.9693992871396958,
+          "alignment_samples_at_16k": 64,
+          "alignment_ms": 4.0,
+          "output_vs_clean_energy_db": -0.0100353913607459,
+          "aligned_si_sdr_db": 11.929400719366207
+        },
+        {
+          "unaligned_cosine": 0.09262307417824851,
+          "aligned_cosine": 0.9693992871396958,
+          "alignment_samples_at_16k": 64,
+          "alignment_ms": 4.0,
+          "output_vs_clean_energy_db": -0.0100353913607459,
+          "aligned_si_sdr_db": 11.929400719366207
+        }
+      ]
+    },
+    {
+      "name": "echo_only_on",
+      "normal_output_unchanged": true,
+      "linear_sha256": "fe53d8bee4f75963abe0a7a2cc11d255419f457072cd24d518f19315400fb381",
+      "linear_peak": 0.12360475957393646,
+      "linear_attenuation_db": {
+        "0-5s": 7.151886263270209,
+        "5-10s": 28.21893687547596,
+        "15-20s": 35.23922193549636,
+        "25-30s": 40.091472917937885
+      }
+    },
+    {
+      "name": "double_talk_on",
+      "normal_output_unchanged": true,
+      "linear_sha256": "eb756868695a2b1a30707bf62f3c510d4a6cb6d7223f10c929213521e3842e8c",
+      "linear_peak": 0.5708319544792175,
+      "linear_near_windows": [
+        {
+          "unaligned_cosine": 0.09403907672944814,
+          "aligned_cosine": 0.9578945492182721,
+          "alignment_samples_at_16k": 64,
+          "alignment_ms": 4.0,
+          "output_vs_clean_energy_db": -0.03853981551202157,
+          "aligned_si_sdr_db": 10.465077853424678
+        },
+        {
+          "unaligned_cosine": 0.09323152300784378,
+          "aligned_cosine": 0.9611586347009663,
+          "alignment_samples_at_16k": 64,
+          "alignment_ms": 4.0,
+          "output_vs_clean_energy_db": -0.010734883980020683,
+          "aligned_si_sdr_db": 10.83782932034756
+        }
+      ]
+    }
+  ]
+}

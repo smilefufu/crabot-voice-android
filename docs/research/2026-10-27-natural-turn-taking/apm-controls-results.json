@@ -1,0 +1,212 @@
+{
+  "scope": "Software echo path on public audio only; not physical AEC, VAD, identity or turn acceptance",
+  "manifest_sha256": "59feee850ef7a68f0ddd8c7fa55193d9c16db0e68862f7bb54c50d0e61f6246a",
+  "probe_sha256": "1531f9b481c8e613b3223175225c95ae8f0e720e1b535ddff089aa4ffdfd7170",
+  "cases": [
+    {
+      "name": "near_only_off",
+      "samples": 480000,
+      "output_sha256": "eb7c8c7eb168be0bdfd87b1daccfa9c1bfb49ee4654b2526d9e1c762e8d8708b",
+      "raw_timing_sha256": "58affc1c2e1714175bb3b4b1e0b844dc48646e845650f2080357e48e9266817d",
+      "init_ms": 0.207541,
+      "process_wall_seconds": 3.3387904157862067,
+      "render_max_difference": 0,
+      "reported_delay_ms": null,
+      "frame_count": 3000,
+      "frame_us": {
+        "p50": 2.25,
+        "p95": 2.5,
+        "max": 24.208
+      },
+      "near_windows": [
+        {
+          "unaligned_cosine": 1.0,
+          "aligned_cosine": 1.0,
+          "alignment_samples_at_16k": 0,
+          "alignment_ms": 0.0,
+          "output_vs_clean_energy_db": -1.0487543363766563e-09,
+          "aligned_si_sdr_db": 151.9534171490428
+        },
+        {
+          "unaligned_cosine": 1.0,
+          "aligned_cosine": 1.0,
+          "alignment_samples_at_16k": 0,
+          "alignment_ms": 0.0,
+          "output_vs_clean_energy_db": -1.0487543363766563e-09,
+          "aligned_si_sdr_db": 151.9534171490428
+        }
+      ],
+      "bypass_max_difference": 0.0
+    },
+    {
+      "name": "near_only_on",
+      "samples": 480000,
+      "output_sha256": "e8414bcb4407fd2e40f1e34927158df1243238b6feb08f4baf9230fe40c4998a",
+      "raw_timing_sha256": "83fb4090d6e875399272c366800d237676a971f8e1e66b6bbbbec138528a43a8",
+      "init_ms": 0.494375,
+      "process_wall_seconds": 0.20442620804533362,
+      "render_max_difference": 0,
+      "reported_delay_ms": 64,
+      "frame_count": 3000,
+      "frame_us": {
+        "p50": 63.5835,
+        "p95": 70.79404999999998,
+        "max": 1446.0
+      },
+      "near_windows": [
+        {
+          "unaligned_cosine": -0.06757054818375903,
+          "aligned_cosine": 0.9693992859592533,
+          "alignment_samples_at_16k": 128,
+          "alignment_ms": 8.0,
+          "output_vs_clean_energy_db": -0.010037487186925726,
+          "aligned_si_sdr_db": 11.929400543860414
+        },
+        {
+          "unaligned_cosine": -0.06757054818375903,
+          "aligned_cosine": 0.9693992859592533,
+          "alignment_samples_at_16k": 128,
+          "alignment_ms": 8.0,
+          "output_vs_clean_energy_db": -0.010037487186925726,
+          "aligned_si_sdr_db": 11.929400543860414
+        }
+      ]
+    },
+    {
+      "name": "echo_only_off",
+      "samples": 480000,
+      "output_sha256": "94f7788fda613e7266e8af6fe32fc08568a8ad19014528a4168d22e24f96cdb8",
+      "raw_timing_sha256": "e9af98a572b4cd2c530c3d6c91c12cd589d4c4ea7509dbbfd5428d4330b70c71",
+      "init_ms": 0.059959,
+      "process_wall_seconds": 0.02766229212284088,
+      "render_max_difference": 0,
+      "reported_delay_ms": null,
+      "frame_count": 3000,
+      "frame_us": {
+        "p50": 2.292,
+        "p95": 2.5,
+        "max": 17.625
+      },
+      "attenuation_db": {
+        "0-5s": 5.736320253225723e-09,
+        "5-10s": 6.02845940151248e-09,
+        "15-20s": 5.8705671726476115e-09,
+        "25-30s": 5.5898263749902355e-09
+      },
+      "bypass_max_difference": 0.0
+    },
+    {
+      "name": "echo_only_on",
+      "samples": 480000,
+      "output_sha256": "52506957ce714f88c119a898fce4f2fc3ca5b85690f31cc20a92c8c6d4627968",
+      "raw_timing_sha256": "5a579418e464686648c27edcba128ed6944728850395467ef9a0b6b6553f082f",
+      "init_ms": 0.348292,
+      "process_wall_seconds": 0.24488750007003546,
+      "render_max_difference": 0,
+      "reported_delay_ms": 64,
+      "frame_count": 3000,
+      "frame_us": {
+        "p50": 68.5,
+        "p95": 97.95805,
+        "max": 1166.46
+      },
+      "attenuation_db": {
+        "0-5s": 30.418601719476793,
+        "5-10s": 48.41434769326425,
+        "15-20s": 60.82824532440362,
+        "25-30s": 60.328078445117946
+      }
+    },
+    {
+      "name": "echo_only_on_no_reference",
+      "samples": 480000,
+      "output_sha256": "021fb350bb4c8f9493c88a0106535b2871d4c0a42caaf3736789bae3a688c2a2",
+      "raw_timing_sha256": "1d895950b601677b8a8b0aa59d06a012ae55e3686890d94116e9e752e634722c",
+      "init_ms": 0.313125,
+      "process_wall_seconds": 0.19298704201355577,
+      "render_max_difference": 0,
+      "reported_delay_ms": 64,
+      "frame_count": 3000,
+      "frame_us": {
+        "p50": 64.3955,
+        "p95": 73.0,
+        "max": 132.917
+      },
+      "attenuation_db": {
+        "0-5s": 0.1096404970979987,
+        "5-10s": 0.09151994916603884,
+        "15-20s": 0.10497814615082532,
+        "25-30s": 0.09773084750884752
+      }
+    },
+    {
+      "name": "double_talk_off",
+      "samples": 480000,
+      "output_sha256": "10b05f8ba83b2643e8c91353e19c42edac6c7e801fadc5d61d970c6d5d8a6b45",
+      "raw_timing_sha256": "376813f35aaf96e67f371e41b01410a528eba9840b7824ffa7f233b5724045f6",
+      "init_ms": 0.049709,
+      "process_wall_seconds": 0.022785999812185764,
+      "render_max_difference": 0,
+      "reported_delay_ms": null,
+      "frame_count": 3000,
+      "frame_us": {
+        "p50": 2.25,
+        "p95": 2.375,
+        "max": 9.625
+      },
+      "near_windows": [
+        {
+          "unaligned_cosine": 0.9378979963224406,
+          "aligned_cosine": 0.9378979963224406,
+          "alignment_samples_at_16k": 0,
+          "alignment_ms": 0.0,
+          "output_vs_clean_energy_db": 0.5759973439986753,
+          "aligned_si_sdr_db": 8.638746898177072
+        },
+        {
+          "unaligned_cosine": 0.9321713551003245,
+          "aligned_cosine": 0.9321713551003245,
+          "alignment_samples_at_16k": 0,
+          "alignment_ms": 0.0,
+          "output_vs_clean_energy_db": 0.5836570921379407,
+          "aligned_si_sdr_db": 8.215327265479296
+        }
+      ],
+      "bypass_max_difference": 0.0
+    },
+    {
+      "name": "double_talk_on",
+      "samples": 480000,
+      "output_sha256": "85f0a92f5037a578e67817ba840d842ce86d29fe033efea1590fdfc730ea65cf",
+      "raw_timing_sha256": "6dee6e14ad0f97dcfb16984cc6cfc3b3a297793c4d70d12268b0cf691614240b",
+      "init_ms": 0.316833,
+      "process_wall_seconds": 0.2337961671873927,
+      "render_max_difference": 0,
+      "reported_delay_ms": 64,
+      "frame_count": 3000,
+      "frame_us": {
+        "p50": 67.542,
+        "p95": 96.04409999999999,
+        "max": 159.084
+      },
+      "near_windows": [
+        {
+          "unaligned_cosine": -0.10215542302087464,
+          "aligned_cosine": 0.9112209449280352,
+          "alignment_samples_at_16k": 128,
+          "alignment_ms": 8.0,
+          "output_vs_clean_energy_db": -0.805932527600647,
+          "aligned_si_sdr_db": 6.896259729499219
+        },
+        {
+          "unaligned_cosine": -0.06392003412422481,
+          "aligned_cosine": 0.8739499007772852,
+          "alignment_samples_at_16k": 128,
+          "alignment_ms": 8.0,
+          "output_vs_clean_energy_db": -1.2431744381743906,
+          "aligned_si_sdr_db": 5.096719068776336
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "scope": "Probe dynamic C++ symbol names checked against existing built APK libc++_shared; not Android execution or full JNI acceptance",
+  "existing_apk_cpp_runtime_sha256": "cd61762848882a16c8244c964a6f396c0caa0b440588a210ce9cc4ab0e6d9f0c",
+  "ndk": "28.2.13676358",
+  "api": 29,
+  "cpp_or_abi_import_count": 80,
+  "provided_by_existing_cpp_runtime": 79,
+  "provided_by_api29_system_libc": [
+    "__cxa_atexit"
+  ],
+  "missing_from_existing_runtime_or_system": [],
+  "probe_sha256": "fc28963976aaa85b00d6722c08c10d2f907ee7d9f5d49260c8d3dc66715aec28"
+}

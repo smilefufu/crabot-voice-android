@@ -1,0 +1,24 @@
+{
+  "host_probe_tests": 10,
+  "failures": 0,
+  "instrumentation_executed": false,
+  "android_probe_executed": false,
+  "no_deployment_or_device_io": true,
+  "baseline_normal_outputs_reproduced": true,
+  "model_and_thresholds_unchanged": true,
+  "linear_probe_initial_error": {
+    "signal": "SIGSEGV",
+    "top_frame": "webrtc::BlockFramer::InsertBlockAndExtractSubFrame",
+    "cause": "Probe enabled APM export without enabling the matching AEC3 factory export. Fixed both, no upstream algorithm change.",
+    "regression": "test_linear_export_is_configured_at_both_apm_and_aec3",
+    "ordinary_seven_case_results_affected": false
+  },
+  "files": {
+    "probe-apm.cc": "73e8ea2b789d354226a131db0a584aed826601279565c3373c5d331893060750",
+    "probe-apm.py": "7e1d5a26fc836d24f28af4bae986e4c2de6b5ef551ceff03768165f5468f49b9",
+    "build-apm-probe.py": "74ce2189a61391b2d0cabbced13ea1e1919cf3ef9fa246ed8021f5b9fa6dc723",
+    "probe-apm-linear.py": "4b331c018f2d518be6a52bc89880e9e329e4bdde43e91c37fd986ac17f69df77",
+    "probe-apm-vad.py": "5bb6ea7f338466bc1e7940d147c28ca7e329f4d8ff64b68824fa823a6df30f2a",
+    "test-apm-probe.py": "ee1d50ad042a3ff216a946630c3072ab58979c1e65ab42d24dfde3aaf4f14a97"
+  }
+}
