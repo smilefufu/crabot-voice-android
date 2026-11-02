@@ -23,6 +23,7 @@ android {
         unitTests.isIncludeAndroidResources = true
     }
     sourceSets.getByName("androidTest").assets.srcDir(rootProject.file(".model-cache/short-speaker"))
+    sourceSets.getByName("test").java.srcDir(rootProject.file("docs/research/2026-10-27-natural-turn-taking/device-probe/src"))
 }
 dependencies {
     implementation("androidx.activity:activity-ktx:1.10.1")

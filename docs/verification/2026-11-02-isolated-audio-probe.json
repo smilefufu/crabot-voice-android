@@ -1,0 +1,91 @@
+{
+  "date": "2026-11-02",
+  "scope": "Ready for separately authorized physical audio/HAL qualification, not installed or accepted",
+  "application_id": "com.crabot.voice.audioprobe",
+  "manifest_permissions": [
+    "android.permission.RECORD_AUDIO"
+  ],
+  "apk_sha256": "6beef5160d6f2c357cd5c79b2e7779f1564c5b411a1c34ae022061eb733cbaa5",
+  "product_apk_sha256": "d59aa47c9bd7dfd072b70f7bbed9cd06822ab7dc67acaf891253435f86c244fd",
+  "source_manifest": {
+    "product/AudioClock.kt": "e996d7e5354a18de11f8cde85c1b2eb591fde994db7e9f36a182157ce6f1cb9f",
+    "product/AudioIo.kt": "3b93b2dfbb5916ec5c9477a4a3e3b5fe6834caddc2e5e5d4e7ff33b1ca8c4900",
+    "product/DuplexAudio.kt": "bfbcf8fa3b87d75be1dbe380f3c2700bb4376de505f71e08a343d8b5663a3745",
+    "product/DuplexAudioSession.kt": "731060f1670775186f927eb2d12df80ee01a04d774b8cf9122975cee2fa4c6bf",
+    "product/EchoProcessor.kt": "46dc0408e0190f5b3796db4733b602820b234d1bee6ee4092b7b0a908a063399",
+    "product/PlaybackDevice.kt": "b5f9f2b749cee8d3c9dcfec799df75202ba3826e74a7f739a14026524eefe443",
+    "product/PlaybackProgress.kt": "a0a7e097b834561ab6b102d67742fbe33bee8267838b26f09f3d0ffa5d02ecb2",
+    "product/RenderTimeline.kt": "9c0eb2bc9bc750aab1c9e7534ce0b866781d7e418ee0faa9a614e17f11d5072f",
+    "product/SpeechActivity.kt": "83a065b59020d09952c82bbf7d6511b045e46105a40bc357cce68dada04eb782",
+    "product/Wire.kt": "d136f70587d449d243fa2a1dacc88a4f04b89e5cb6226d526adbe9c969da8ac4",
+    "native/libc++_shared.so": "cd61762848882a16c8244c964a6f396c0caa0b440588a210ce9cc4ab0e6d9f0c",
+    "native/libcrabot_voice.so": "14930393b81a3f2bca011bae6bcec12be9f7fcb458a9db10a722d82e21a73fd5",
+    "native/libonnxruntime.so": "7a2fb92eb67037837c3f0e428bd732fd0d05ced0546d9e740090c07573d8249a",
+    "native/libsherpa-onnx-c-api.so": "c454707eb1b09e155bb2970b99c703cfdebbcda9cdf2c0224b043b18b7f7f220",
+    "native/libsherpa-onnx-cxx-api.so": "a5ba12cd5e9e5e3f8bcb16607258b8199f237f6a052a56a7bf5d4e8a44ecf7b0",
+    "license/3dspeaker-Apache-2.0.txt": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "license/android-ndk-r28c-toolchain-NOTICE.txt": "789714a9076571c580cf531bdcebec776a4d889c12c3c1108adafc6e4338710a",
+    "license/kws-model-card.md": "dd0ec68b5d9ee736f016fc982078bd3cdbccc69057e9910bdd45580992d13367",
+    "license/onnxruntime-MIT.txt": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c",
+    "license/onnxruntime-ThirdPartyNotices.txt": "0e07b95f3a8d6230037707c5c4a2b554d12c4cb67369669ac255635528ffcee2",
+    "license/pyannote-MIT.txt": "14d7016ad68e7394d6e6b78d96cc2ae431c905287b89674cfdf021e79e62b8ba",
+    "license/sherpa-Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "license/silero-MIT.txt": "2e63e9a38b6e8fc0c7bc37ce174caca1862870856c6daf5697cfb785e925520b",
+    "license/webrtc-apm.txt": "499767259cce3e7d7c1aac9b88e2684bffdb664ff26d51309b7869f9b24ce8ff",
+    "public_reference": "1d83d9eee52f4f876bbbfa8aa8bd7d6ca385bbda30d183ba896b8e54b70a83a5",
+    "render_reference": "581d08b29d3ccda31fed9f658cf346de1a6d5a2d70b8ed9179ecc9f33c224c10",
+    "silero": "9e2449e1087496d8d4caba907f23e0bd3f78d91fa552479bb9c23ac09cbb1fd6",
+    "product_apk": "d59aa47c9bd7dfd072b70f7bbed9cd06822ab7dc67acaf891253435f86c244fd",
+    "probe_activity": "2c07c1216de4a4d6cda656d54dfe48393b3f1f39ec8a8ba11a20d40d97e1454f"
+  },
+  "native_libraries_equal_to_product": {
+    "lib/arm64-v8a/libc++_shared.so": "cd61762848882a16c8244c964a6f396c0caa0b440588a210ce9cc4ab0e6d9f0c",
+    "lib/arm64-v8a/libcrabot_voice.so": "14930393b81a3f2bca011bae6bcec12be9f7fcb458a9db10a722d82e21a73fd5",
+    "lib/arm64-v8a/libonnxruntime.so": "7a2fb92eb67037837c3f0e428bd732fd0d05ced0546d9e740090c07573d8249a",
+    "lib/arm64-v8a/libsherpa-onnx-c-api.so": "c454707eb1b09e155bb2970b99c703cfdebbcda9cdf2c0224b043b18b7f7f220",
+    "lib/arm64-v8a/libsherpa-onnx-cxx-api.so": "a5ba12cd5e9e5e3f8bcb16607258b8199f237f6a052a56a7bf5d4e8a44ecf7b0"
+  },
+  "excluded_product_classes": [
+    "VoiceController",
+    "SecureStore",
+    "TerminalConnection",
+    "DeviceOwner",
+    "Identity",
+    "MainActivity"
+  ],
+  "probe_class_absent_from_product_apk": true,
+  "jvm_tests": {
+    "tests": 95,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "jvm_suites": 18,
+  "builds": [
+    "product",
+    "instrumentation",
+    "standalone_audio_probe"
+  ],
+  "installed": false,
+  "device_access": false,
+  "audio_saved": false,
+  "cloud_calls": false,
+  "limitations": [
+    "No real HAL/AEC/drift or Chinese EOT acceptance",
+    "Candidate-to-confirm interval is a proxy, not independently labeled voice-onset latency",
+    "Source/settings/data of the paired product App are not included or accessed"
+  ],
+  "bundled_licenses": [
+    "assets/licenses/3dspeaker-Apache-2.0.txt",
+    "assets/licenses/android-ndk-r28c-toolchain-NOTICE.txt",
+    "assets/licenses/crabot-LICENSE",
+    "assets/licenses/kws-model-card.md",
+    "assets/licenses/onnxruntime-MIT.txt",
+    "assets/licenses/onnxruntime-ThirdPartyNotices.txt",
+    "assets/licenses/public-reference.md",
+    "assets/licenses/pyannote-MIT.txt",
+    "assets/licenses/sherpa-Apache-2.0.txt",
+    "assets/licenses/silero-MIT.txt",
+    "assets/licenses/webrtc-apm.txt"
+  ]
+}
