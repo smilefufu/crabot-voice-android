@@ -1,0 +1,345 @@
+{
+  "scope": "Official eight fixed controls for adapter qualification, not a replacement corpus",
+  "plan_sha256": "b4a97597c4ea836e03ae681a208e95f1c0bfb22c1c047b1a6b99ceb50a4cefee",
+  "manifest_sha256": "026e1ccbb3c4bc5a74e3db6baf8fc991d2747b999738ba1eb583646af173fa1a",
+  "source": {
+    "repo": "ASLP-lab/Easy-Turn",
+    "revision": "fe175eaa8442c9a0834acf29f8640ee74c2aceca",
+    "archive_sha256": "e59c34ed82629eaf8ef5b72f38ba579c9ceebf89c1e1dfa53fc4da9fa4d6d5f7",
+    "model_file_sha256": "ceab5e248f8765da26aba3e0325fe0ce8c385ae2f30495c9d41cde0db3f06e1a",
+    "feature_file_sha256": "733cb992a34e3e0bad10024a4da07342d36ad747e771555cea7c5a2f1dbe8517"
+  },
+  "weights": {
+    "repo": "ASLP-lab/Easy-Turn",
+    "revision": "7d1f8b06776b575ac22e2fd4aa7913da2f4b8b98",
+    "file": "checkpoint.pt",
+    "bytes": 3451801684,
+    "sha256": "1cb535bb0ffe3ffa0ac941bae4898aeb87adef7b88bb58f665af08eded6f6070"
+  },
+  "base": {
+    "repo": "Qwen/Qwen2.5-0.5B-Instruct",
+    "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+    "download": "Config and tokenizer only; construct built-in Qwen2 then strictly copy every checkpoint tensor, no partial weights or custom remote code"
+  },
+  "versions": {
+    "numpy": "1.24.0",
+    "torch": "2.1.0",
+    "torchaudio": "2.1.0",
+    "transformers": "4.44.0",
+    "peft": "0.17.0",
+    "librosa": "0.10.2.post1"
+  },
+  "config_sha256": "90848a587bccdae00ad1d3687c77f02767bc0d93383de29759585b6217f1029f",
+  "prompt_file_sha256": "64ee76d7a9fdba23e52717e22176ea61386de40a4a904793fbbf631111528480",
+  "prompt_sha256": "6991514958bae798e3594df1d20fbede5326ca8f8656a224c3a2979d62d709f4",
+  "prompt": "​请转录音频内容，并在文末添加以下四种标签之一进行打断判定：<complete>表示语义完整，<incomplete>表示语义不完整，<backchannel>表示简短的附和，<wait>表示请求暂停或终止对话。",
+  "threads": {
+    "intra": 2,
+    "inter": 1
+  },
+  "device": "cpu",
+  "results": [
+    {
+      "id": "complete_real_001",
+      "variant": "full",
+      "repeat": 0,
+      "label_complete": true,
+      "expected_tag": "complete",
+      "audio_samples": 52096,
+      "feature_ms": 67.27245915681124,
+      "text": "你有没有发生过一些童年趣事呀<complete><|endoftext|>",
+      "tag": "invalid",
+      "generation_ms": 11299.90091593936,
+      "reference_wall_ms": 11367.173375096172
+    },
+    {
+      "id": "complete_real_002",
+      "variant": "full",
+      "repeat": 0,
+      "label_complete": true,
+      "expected_tag": "complete",
+      "audio_samples": 25216,
+      "feature_ms": 1.1931252665817738,
+      "text": "你们老师也是绝了<complete><|endoftext|>",
+      "tag": "invalid",
+      "generation_ms": 8597.218958195299,
+      "reference_wall_ms": 8598.41208346188
+    },
+    {
+      "id": "incomplete_real_001",
+      "variant": "full",
+      "repeat": 0,
+      "label_complete": false,
+      "expected_tag": "incomplete",
+      "audio_samples": 39680,
+      "feature_ms": 1.9839168526232243,
+      "text": "呀我喜欢那种然后就是<incomplete><|endoftext|>",
+      "tag": "invalid",
+      "generation_ms": 9894.760666880757,
+      "reference_wall_ms": 9896.74458373338
+    },
+    {
+      "id": "incomplete_real_002",
+      "variant": "full",
+      "repeat": 0,
+      "label_complete": false,
+      "expected_tag": "incomplete",
+      "audio_samples": 20480,
+      "feature_ms": 0.9387088939547539,
+      "text": "因为小时候<incomplete><|endoftext|>",
+      "tag": "invalid",
+      "generation_ms": 7965.916791930795,
+      "reference_wall_ms": 7966.8555008247495
+    },
+    {
+      "id": "backchannel_real_001",
+      "variant": "full",
+      "repeat": 0,
+      "label_complete": false,
+      "expected_tag": "backchannel",
+      "audio_samples": 18000,
+      "feature_ms": 1.1251671239733696,
+      "text": "嗯也是<backchannel><|endoftext|>",
+      "tag": "invalid",
+      "generation_ms": 7711.547541897744,
+      "reference_wall_ms": 7712.672709021717
+    },
+    {
+      "id": "backchannel_real_002",
+      "variant": "full",
+      "repeat": 0,
+      "label_complete": false,
+      "expected_tag": "backchannel",
+      "audio_samples": 13312,
+      "feature_ms": 0.8989591151475906,
+      "text": "好啊好啊<backchannel><|endoftext|>",
+      "tag": "invalid",
+      "generation_ms": 7640.562541782856,
+      "reference_wall_ms": 7641.461500898004
+    },
+    {
+      "id": "wait_real_1",
+      "variant": "full",
+      "repeat": 0,
+      "label_complete": false,
+      "expected_tag": "wait",
+      "tag": "input_not_run",
+      "channels": 2,
+      "rate": 48000,
+      "reason": "Official feature function requires mono; no unplanned downmix"
+    },
+    {
+      "id": "wait_real_2",
+      "variant": "full",
+      "repeat": 0,
+      "label_complete": false,
+      "expected_tag": "wait",
+      "tag": "input_not_run",
+      "channels": 2,
+      "rate": 48000,
+      "reason": "Official feature function requires mono; no unplanned downmix"
+    }
+  ],
+  "publisher_selection": {
+    "revision": "5812651dbab429b9a4fab293de7127bfb9a56650",
+    "selection": "First two rows in each official list, selected before publisher predictions",
+    "rows": [
+      {
+        "source_list": "testset/complete/complete_test.list",
+        "source_list_sha256": "0b35356353848bf25200a2fc0f6d5e25f2a3e86a1baa5b0e1a6e4cfe86ee26a3",
+        "expected": "complete",
+        "row": {
+          "task": "<TRANSCRIBE> <BACKCHANNEL> <COMPLETE>",
+          "key": "complete_real_001",
+          "wav": "./complete/real/complete_real_001.wav",
+          "txt": "你有没有发生过一些童年趣事呀？<COMPLETE>",
+          "lang": "<CN>",
+          "speaker": "G00000007",
+          "emotion": "<NONE>",
+          "gender": "female",
+          "duration": 3.256,
+          "state": "0",
+          "extra": {
+            "dataset": "complete_test_real"
+          }
+        },
+        "source_audio": "testset/complete/real/complete_real_001.wav",
+        "bytes": 104236,
+        "sha256": "2d44a9103574c4477057cf78158716233ba4af2ef3fdef06bd2297221f061d7e"
+      },
+      {
+        "source_list": "testset/complete/complete_test.list",
+        "source_list_sha256": "0b35356353848bf25200a2fc0f6d5e25f2a3e86a1baa5b0e1a6e4cfe86ee26a3",
+        "expected": "complete",
+        "row": {
+          "task": "<TRANSCRIBE> <BACKCHANNEL> <COMPLETE>",
+          "key": "complete_real_002",
+          "wav": "./complete/real/complete_real_002.wav",
+          "txt": "你们老师也是绝了<COMPLETE>",
+          "lang": "<CN>",
+          "speaker": "G00000007",
+          "emotion": "<NONE>",
+          "gender": "female",
+          "duration": 1.576,
+          "state": "0",
+          "extra": {
+            "dataset": "complete_test_real"
+          }
+        },
+        "source_audio": "testset/complete/real/complete_real_002.wav",
+        "bytes": 50476,
+        "sha256": "f67003b5e617dad9bd3588ff16ea05574dfb0193308fc45868f42ad855bba093"
+      },
+      {
+        "source_list": "testset/incomplete/incomplete_real_test.list",
+        "source_list_sha256": "01b2465c0bbeb9b434b955d15274f7f74a03bec18ba22f30981ba555b191e476",
+        "expected": "incomplete",
+        "row": {
+          "task": "<TRANSCRIBE> <BACKCHANNEL> <COMPLETE>",
+          "key": "incomplete_real_001",
+          "wav": "./incomplete/real/incomplete_real_001.wav",
+          "txt": "呀，我喜欢这种，然后就是<INCOMPLETE>",
+          "lang": "<CN>",
+          "speaker": "G00000008",
+          "emotion": "<NONE>",
+          "gender": "female",
+          "duration": 2.48,
+          "state": "0",
+          "extra": {
+            "dataset": "incomplete_test_real"
+          }
+        },
+        "source_audio": "testset/incomplete/real/incomplete_real_001.wav",
+        "bytes": 79404,
+        "sha256": "625e5ed716642e8fe155b7beb43e8f10c4b9e1a710df2d6abcfd66444a9fe372"
+      },
+      {
+        "source_list": "testset/incomplete/incomplete_real_test.list",
+        "source_list_sha256": "01b2465c0bbeb9b434b955d15274f7f74a03bec18ba22f30981ba555b191e476",
+        "expected": "incomplete",
+        "row": {
+          "task": "<TRANSCRIBE> <BACKCHANNEL> <COMPLETE>",
+          "key": "incomplete_real_002",
+          "wav": "./incomplete/real/incomplete_real_002.wav",
+          "txt": "因为小时候<INCOMPLETE>",
+          "lang": "<CN>",
+          "speaker": "G00000007",
+          "emotion": "<NONE>",
+          "gender": "female",
+          "duration": 1.28,
+          "state": "0",
+          "extra": {
+            "dataset": "incomplete_test_real"
+          }
+        },
+        "source_audio": "testset/incomplete/real/incomplete_real_002.wav",
+        "bytes": 41004,
+        "sha256": "cec40c53e1f4fd16a97b066bc2e7c0f87439a86b4cf2b2d0476e74a00b80a68d"
+      },
+      {
+        "source_list": "testset/backchannel/backchannel_test.list",
+        "source_list_sha256": "867482da42cc43edb177765d1418ef57961b1adfd25d49674e12fad9e000697b",
+        "expected": "backchannel",
+        "row": {
+          "task": "<TRANSCRIBE> <BACKCHANNEL> <COMPLETE>",
+          "key": "backchannel_real_001",
+          "wav": "./backchannel/real/backchannel_real_001.wav",
+          "txt": "嗯，也是<BACKCHANNEL>",
+          "lang": "<CN>",
+          "speaker": "G00000634",
+          "emotion": "<NONE>",
+          "gender": "female",
+          "duration": 1.125,
+          "state": "0",
+          "extra": {
+            "dataset": "bc_test_real"
+          }
+        },
+        "source_audio": "testset/backchannel/real/backchannel_real_001.wav",
+        "bytes": 36044,
+        "sha256": "887b8c992b2e80f0cc204a6a604b3af024505e445d41d18e24380d92a85d010e"
+      },
+      {
+        "source_list": "testset/backchannel/backchannel_test.list",
+        "source_list_sha256": "867482da42cc43edb177765d1418ef57961b1adfd25d49674e12fad9e000697b",
+        "expected": "backchannel",
+        "row": {
+          "task": "<TRANSCRIBE> <BACKCHANNEL> <COMPLETE>",
+          "key": "backchannel_real_002",
+          "wav": "./backchannel/real/backchannel_real_002.wav",
+          "txt": "好啊好啊<BACKCHANNEL>",
+          "lang": "<CN>",
+          "speaker": "G00000369",
+          "emotion": "<NONE>",
+          "gender": "male",
+          "duration": 0.832,
+          "state": "0",
+          "extra": {
+            "dataset": "bc_test_real"
+          }
+        },
+        "source_audio": "testset/backchannel/real/backchannel_real_002.wav",
+        "bytes": 26668,
+        "sha256": "20d163347408450255eedf2c67ca2ae163bba1ddcbb0e6e4a4537b7ca5168c80"
+      },
+      {
+        "source_list": "testset/wait/wait_test.list",
+        "source_list_sha256": "46466e1ff177e849945eef985f86e87f6b250cd9ccbe308b90edf22aae284cc9",
+        "expected": "wait",
+        "row": {
+          "task": "<TRANSCRIBE> <BACKCHANNEL> <COMPLETE>",
+          "key": "wait_real_1",
+          "wav": "./wait/real/wait_real_1.wav",
+          "txt": "现在需要终止交流<WAIT>",
+          "speaker": "<NONE>",
+          "lang": "<CN>",
+          "emotion": "<NONE>",
+          "extra": {
+            "dataset": "wait_test_real"
+          },
+          "gender": "<NONE>",
+          "duration": 2.68,
+          "state": "0"
+        },
+        "source_audio": "testset/wait/real/wait_real_1.wav",
+        "bytes": 564562,
+        "sha256": "f540f62b6f3c97eef63f331b1f405d40fa169e53f24f15dbae1e19d5c89b3c25"
+      },
+      {
+        "source_list": "testset/wait/wait_test.list",
+        "source_list_sha256": "46466e1ff177e849945eef985f86e87f6b250cd9ccbe308b90edf22aae284cc9",
+        "expected": "wait",
+        "row": {
+          "task": "<TRANSCRIBE> <BACKCHANNEL> <COMPLETE>",
+          "key": "wait_real_2",
+          "wav": "./wait/real/wait_real_2.wav",
+          "txt": "我们别再聊了<WAIT>",
+          "speaker": "<NONE>",
+          "lang": "<CN>",
+          "emotion": "<NONE>",
+          "extra": {
+            "dataset": "wait_test_real"
+          },
+          "gender": "<NONE>",
+          "duration": 2.88,
+          "state": "0"
+        },
+        "source_audio": "testset/wait/real/wait_real_2.wav",
+        "bytes": 506962,
+        "sha256": "831fd29816afb874ba1d271a9d4b5a15cfad344125b4c3f5977befc2adf5a6d5"
+      }
+    ]
+  },
+  "strict_load": {
+    "tensors": 744,
+    "missing": [],
+    "unexpected": [],
+    "checkpoint_dtypes": [
+      "torch.float32"
+    ],
+    "encoder_dtype": "torch.float32",
+    "llm_dtype": "torch.bfloat16"
+  },
+  "model_load_ms": 11697.628541849554,
+  "input_audit": "Initial run stopped at first stereo wait asset; first six predictions retained unchanged, remaining two inspected only. Official mono feature path not replaced by ad hoc downmix."
+}

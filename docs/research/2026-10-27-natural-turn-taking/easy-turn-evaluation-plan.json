@@ -1,0 +1,49 @@
+{
+  "date": "2026-11-02",
+  "scope": "Isolated joint acoustic/language quality reference, not product selection or a device endpoint test",
+  "source": {
+    "repo": "ASLP-lab/Easy-Turn",
+    "revision": "fe175eaa8442c9a0834acf29f8640ee74c2aceca",
+    "archive_sha256": "e59c34ed82629eaf8ef5b72f38ba579c9ceebf89c1e1dfa53fc4da9fa4d6d5f7",
+    "model_file_sha256": "ceab5e248f8765da26aba3e0325fe0ce8c385ae2f30495c9d41cde0db3f06e1a",
+    "feature_file_sha256": "733cb992a34e3e0bad10024a4da07342d36ad747e771555cea7c5a2f1dbe8517"
+  },
+  "weights": {
+    "repo": "ASLP-lab/Easy-Turn",
+    "revision": "7d1f8b06776b575ac22e2fd4aa7913da2f4b8b98",
+    "file": "checkpoint.pt",
+    "bytes": 3451801684,
+    "sha256": "1cb535bb0ffe3ffa0ac941bae4898aeb87adef7b88bb58f665af08eded6f6070"
+  },
+  "base": {
+    "repo": "Qwen/Qwen2.5-0.5B-Instruct",
+    "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+    "download": "Config and tokenizer only; construct built-in Qwen2 then strictly copy every checkpoint tensor, no partial weights or custom remote code"
+  },
+  "inputs": {
+    "manifest": "labeled-corpus.json",
+    "selection": "All original 20 IDs in original manifest order; same labels, byte lengths and audio SHA, no reselection or relabeling",
+    "variants": ["full", "tail8"],
+    "original_failure_id": "0384164c-d1e3-4881-861b-1bf5494cd90e",
+    "padding": "No artificial trailing silence or extra wait"
+  },
+  "method": {
+    "device": "CPU only, at most 2 intra-op threads and 1 inter-op thread",
+    "math": "Official encoder/model/generate and official log-mel function; original float32 encoder and bfloat16 Qwen construction, strict checkpoint copy; report compatibility failures instead of silently changing precision",
+    "prompt": "The first official YAML entry under <TRANSCRIBE> <BACKCHANNEL> <COMPLETE>, fixed before first prediction, including its original leading character; no prompt sweep",
+    "generation": "Original deterministic generate parameters, max_new_tokens=100, do_sample=false, num_beams=1, repetition_penalty=1.05, eos=151643; no custom threshold or token/semantic postprocessing",
+    "classification": "Exactly one of complete/incomplete/backchannel/wait must occur at the end; report other tags and invalid output separately. Do not map backchannel/wait to ignoring a user or cancelling work"
+  },
+  "repeatability": {
+    "runs": 3,
+    "selection": "After the first full 40 calls, repeat the original failure plus the first two other incomplete IDs and first two complete IDs, full variant, twice more",
+    "purpose": "Report action changes; retain every output, including errors"
+  },
+  "qualification": "Original premature decision must be corrected and all new premature decisions, missed complete utterances, other tags and invalid outputs reported. A failure stops product selection; no threshold/prompt sweep or hiding failures with aggregate accuracy",
+  "timing": "Record model load, first feature/generation and warm feature/generation separately. CPU reference includes waveform loading/resampling/features and generation, not capture/VAD/transport/Agent/TTS and not phone latency",
+  "boundaries": [
+    "No service startup, deployment, ADB, microphone, private recording, paid API, product prompt or permission change.",
+    "The model is a large research reference. Passing quality alone does not authorize a server placement/API or replacement of the confirmed phone-side pure-audio design.",
+    "No expanded real-cadence replay if the fixed corpus fails. Existing failures remain in the evidence."
+  ]
+}

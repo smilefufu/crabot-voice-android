@@ -1,0 +1,83 @@
+{
+  "date": "2026-11-02",
+  "scope": "Adapter controls, not product qualification or a replacement corpus",
+  "repo": "ASLP-lab/Easy-Turn-Testset",
+  "revision": "5812651dbab429b9a4fab293de7127bfb9a56650",
+  "selection": "First two rows in each official list, selected before publisher predictions",
+  "method": "Same pinned model, official first prompt and generation, full audio once per case; no model/prompt sweep",
+  "license": "Apache-2.0",
+  "cases": [
+    {
+      "id": "complete_real_001",
+      "expected": "complete",
+      "source_list": "testset/complete/complete_test.list",
+      "source_list_sha256": "0b35356353848bf25200a2fc0f6d5e25f2a3e86a1baa5b0e1a6e4cfe86ee26a3",
+      "source_audio": "testset/complete/real/complete_real_001.wav",
+      "bytes": 104236,
+      "sha256": "2d44a9103574c4477057cf78158716233ba4af2ef3fdef06bd2297221f061d7e"
+    },
+    {
+      "id": "complete_real_002",
+      "expected": "complete",
+      "source_list": "testset/complete/complete_test.list",
+      "source_list_sha256": "0b35356353848bf25200a2fc0f6d5e25f2a3e86a1baa5b0e1a6e4cfe86ee26a3",
+      "source_audio": "testset/complete/real/complete_real_002.wav",
+      "bytes": 50476,
+      "sha256": "f67003b5e617dad9bd3588ff16ea05574dfb0193308fc45868f42ad855bba093"
+    },
+    {
+      "id": "incomplete_real_001",
+      "expected": "incomplete",
+      "source_list": "testset/incomplete/incomplete_real_test.list",
+      "source_list_sha256": "01b2465c0bbeb9b434b955d15274f7f74a03bec18ba22f30981ba555b191e476",
+      "source_audio": "testset/incomplete/real/incomplete_real_001.wav",
+      "bytes": 79404,
+      "sha256": "625e5ed716642e8fe155b7beb43e8f10c4b9e1a710df2d6abcfd66444a9fe372"
+    },
+    {
+      "id": "incomplete_real_002",
+      "expected": "incomplete",
+      "source_list": "testset/incomplete/incomplete_real_test.list",
+      "source_list_sha256": "01b2465c0bbeb9b434b955d15274f7f74a03bec18ba22f30981ba555b191e476",
+      "source_audio": "testset/incomplete/real/incomplete_real_002.wav",
+      "bytes": 41004,
+      "sha256": "cec40c53e1f4fd16a97b066bc2e7c0f87439a86b4cf2b2d0476e74a00b80a68d"
+    },
+    {
+      "id": "backchannel_real_001",
+      "expected": "backchannel",
+      "source_list": "testset/backchannel/backchannel_test.list",
+      "source_list_sha256": "867482da42cc43edb177765d1418ef57961b1adfd25d49674e12fad9e000697b",
+      "source_audio": "testset/backchannel/real/backchannel_real_001.wav",
+      "bytes": 36044,
+      "sha256": "887b8c992b2e80f0cc204a6a604b3af024505e445d41d18e24380d92a85d010e"
+    },
+    {
+      "id": "backchannel_real_002",
+      "expected": "backchannel",
+      "source_list": "testset/backchannel/backchannel_test.list",
+      "source_list_sha256": "867482da42cc43edb177765d1418ef57961b1adfd25d49674e12fad9e000697b",
+      "source_audio": "testset/backchannel/real/backchannel_real_002.wav",
+      "bytes": 26668,
+      "sha256": "20d163347408450255eedf2c67ca2ae163bba1ddcbb0e6e4a4537b7ca5168c80"
+    },
+    {
+      "id": "wait_real_1",
+      "expected": "wait",
+      "source_list": "testset/wait/wait_test.list",
+      "source_list_sha256": "46466e1ff177e849945eef985f86e87f6b250cd9ccbe308b90edf22aae284cc9",
+      "source_audio": "testset/wait/real/wait_real_1.wav",
+      "bytes": 564562,
+      "sha256": "f540f62b6f3c97eef63f331b1f405d40fa169e53f24f15dbae1e19d5c89b3c25"
+    },
+    {
+      "id": "wait_real_2",
+      "expected": "wait",
+      "source_list": "testset/wait/wait_test.list",
+      "source_list_sha256": "46466e1ff177e849945eef985f86e87f6b250cd9ccbe308b90edf22aae284cc9",
+      "source_audio": "testset/wait/real/wait_real_2.wav",
+      "bytes": 506962,
+      "sha256": "831fd29816afb874ba1d271a9d4b5a15cfad344125b4c3f5977befc2adf5a6d5"
+    }
+  ]
+}

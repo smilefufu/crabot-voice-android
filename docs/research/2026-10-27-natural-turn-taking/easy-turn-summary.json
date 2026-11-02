@@ -1,0 +1,177 @@
+{
+  "calls": 50,
+  "model_load_ms": 11621.973959263414,
+  "first_reference_wall_ms": 27646.876957733184,
+  "fixed_summary": {
+    "full": {
+      "cases": 20,
+      "strict_invalid": 20,
+      "decoded_invalid": [],
+      "premature": [
+        "00087e67-1da8-464d-b85a-17c1555e2468",
+        "00914f31-592d-4e54-9f42-fcabc7cd9399",
+        "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+        "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+        "03178674-9ee8-4e75-8283-f500c8c3cf24",
+        "0384164c-d1e3-4881-861b-1bf5494cd90e",
+        "03bc7991-38f4-45a2-a7e3-7b652087758f",
+        "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+        "0625756c-dcbe-4020-96b7-a2efa764dd66",
+        "06e212d1-0c31-4ced-aafe-281d39f04bdc"
+      ],
+      "misses": [],
+      "other_tags": []
+    },
+    "tail8": {
+      "cases": 20,
+      "strict_invalid": 20,
+      "decoded_invalid": [],
+      "premature": [
+        "00087e67-1da8-464d-b85a-17c1555e2468",
+        "00914f31-592d-4e54-9f42-fcabc7cd9399",
+        "01e8852e-fdc1-4fa8-b460-49b42af5a7dd",
+        "027bfe98-ca8b-4742-8f1e-c4d9e6443ae2",
+        "03178674-9ee8-4e75-8283-f500c8c3cf24",
+        "0384164c-d1e3-4881-861b-1bf5494cd90e",
+        "04ad84bd-3e6e-4644-98e1-e302b98f0fde",
+        "06e212d1-0c31-4ced-aafe-281d39f04bdc"
+      ],
+      "misses": [],
+      "other_tags": []
+    }
+  },
+  "repeat_action_changes": 0,
+  "publisher": {
+    "predicted": 6,
+    "correct": 6,
+    "input_not_run": [
+      "wait_real_1",
+      "wait_real_2"
+    ],
+    "cases": [
+      {
+        "id": "complete_real_001",
+        "variant": "full",
+        "repeat": 0,
+        "label_complete": true,
+        "expected_tag": "complete",
+        "audio_samples": 52096,
+        "feature_ms": 67.27245915681124,
+        "text": "你有没有发生过一些童年趣事呀<complete><|endoftext|>",
+        "tag": "invalid",
+        "generation_ms": 11299.90091593936,
+        "reference_wall_ms": 11367.173375096172,
+        "decoded_tag": "complete"
+      },
+      {
+        "id": "complete_real_002",
+        "variant": "full",
+        "repeat": 0,
+        "label_complete": true,
+        "expected_tag": "complete",
+        "audio_samples": 25216,
+        "feature_ms": 1.1931252665817738,
+        "text": "你们老师也是绝了<complete><|endoftext|>",
+        "tag": "invalid",
+        "generation_ms": 8597.218958195299,
+        "reference_wall_ms": 8598.41208346188,
+        "decoded_tag": "complete"
+      },
+      {
+        "id": "incomplete_real_001",
+        "variant": "full",
+        "repeat": 0,
+        "label_complete": false,
+        "expected_tag": "incomplete",
+        "audio_samples": 39680,
+        "feature_ms": 1.9839168526232243,
+        "text": "呀我喜欢那种然后就是<incomplete><|endoftext|>",
+        "tag": "invalid",
+        "generation_ms": 9894.760666880757,
+        "reference_wall_ms": 9896.74458373338,
+        "decoded_tag": "incomplete"
+      },
+      {
+        "id": "incomplete_real_002",
+        "variant": "full",
+        "repeat": 0,
+        "label_complete": false,
+        "expected_tag": "incomplete",
+        "audio_samples": 20480,
+        "feature_ms": 0.9387088939547539,
+        "text": "因为小时候<incomplete><|endoftext|>",
+        "tag": "invalid",
+        "generation_ms": 7965.916791930795,
+        "reference_wall_ms": 7966.8555008247495,
+        "decoded_tag": "incomplete"
+      },
+      {
+        "id": "backchannel_real_001",
+        "variant": "full",
+        "repeat": 0,
+        "label_complete": false,
+        "expected_tag": "backchannel",
+        "audio_samples": 18000,
+        "feature_ms": 1.1251671239733696,
+        "text": "嗯也是<backchannel><|endoftext|>",
+        "tag": "invalid",
+        "generation_ms": 7711.547541897744,
+        "reference_wall_ms": 7712.672709021717,
+        "decoded_tag": "backchannel"
+      },
+      {
+        "id": "backchannel_real_002",
+        "variant": "full",
+        "repeat": 0,
+        "label_complete": false,
+        "expected_tag": "backchannel",
+        "audio_samples": 13312,
+        "feature_ms": 0.8989591151475906,
+        "text": "好啊好啊<backchannel><|endoftext|>",
+        "tag": "invalid",
+        "generation_ms": 7640.562541782856,
+        "reference_wall_ms": 7641.461500898004,
+        "decoded_tag": "backchannel"
+      },
+      {
+        "id": "wait_real_1",
+        "variant": "full",
+        "repeat": 0,
+        "label_complete": false,
+        "expected_tag": "wait",
+        "tag": "input_not_run",
+        "channels": 2,
+        "rate": 48000,
+        "reason": "Official feature function requires mono; no unplanned downmix",
+        "decoded_tag": "input_not_run"
+      },
+      {
+        "id": "wait_real_2",
+        "variant": "full",
+        "repeat": 0,
+        "label_complete": false,
+        "expected_tag": "wait",
+        "tag": "input_not_run",
+        "channels": 2,
+        "rate": 48000,
+        "reason": "Official feature function requires mono; no unplanned downmix",
+        "decoded_tag": "input_not_run"
+      }
+    ]
+  },
+  "warm_feature_ms": {
+    "p50": 3.228291869163513,
+    "p95": 4.001192282885313,
+    "max": 4.150583874434233
+  },
+  "warm_generation_ms": {
+    "p50": 18295.821249950677,
+    "p95": 24012.712667137384,
+    "max": 26495.364625006914
+  },
+  "warm_reference_wall_ms": {
+    "p50": 18299.37491612509,
+    "p95": 24016.55000904575,
+    "max": 26499.51520888135
+  }
+}
