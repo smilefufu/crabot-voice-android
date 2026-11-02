@@ -303,5 +303,50 @@ class NaturalConversationTest {
         assertEquals(VoiceController.Mode.CLOSED, phone.mode)
         assertFalse(input.active); assertFalse(phone.wakeEnabled)
     }
+    @Test fun serverCancellationDuringCandidateReturnsToWakeAndCannotResumeTheOldPlayer() {
+        val (oldTurn, oldPlayback) = playback()
+        val oldFrame = input.frame!!
+        input.emit(candidate = true); idle()
+        control(JSONObject().put("type", "playback_cancel").put("playback_id", oldPlayback))
+        assertEquals(VoiceController.Mode.WAKE, phone.mode)
+        assertTrue(phone.wakeEnabled); assertTrue(capture.active); assertFalse(input.active)
+        assertTrue(input.devices.single().released)
+        models.flags = 2; capture.frame!!(ShortArray(320)); idle(); ready()
+        val next = get("currentTurn")
+        assertNotEquals(oldTurn, next)
+        oldFrame(ConversationFrame(ShortArray(320), SpeechActivity(false, false), false, 0)); idle()
+        control(JSONObject().put("type", "response_end").put("turn_id", oldTurn))
+        assertEquals(next, get("currentTurn")); assertEquals(VoiceController.Mode.RECORDING, phone.mode)
+        assertTrue(input.active); assertEquals(2, input.starts)
+    }
+    @Test fun emptyResponseHeldByCandidateRecoversOnlyWakeWhenCandidateIsRejected() {
+        val turn = waiting()
+        input.emit(candidate = true); idle()
+        control(JSONObject().put("type", "response_end").put("turn_id", turn))
+        assertEquals(VoiceController.Mode.WAITING, phone.mode); assertTrue(input.active)
+        input.emit(); idle()
+        assertEquals(VoiceController.Mode.WAKE, phone.mode)
+        assertTrue(capture.active); assertFalse(input.active)
+        assertTrue(socket.messages.none { it.optString("type") == "cancel" })
+    }
+    @Test fun speechInNaturalFollowupSurvivesTheOldFollowupDeadline() {
+        val (turn, id) = playback()
+        control(JSONObject().put("type", "playback_text").put("playback_id", id).put("sequence", 0).put("text", "好"))
+        val method = VoiceController::class.java.getDeclaredMethod("audio", ByteArray::class.java).apply { isAccessible = true }
+        method.invoke(phone, Wire.frame(2, id, 0, ShortArray(480) { 20 }))
+        control(JSONObject().put("type", "playback_end").put("playback_id", id).put("sample_count", 480).put("text_segment_count", 1))
+        input.devices.single().writable = true
+        waitFor { get("player") == null }
+        control(JSONObject().put("type", "response_end").put("turn_id", turn))
+        shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(7000))
+        input.emit(confirmed = true); idle(); ready()
+        val next = get("currentTurn")
+        shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(1200))
+        input.emit(); idle()
+        assertNotEquals(turn, next); assertEquals(next, get("currentTurn"))
+        assertEquals(VoiceController.Mode.RECORDING, phone.mode)
+        assertTrue(input.active); assertEquals(1, input.starts); assertFalse(capture.active)
+        assertTrue(socket.messages.none { it.optString("type") == "turn_end" })
+    }
 
 }

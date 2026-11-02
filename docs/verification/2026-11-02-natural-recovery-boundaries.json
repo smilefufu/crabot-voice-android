@@ -1,0 +1,32 @@
+{
+  "date": "2026-11-02",
+  "scope": "Additional real Controller/event-loop boundary regression; controlled device, model and transport; no physical acceptance",
+  "production_baseline": "9ba14c8e1fc974d6fad12b58c9a54f6b7aef29e1",
+  "production_changed": false,
+  "cases": [
+    "Server cancellation during a pending interruption returns to KWS; queued retired callbacks cannot resume or stop successor input",
+    "An empty response held during a candidate recovers only original KWS after candidate rejection, not a new followup",
+    "Speech beginning inside natural followup remains in its new input after the previous followup deadline"
+  ],
+  "verification": {
+    "jvm": {
+      "tests": 92,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "suites": 17,
+    "product_apk": "built offline",
+    "instrumentation_apk": "built offline"
+  },
+  "tests_source_sha256": "9496d2e1b18c46e8ca275f76f4b2f70846d6b916d65beec8ba91a4d2142af6bb",
+  "apk_sha256": {
+    "app/build/outputs/apk/debug/app-debug.apk": "d59aa47c9bd7dfd072b70f7bbed9cd06822ab7dc67acaf891253435f86c244fd",
+    "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk": "fafbdfbafabbf395dd41ec96bd8520674daf90e5eedb3c26a24dbbef0d7c2b93"
+  },
+  "boundaries": [
+    "No deployment, ADB, install, microphone/speaker, paid API, real identity or product prompt change",
+    "Existing Chinese EOT gate, physical audio clock/AEC and wire10 joint qualification remain pending",
+    "No threshold, input capacity or endpoint timeout change"
+  ]
+}
