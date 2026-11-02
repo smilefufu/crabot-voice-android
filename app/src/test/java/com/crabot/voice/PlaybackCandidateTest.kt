@@ -48,9 +48,9 @@ class PlaybackCandidateTest {
             positions += position
             synchronized(this.samples) { for (i in offset until offset + count) this.samples += samples[i] }
         }
-        override fun paused() { pauses++ }
+        override fun paused(played: Long) { pauses++ }
         override fun resumed() { resumes++ }
-        override fun closed() { closed++ }
+        override fun closed(played: Long?) { closed++ }
     }
     private fun waitFor(condition: () -> Boolean) {
         val end = System.nanoTime() + 2_000_000_000

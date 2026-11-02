@@ -10,6 +10,7 @@ internal interface PlaybackDevice {
     fun release()
     fun write(pcm: ShortArray, offset: Int, count: Int): Int
     fun head(): Long
+    fun invalidateClock() = Unit
     fun stamp(): AudioStamp?
     fun routeIsValid(): Boolean
     fun routeIsConfirmed(): Boolean
@@ -29,7 +30,8 @@ internal class AndroidPlaybackDevice(context: Context) : PlaybackDevice {
             check(track.state == AudioTrack.STATE_INITIALIZED && speaker != null && track.setPreferredDevice(speaker)) { "首版只支持内置扬声器" }
         } catch (e: Exception) { track.release(); throw e }
     }
-    override fun play() { clockEpoch = System.nanoTime(); track.play() }
+    override fun invalidateClock() { clockEpoch = System.nanoTime() }
+    override fun play() { invalidateClock(); track.play() }
     override fun pause() = track.pause()
     override fun flush() = track.flush()
     override fun release() = track.release()

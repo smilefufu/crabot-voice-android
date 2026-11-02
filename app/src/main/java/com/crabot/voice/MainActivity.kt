@@ -287,9 +287,9 @@ class MainActivity : ComponentActivity() {
         })
         val (title, hint) = when (controller.mode) {
             VoiceController.Mode.WAKE -> "等你唤醒" to "喊「${controller.wakePhrase}」\n看到“我在听”后，就可以说话。"
-            VoiceController.Mode.RECORDING -> "我在听" to "说完稍作停顿，会自动结束收音。"
-            VoiceController.Mode.PROCESSING, VoiceController.Mode.WAITING -> "正在处理" to "麦克风已关闭，正在准备回答。"
-            VoiceController.Mode.PLAYING -> "正在回答" to "需要插话，可以点下面的打断。"
+            VoiceController.Mode.RECORDING -> "我在听" to if (controller.naturalInputActive) "可以自然停顿，也可点按结束说话。" else "说完稍作停顿，会自动结束收音。"
+            VoiceController.Mode.PROCESSING, VoiceController.Mode.WAITING -> "正在处理" to if (controller.localConversationActive) "可以直接插话，本机检测音频不上传。" else "麦克风已关闭，正在准备回答。"
+            VoiceController.Mode.PLAYING -> "正在回答" to if (controller.localConversationActive) "可以直接开口插话，也可点下面的打断。" else "需要插话，可以点下面的打断。"
             VoiceController.Mode.FOLLOWUP -> "可以接着说" to "直接说下一句。暂时不聊，\n我会回到唤醒待机。"
             VoiceController.Mode.GUIDED_PLAYING -> "请听提示" to controller.guidedPromptText
             VoiceController.Mode.GUIDED_WAITING -> "正在记住声音" to controller.status

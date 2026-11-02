@@ -18,28 +18,26 @@ internal class DuplexAudioSession(
     private var closed = false
     internal data class Candidate(val player: Playback, val token: Long)
     /** The callback must consume or copy PCM before returning; no user audio is retained here. */
-    fun startCapture(frame: (CapturedAudio, List<ShortArray>?) -> Unit) {
+    fun startCapture(frame: (CapturedAudio, ShortArray) -> Unit) {
         check(!closed && !capturing)
         capturing = true; val token = ++captureGeneration; audio.startCapture()
         try {
             microphone.startTimed { captured ->
-                if (!capturing || token != captureGeneration) { captured.samples.fill(0); return@startTimed }
-                val cleaned = mutableListOf<ShortArray>()
-                var clockReady = true
                 try {
-                    audio.capture(captured) { block -> if (block == null) clockReady = false else cleaned += block.copyOf() }
-                    if (capturing && token == captureGeneration) frame(captured, if (clockReady) cleaned else null)
-                } finally { cleaned.forEach { it.fill(0) }; captured.samples.fill(0) }
+                    if (capturing && token == captureGeneration) audio.capture(captured) { ready, cleaned ->
+                        if (capturing && token == captureGeneration) frame(ready, cleaned)
+                    }
+                } finally { captured.samples.fill(0) }
             }
         } catch (e: Exception) { capturing = false; microphone.stop(); throw e }
     }
-    fun stopCapture() { capturing = false; captureGeneration++; microphone.stop() }
-    fun startPlayback(id: String, progress: (Long) -> Unit, receipt: (String, String, Long?) -> Unit) {
+    fun stopCapture() { capturing = false; captureGeneration++; try { microphone.stop() } finally { audio.clearCapture() } }
+    fun startPlayback(id: String, progress: (Long) -> Unit, receipt: (String, String, Long?) -> Unit): Playback {
         check(!closed && player == null)
         val reference = audio.startPlayback()
         try {
-            player = Playback(id, playbackDevice(), progress, reference = reference, receipt = receipt)
-        } catch (e: Exception) { reference.closed(); throw e }
+            return Playback(id, playbackDevice(), progress, reference = reference, receipt = receipt).also { player = it }
+        } catch (e: Exception) { reference.closed(0); throw e }
     }
     fun add(frame: Wire.AudioFrame) { checkNotNull(player).add(frame) }
     fun finish(count: Long) { checkNotNull(player).finish(count) }
@@ -50,6 +48,7 @@ internal class DuplexAudioSession(
     fun reject(candidate: Candidate): Boolean = candidate.player === player && candidate.player.resumeCandidate(candidate.token)
     fun confirm(candidate: Candidate): Boolean = candidate.player === player && candidate.player.interruptCandidate(candidate.token)
     fun stopPlayback() { player?.stop(); player = null }
+    fun reset() { stopPlayback(); stopCapture(); audio.reset() }
     override fun close() {
         if (closed) return
         closed = true

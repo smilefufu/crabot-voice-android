@@ -12,7 +12,9 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.util.UUID
 
-class VoiceController(private val context: Context, private val changed: () -> Unit) {
+class VoiceController internal constructor(private val context: Context, private val conversation: ConversationInput?,
+                                           private val changed: () -> Unit) {
+    constructor(context: Context, changed: () -> Unit) : this(context, null, changed)
     enum class Mode { CLOSED, WAKE, RECORDING, PROCESSING, WAITING, PLAYING, FOLLOWUP, ENROLLING, OWNER_PREPARING, OWNER_RECORDING, GUIDED_WAITING, GUIDED_PLAYING }
     private val main = Handler(Looper.getMainLooper())
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
@@ -32,6 +34,16 @@ class VoiceController(private val context: Context, private val changed: () -> U
         val token = captureGeneration
         main.post { if (token == captureGeneration) stop(reason, disableWake = true) }
     }
+    private var conversationActive = false
+    private var endpointToken = 0L
+    private data class Interruption(val turn: String?, val epoch: String?, val player: Playback?, val token: Long?)
+    private var interruption: Interruption? = null
+    private var interruptionTimeout: Runnable? = null
+    private var heldResponseEnd: String? = null
+    private val retiredPlaybacks = linkedMapOf<String, String>()
+    private val retiredTurns = linkedMapOf<String, String>()
+    val naturalInputActive get() = conversationActive
+    val localConversationActive get() = conversationActive && mode in listOf(Mode.PROCESSING, Mode.WAITING, Mode.PLAYING)
     private var player: Playback? = null
     private var playbackId: String? = null
     private var playbackTextSegments = 0L
@@ -147,7 +159,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
     val readyForConversation get() = setupComplete && servicesConfigured && store.pendingOwnerSaved() == null && synchronizedCatalog && store.pendingRequests().length() == 0 && !waitingConfirmation && pendingTask == null
     val pendingManagement get() = store.pendingRequests().length() > 0
     fun hasVoiceSample(id: String) = store.hasVector(id)
-    val microphoneState get() = when (mode) { Mode.WAKE, Mode.FOLLOWUP -> "wake"; Mode.RECORDING, Mode.ENROLLING, Mode.OWNER_RECORDING -> "recording"; else -> "closed" }
+    val microphoneState get() = if (localConversationActive) "wake" else when (mode) { Mode.WAKE, Mode.FOLLOWUP -> "wake"; Mode.RECORDING, Mode.ENROLLING, Mode.OWNER_RECORDING -> "recording"; else -> "closed" }
     init {
         connection.heartbeat = { JSONObject().put("type", "heartbeat").put("foreground", foreground)
             .put("microphone", microphoneState).put("playback", if (mode in listOf(Mode.PLAYING, Mode.GUIDED_PLAYING)) "playing" else "idle").put("enrollment_revision", revision).put("speech_enabled", speechEnabled).put("activity", outputActivity()) }
@@ -176,7 +188,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         heartbeat(); changed() // Resume/reconnect never opens the microphone.
     }
     fun pause() { foreground = false; main.removeCallbacks(reconnectLater); stop("已退到后台；麦克风与播放关闭", disableWake = true); heartbeat() }
-    fun destroy() { pause(); connection.disconnect(null); scope.cancel(); models?.close(); models = null }
+    fun destroy() { pause(); connection.disconnect(null); scope.cancel(); models?.close(); models = null; conversation?.close() }
     fun enrollOwner(name: String) {
         try {
             require(foreground && modelReady && needsOwnerEnrollment) { "请等待本机模型就绪；已有配对不能重新认主" }
@@ -336,7 +348,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         VoiceCatalog.validate(catalog)
         val nextRevision = VoiceCatalog.revision(catalog)
         if (nextRevision < revision) return
-        if (nextRevision != revision && enrollment == null && mode in listOf(Mode.WAKE, Mode.FOLLOWUP, Mode.RECORDING, Mode.PROCESSING)) stop("声纹目录已更新，请重新开启语音", true)
+        if (nextRevision != revision && enrollment == null && (mode in listOf(Mode.WAKE, Mode.FOLLOWUP, Mode.RECORDING, Mode.PROCESSING) || conversationActive)) stop("声纹目录已更新，请重新开启语音", true)
         val clears = store.applyCatalog(catalog)
         if (store.owner() == null) pendingOwnerOffer?.let { applyOwnerActivation(it) }
         if (revision != nextRevision) confirmedRevision = -1
@@ -358,7 +370,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
             if (connected) try { connection.send(JSONObject().put("type", "guided_cancel").put("operation_id", guidedId)) } catch (_: Exception) {}
         }
         generation++; captureGeneration++; processing?.cancel(); processing = null
-        mic.stop(); mode = Mode.CLOSED
+        stopCaptureSources(); mode = Mode.CLOSED
         val turn = currentTurn; val playback = playbackId ?: reservedPlayback
         player?.stop(); player = null; playbackId = null
         if (connected && (turn != null || playback != null)) try {
@@ -379,8 +391,99 @@ class VoiceController(private val context: Context, private val changed: () -> U
         manager.abandonAudioFocusRequest(focus)
         status = reason; heartbeat(); changed()
     }
+    private fun stopCaptureSources() {
+        clearInterruption(); heldResponseEnd = null
+        if (conversationActive) { conversationActive = false; conversation?.stop() }
+        mic.stop()
+    }
+    private fun clearInterruption() {
+        interruptionTimeout?.let(main::removeCallbacks); interruptionTimeout = null; interruption = null
+    }
+    private fun startConversation() {
+        val input = checkNotNull(conversation)
+        if (conversationActive) return
+        mic.stop()
+        val token = ++captureGeneration
+        conversationActive = true
+        try {
+            input.start({ value ->
+                val samples = value.raw.copyOf()
+                synchronized(this) { pendingFrames++ }
+                main.post {
+                    synchronized(this) { pendingFrames-- }
+                    try {
+                        if (token != captureGeneration || !conversationActive) return@post
+                        check(pendingFrames <= 50) { "采音处理队列超过一秒" }
+                        conversationFrame(samples, value.activity, value.ended && value.endpointToken == endpointToken)
+                    } catch (e: Exception) { stop(e.message ?: "本地语音检测失败", true) }
+                    finally { samples.fill(0) }
+                }
+            }, { reason -> main.post { if (token == captureGeneration && conversationActive) stop(reason, true) } })
+            endpointToken = input.resetTurn()
+        } catch (e: Exception) { conversationActive = false; input.stop(); throw e }
+    }
+    private fun conversationFrame(audio: ShortArray, activity: SpeechActivity, ended: Boolean) {
+        check(foreground && connected && speechEnabled && readyForConversation) { "本地对话许可已失效" }
+        val now = SystemClock.elapsedRealtime()
+        if (mode in listOf(Mode.PROCESSING, Mode.WAITING, Mode.PLAYING)) {
+            val n = minOf(audio.size, preRoll.size)
+            val keep = minOf(preCount, preRoll.size - n)
+            preRoll.copyInto(preRoll, 0, preCount - keep, preCount)
+            audio.copyInto(preRoll, keep, audio.size - n, audio.size); preCount = keep + n
+            if (interruption == null && (activity.candidate || activity.confirmed)) {
+                val currentPlayer = player
+                val token = currentPlayer?.pauseForCandidate()
+                check(currentPlayer == null || token != null) { "播放器不能暂停" }
+                val candidate = Interruption(currentTurn, connectionEpoch, currentPlayer, token)
+                interruption = candidate
+                interruptionTimeout = Runnable { if (interruption != null) stop("本地插话检测未及时完成；请重新开启语音", true) }.also { main.postDelayed(it, 1000) }
+            }
+            if (interruption != null && activity.confirmed) confirmInterruption()
+            else if (interruption != null && !activity.candidate) rejectInterruption()
+            return
+        }
+        if (mode == Mode.RECORDING) {
+            if (count + audio.size > Wire.MAX_INPUT || count + audio.size == Wire.MAX_INPUT && !ended) {
+                stop("本轮达到输入容量，尚未确认说完，未提交；请重新说", false); standby(); return
+            }
+            frame(audio, if (activity.confirmed) 1 else 0)
+            if (mode == Mode.RECORDING && ended) finishCapture()
+        } else if (mode == Mode.FOLLOWUP) {
+            frame(audio, if (activity.confirmed) 1 else 0)
+        }
+    }
+    private fun confirmInterruption() {
+        val candidate = checkNotNull(interruption)
+        check(candidate.turn == currentTurn && candidate.epoch == connectionEpoch) { "插话所属会话已变化" }
+        val leading = preRoll.copyOf(preCount)
+        clearInterruption(); heldResponseEnd = null
+        generation++; processing?.cancel(); processing = null
+        val oldPlayer = candidate.player
+        val oldId = playbackId ?: reservedPlayback
+        val epoch = checkNotNull(connectionEpoch)
+        if (oldId != null) { retiredPlaybacks[oldId] = epoch; while (retiredPlaybacks.size > 32) retiredPlaybacks.remove(retiredPlaybacks.keys.first()) }
+        candidate.turn?.let { retiredTurns[it] = epoch; while (retiredTurns.size > 32) retiredTurns.remove(retiredTurns.keys.first()) }
+        player = null; playbackId = null; reservedPlayback = null; reservedContext = null
+        oldPlayer?.let { check(it.interruptCandidate(checkNotNull(candidate.token))) { "旧播放已失效" } }
+        val cancel = JSONObject().put("type", "cancel")
+        candidate.turn?.let { cancel.put("turn_id", it) }; oldId?.let { cancel.put("playback_id", it) }
+        if (candidate.turn != null || oldId != null) connection.send(cancel)
+        notificationPlayback = false; interactionHadPlayback = false
+        pcm.fill(0); preRoll.fill(0); preCount = 0
+        beginTurn(leading)
+        hasSpeech = true; lastSpeechAt = SystemClock.elapsedRealtime()
+    }
+    private fun rejectInterruption() {
+        val candidate = checkNotNull(interruption)
+        clearInterruption()
+        if (candidate.player != null) check(candidate.player === player && candidate.player.resumeCandidate(checkNotNull(candidate.token))) { "原播放不能恢复" }
+        if (heldResponseEnd == currentTurn && player == null && heldResponseEnd != null) { heldResponseEnd = null; finishResponse() }
+    }
     private fun startMic() {
         check(manager.requestAudioFocus(focus) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) { "无法获得音频焦点" }
+        if (conversation != null && mode in listOf(Mode.RECORDING, Mode.FOLLOWUP, Mode.PROCESSING, Mode.WAITING, Mode.PLAYING) && !notificationPlayback) {
+            startConversation(); return
+        }
         val token = synchronized(this) { ++captureGeneration; models!!.reset(keyword); captureGeneration }
         val captureMode = mode
         mic.start { audio ->
@@ -413,7 +516,8 @@ class VoiceController(private val context: Context, private val changed: () -> U
         sequence = 0; sentSamples = 0; count = 0; startedAt = SystemClock.elapsedRealtime(); hasSpeech = false; lastSpeechAt = startedAt; captureEndedByButton = false
         leading.copyInto(pcm); count = leading.size; leading.fill(0)
         connection.send(JSONObject().put("type", "turn_start").put("turn_id", currentTurn))
-        startMic(); status = "正在录音，最多 15 秒；可点按结束"; heartbeat(); changed()
+        startMic(); if (conversationActive) endpointToken = conversation!!.resetTurn()
+        status = "正在录音，最多 15 秒；可点按结束"; heartbeat(); changed()
     }
     private fun frame(audio: ShortArray, flags: Int) {
         val now = SystemClock.elapsedRealtime()
@@ -425,10 +529,11 @@ class VoiceController(private val context: Context, private val changed: () -> U
                 preRoll.copyInto(preRoll, 0, preCount - keep, preCount); audio.copyInto(preRoll, keep, audio.size - n, audio.size); preCount = keep + n
                 if (mode == Mode.WAKE && flags and 2 != 0) {
                     // Never include the recognized wake phrase in the first command.
-                    mic.stop(); captureGeneration++; preRoll.fill(0); preCount = 0; beginTurn(ShortArray(0))
+                    stopCaptureSources(); captureGeneration++; preRoll.fill(0); preCount = 0; beginTurn(ShortArray(0))
                 } else if (mode == Mode.FOLLOWUP && flags and 1 != 0) {
                     val leading = preRoll.copyOf(preCount)
-                    mic.stop(); captureGeneration++; preRoll.fill(0); preCount = 0; beginTurn(leading)
+                    if (!conversationActive) { stopCaptureSources(); captureGeneration++ }
+                    preRoll.fill(0); preCount = 0; beginTurn(leading)
                     hasSpeech = true; lastSpeechAt = now
                 }
             }
@@ -440,7 +545,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
                 if (mode == Mode.RECORDING) {
                     if (readyTurn == currentTurn) upload()
                     else check(now - startedAt <= 1000) { "终端未就绪，录音已结束" }
-                    if (count == Wire.MAX_INPUT || (!hasSpeech && now - startedAt >= 3000) || (hasSpeech && now - lastSpeechAt >= 800)) finishCapture()
+                    if ((!hasSpeech && now - startedAt >= 3000) || !conversationActive && (count == Wire.MAX_INPUT || hasSpeech && now - lastSpeechAt >= 800)) finishCapture()
                 } else if (now >= enrollmentDeadline) stop("登记任务已过期，请重新开始", true)
                 else if (now - startedAt >= 5000 || count >= 80000 || (mode == Mode.OWNER_RECORDING || guided != null) && count >= 48000 && hasSpeech && now - lastSpeechAt >= 800) finishCapture()
             }
@@ -458,7 +563,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
     private fun finishCapture() {
         val localOwner = mode == Mode.OWNER_RECORDING
         val enroll = localOwner || mode == Mode.ENROLLING
-        mic.stop(); captureGeneration++
+        if (enroll || !conversationActive) { stopCaptureSources(); captureGeneration++ }
         var peak = 0
         var energy = 0.0
         for (i in 0 until count) { val sample = pcm[i].toInt(); peak = maxOf(peak, kotlin.math.abs(sample)); energy += sample.toDouble() * sample }
@@ -559,7 +664,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         speakerSummary = (0 until segments.length()).map { i -> val segment = segments.getJSONObject(i); (0 until registrations.length()).map { registrations.getJSONObject(it) }.find { it.getString("registration_id") == segment.optString("registration_id") }?.getString("display_name") ?: if (segment.getString("identity_status") == "uncertain") "身份未确认" else "陌生人" }.distinct().joinToString("、")
         connection.send(JSONObject().put("type", "turn_end").put("turn_id", currentTurn).put("audio_sample_count", audio.size).put("sample_rate", 16000)
             .put("models", Models.versions()).put("enrollment_revision", revision).put("segments", segments))
-        mode = Mode.WAITING; status = "已提交，等待接纳；麦克风关闭"
+        mode = Mode.WAITING; status = if (conversationActive) "已提交，等待接纳；本机可检测插话" else "已提交，等待接纳；麦克风关闭"
         val waitingTurn = currentTurn
         main.postDelayed({ expireWaitingTurn(waitingTurn) }, 60_000)
         return true
@@ -577,7 +682,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         }
     }
     private fun standby() {
-        mic.stop(); captureGeneration++
+        stopCaptureSources(); captureGeneration++
         mode = Mode.CLOSED
         if (wakeEnabled && !(foreground && speechEnabled && readyForConversation && modelReady)) {
             stop("本地待机条件已变化；麦克风关闭，请核对后重新开启语音待机", true); return
@@ -646,7 +751,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
     private fun requestGuidedPrompt() {
         val session = guided ?: return
         require(foreground && connected && connectionEpoch == session.epoch && SystemClock.elapsedRealtime() < session.deadline && !session.sampled)
-        mic.stop(); captureGeneration++; mode = Mode.GUIDED_WAITING
+        stopCaptureSources(); captureGeneration++; mode = Mode.GUIDED_WAITING
         status = "正在准备第 ${enrollmentVectors.size + 1}/3 段提示；麦克风关闭"
         heartbeat()
         connection.send(JSONObject().put("type", "guided_prompt").put("operation_id", session.operationId).put("step", enrollmentVectors.size + 1))
@@ -654,7 +759,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
     }
     private fun retryGuided(reason: String) {
         val session = guided ?: return
-        mic.stop(); captureGeneration++; count = 0; pcm.fill(0); mode = Mode.GUIDED_WAITING
+        stopCaptureSources(); captureGeneration++; count = 0; pcm.fill(0); mode = Mode.GUIDED_WAITING
         status = reason; heartbeat(); changed()
         val token = generation
         main.postDelayed({ if (token == generation && guided === session) try { requestGuidedPrompt() } catch (_: Exception) { stop("本次录入已结束；麦克风关闭", true) } }, 500)
@@ -667,7 +772,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         val id = control.getString("playback_id"); require(UUID.fromString(id).toString() == id)
         session.prompt(step, id, SystemClock.elapsedRealtime()); guidedPlaybackId = id
         guidedPromptText = control.getString("text"); require(guidedPromptText.length in 1..512)
-        mic.stop(); captureGeneration++; mode = Mode.GUIDED_PLAYING
+        stopCaptureSources(); captureGeneration++; mode = Mode.GUIDED_PLAYING
         check(manager.requestAudioFocus(focus) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
         player = Playback(context, id, finite = true) { playback, receipt, played -> main.post {
             if (guided !== session || guidedPlaybackId != playback) return@post
@@ -704,7 +809,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
                     val session = guided ?: return
                     require(c.getString("operation_id") == session.operationId && c.getString("status") in listOf("completed", "rejected"))
                     if (c.getString("status") == "completed" && session.sampled) {
-                        mic.stop(); captureGeneration++; guided = null; guidedPlaybackId = null; enrollment = null; mode = Mode.CLOSED
+                        stopCaptureSources(); captureGeneration++; guided = null; guidedPlaybackId = null; enrollment = null; mode = Mode.CLOSED
                         guidedAwaitingResult = guidedResumeWake && guidedResumeEpoch == connectionEpoch
                         guidedPrivateComplete = session.delivery == "requester_private"
                         status = c.getString("message"); heartbeat()
@@ -770,7 +875,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
                 "contact_result" -> contactResult(c)
                 "turn_ready" -> { if (c.getString("turn_id") == currentTurn && mode == Mode.RECORDING) { readyTurn = currentTurn; upload() } }
                 "turn_status" -> if (c.getString("turn_id") == currentTurn) {
-                    status = when (c.getString("status")) { "accepted" -> "整轮已接纳，等待回答；麦克风关闭"; "pending", "unknown" -> "已提交，接纳状态待确认；不会换 ID 重传"; else -> "整轮拒绝：${c.optString("reason", "请重说或登记")}" }
+                    status = when (c.getString("status")) { "accepted" -> if (conversationActive) "整轮已接纳，等待回答；本机可检测插话" else "整轮已接纳，等待回答；麦克风关闭"; "pending", "unknown" -> "已提交，接纳状态待确认；不会换 ID 重传"; else -> "整轮拒绝：${c.optString("reason", "请重说或登记")}" }
                     if (c.optString("payload_sha256").isNotBlank() && c.getString("status") in listOf("pending", "unknown")) {
                         val id = currentTurn; val digest = c.getString("payload_sha256"); main.postDelayed({ if (id == currentTurn && connected) connection.send(JSONObject().put("type", "turn_query").put("turn_id", id).put("payload_sha256", digest)) }, 2000)
                     }
@@ -780,25 +885,37 @@ class VoiceController(private val context: Context, private val changed: () -> U
                 "playback_confirmed" -> receiptScope()?.let { playbackReceipts?.confirm(it, c.getString("playback_id")) }
                 "pending_results" -> { val count = c.getInt("count"); require(count >= 0); pendingResults = count }
                 "playback_start" -> {
+                    if (isRetiredPlayback(c.getString("playback_id"))) return
                     require(connected && foreground && speechEnabled && reservedPlayback == c.getString("playback_id") && mode == Mode.WAITING && player == null)
                     val prepared = reservedContext ?: error("播放未准备")
                     require(prepared.getString("connection_epoch") == connectionEpoch)
                     notificationPlayback = prepared.getString("kind") == "notification"
                     require(if (notificationPlayback) c.getString("turn_id") == reservedPlayback else currentTurn == c.getString("turn_id"))
-                    mic.stop(); captureGeneration++; mode = Mode.PLAYING
+                    if (!conversationActive || notificationPlayback) { stopCaptureSources(); captureGeneration++ }
+                    mode = Mode.PLAYING
                     check(manager.requestAudioFocus(focus) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                     playbackId = c.getString("playback_id"); playbackTextSegments = 0; lastReply = ""; status = "播放中可点按打断"; heartbeat()
-                    player = Playback(context, playbackId!!, onProgress = { played -> main.post {
-                        if (connected && playbackId == c.getString("playback_id")) connection.send(JSONObject().put("type", "playback_progress").put("playback_id", playbackId).put("played_samples", played))
-                    } }) { id, receipt, played -> main.post { playbackReceipt(id, receipt, played) } }
+                    val outputId = playbackId!!
+                    val progress: (Long) -> Unit = { played -> main.post {
+                        if (connected && playbackId == outputId) connection.send(JSONObject().put("type", "playback_progress").put("playback_id", outputId).put("played_samples", played))
+                    } }
+                    val receipt: (String, String, Long?) -> Unit = { id, state, played -> main.post { playbackReceipt(id, state, played) } }
+                    player = if (conversationActive) conversation!!.playback(outputId, progress, receipt) else Playback(context, outputId, onProgress = progress, receipt = receipt)
+                    interruption?.let { candidate ->
+                        check(candidate.turn == currentTurn && candidate.epoch == connectionEpoch && candidate.player == null)
+                        interruption = candidate.copy(player = player, token = checkNotNull(player!!.pauseForCandidate()))
+                    }
                 }
                 "playback_text" -> {
+                    if (isRetiredPlayback(c.getString("playback_id"))) return
                     require(mode == Mode.PLAYING && c.getString("playback_id") == playbackId && Wire.sampleCount(c.get("sequence")) == playbackTextSegments)
                     val text = c.getString("text"); require(text.codePointCount(0, text.length) in 1..120)
                     lastReply += text; playbackTextSegments++
                 }
                 "playback_end" -> { if (c.getString("playback_id") == playbackId) { require(Wire.sampleCount(c.get("text_segment_count")) == playbackTextSegments); player!!.finish(Wire.sampleCount(c.get("sample_count"))) } }
-                "response_end" -> { if (c.getString("turn_id") == currentTurn && player == null) finishResponse() }
+                "response_end" -> { if (c.getString("turn_id") == currentTurn && player == null) {
+                    if (interruption != null) heldResponseEnd = currentTurn else finishResponse()
+                } }
                 "playback_cancel" -> if (c.getString("playback_id") == (playbackId ?: reservedPlayback)) {
                     val restore = notificationPlayback || reservedContext?.optString("kind") == "notification"
                     endInteraction("播报已取消；已接纳任务仍由 Crabot 负责", restore)
@@ -807,7 +924,9 @@ class VoiceController(private val context: Context, private val changed: () -> U
                     prepareEnrollment(c.getJSONObject("task"))
                 }
                 "clear_registration" -> { stop("联系人声纹已撤销；本轮已结束", true); clearRegistration(c.getString("registration_id"), c.getLong("enrollment_revision")) }
-                "error" -> if (c.getString("code") == "VOICE_REPLY_EXPIRED") {
+                "error" -> if (c.getString("code") == "VOICE_REJECTED" && connectionEpoch != null && retiredTurns[c.optString("turn_id")] == connectionEpoch) {
+                    return
+                } else if (c.getString("code") == "VOICE_REPLY_EXPIRED") {
                     if (c.optString("turn_id") == currentTurn && mode == Mode.WAITING) releaseWaitingTurn()
                 } else stop("语音端错误：${c.getString("message")}", true)
                 else -> error("未知协议控制")
@@ -868,6 +987,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         store.clearVector(id)
         if (connected) connection.send(JSONObject().put("type", "registration_cleared").put("registration_id", id).put("enrollment_revision", rev))
     }
+    private fun isRetiredPlayback(id: String) = connectionEpoch != null && retiredPlaybacks[id] == connectionEpoch
     private fun audio(bytes: ByteArray) {
         if (mode == Mode.GUIDED_PLAYING && foreground) {
             val frame = Wire.output(bytes)
@@ -875,9 +995,18 @@ class VoiceController(private val context: Context, private val changed: () -> U
             try { player!!.add(frame) } catch (e: Exception) { frame.samples.fill(0); throw e }
             return
         }
-        if (mode != Mode.PLAYING || !foreground) return
+        if (mode != Mode.PLAYING || !foreground) {
+            if (conversationActive) {
+                val frame = Wire.output(bytes)
+                try { require(isRetiredPlayback(frame.id)) { "未知播放音频" } } finally { frame.samples.fill(0) }
+            }
+            return
+        }
         val frame = Wire.output(bytes)
-        if (frame.id != playbackId) { frame.samples.fill(0); return }
+        if (frame.id != playbackId) {
+            try { require(!conversationActive || isRetiredPlayback(frame.id)) { "未知播放音频" } } finally { frame.samples.fill(0) }
+            return
+        }
         try { player!!.add(frame) } catch (e: Exception) { frame.samples.fill(0); throw e }
     }
     private fun playbackReceipt(id: String, receipt: String, played: Long?) {
@@ -889,7 +1018,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
             val scope = receiptScope() ?: error("播放回执缺少配对")
             val journal = playbackReceipts ?: error("播放记录无法读取")
             journal.remember(PlaybackReceipt(scope, id, receipt, played))
-        } catch (_: Exception) { stop("播放回执暂时无法保存，未记作送达；原记录保留", true); return }
+        } catch (_: Exception) { if (!isRetiredPlayback(id)) stop("播放回执暂时无法保存，未记作送达；原记录保留", true); return }
         if (connected) try {
             val control = JSONObject().put("type", "playback").put("playback_id", id).put("status", receipt)
             if (played != null) control.put("played_samples", played)
@@ -899,7 +1028,7 @@ class VoiceController(private val context: Context, private val changed: () -> U
         if (receipt == "completed") {
             player = null; playbackId = null; reservedPlayback = null; reservedContext = null
             if (notificationPlayback) { notificationPlayback = false; restoreAfterNotification(guidedResultPlayback); guidedResultPlayback = false }
-            else { interactionHadPlayback = true; mode = Mode.WAITING; status = "播报完成，等待后续答复；麦克风关闭"; heartbeat() }
+            else { interactionHadPlayback = true; mode = Mode.WAITING; status = if (conversationActive) "播报完成，等待后续答复；本机可检测插话" else "播报完成，等待后续答复；麦克风关闭"; heartbeat() }
         } else if (receipt != "started") {
             val restore = notificationPlayback
             if (receipt == "failed") {
@@ -938,7 +1067,8 @@ class VoiceController(private val context: Context, private val changed: () -> U
         if (accepted) {
             guidedResultPlayback = guidedAwaitingResult && prepared.getJSONObject("binding").optString("request_id") == guidedSourceRequest
             playbackReturnMode = mode; playbackReturnDeadline = deadline
-            mic.stop(); captureGeneration++; reservedPlayback = id; reservedContext = JSONObject(prepared.toString()); mode = Mode.WAITING
+            if (!conversationActive || prepared.getString("kind") == "notification") { stopCaptureSources(); captureGeneration++ }
+            reservedPlayback = id; reservedContext = JSONObject(prepared.toString()); mode = Mode.WAITING
             main.postDelayed({ if (reservedPlayback == id && player == null) {
                 endInteraction("播报未能开始，未记作送达", reservedContext?.optString("kind") == "notification")
             } }, 3000)

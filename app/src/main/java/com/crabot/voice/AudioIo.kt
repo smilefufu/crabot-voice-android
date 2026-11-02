@@ -67,7 +67,7 @@ internal class Microphone(private val context: Context, private val systemAec: B
                         frame(CapturedAudio(buffer.copyOf(n), position, hardware))
                         position += n
                     }
-                } catch (_: Exception) { if (session.get()) failure("采音结束：权限、焦点或音频路由发生变化") }
+                } catch (e: Exception) { if (session.get()) failure(e.message ?: "采音结束：权限、焦点或音频路由发生变化") }
                 finally { buffer.fill(0) }
             }, "voice-microphone").apply { start() }
         } catch (e: Exception) { aec?.release(); aec = null; rec.release(); throw e }
@@ -103,6 +103,7 @@ class Playback internal constructor(private val id: String, private val device: 
     private var candidate: Long? = null
     private var candidateSequence = 0L
     private var pausedAt = 0L
+    private var referenceStarved = false
     private var stamp: AudioStamp? = null
     private var stampAt = Long.MIN_VALUE
     private val worker = Thread({ play() }, "voice-playback").apply { start() }
@@ -119,7 +120,7 @@ class Playback internal constructor(private val id: String, private val device: 
         try {
             device.pause()
             pausedAt = now(); candidate = ++candidateSequence
-            reference?.paused()
+            reference?.paused(actual())
             candidate
         } catch (e: Exception) { stopLocked("failed"); throw e }
     }
@@ -158,6 +159,7 @@ class Playback internal constructor(private val id: String, private val device: 
         fun observe() {
             val time = now()
             val actual = actual()
+            if (reference != null && candidate == null) refreshStamp()
             if (actual > previousActual) advancedAt = time
             previousActual = actual
             if (!started && actual > 0) {
@@ -168,7 +170,11 @@ class Playback internal constructor(private val id: String, private val device: 
                 onProgress.invoke(actual); reportedAt = time; reportedSamples = actual
             }
             if (candidate == null && started && actual == written && !ended && queue.isEmpty()) {
-                if (gapAt == null) gapAt = time
+                if (gapAt == null) {
+                    gapAt = time
+                    if (reference != null) refreshStamp(true)
+                    reference?.starved(actual); referenceStarved = true
+                }
             } else if (gapAt != null && actual < written) {
                 gaps++; gapMs += time - gapAt!!; gapAt = null
             }
@@ -197,6 +203,7 @@ class Playback internal constructor(private val id: String, private val device: 
                     observe()
                     val count = progress.count
                     if (candidate == null && ended && queue.isEmpty() && count != null && playedSamples == count) {
+                        if (reference != null) refreshStamp(true)
                         if (running.compareAndSet(true, false)) {
                             android.util.Log.i("CrabotVoicePlayback", "id=" + id + " samples=" + count + " gap_count=" + gaps + " gap_ms=" + gapMs)
                             receipt(id, "completed", count)
@@ -209,7 +216,7 @@ class Playback internal constructor(private val id: String, private val device: 
         finally {
             synchronized(io) {
                 while (true) { val item = queue.poll() ?: break; item.fill(0) }
-                try { reference?.closed() } catch (_: Exception) {}
+                try { reference?.closed(playedSamples) } catch (_: Exception) {}
                 try { device.pause(); device.flush() } catch (_: Exception) {}
                 device.release()
             }
@@ -217,17 +224,25 @@ class Playback internal constructor(private val id: String, private val device: 
     }
     private fun write(pcm: ShortArray, offset: Int): Int {
         if (!running.get() || candidate != null) return 0
+        if (referenceStarved) {
+            device.invalidateClock(); stamp = null; stampAt = Long.MIN_VALUE
+            reference?.replenished(); referenceStarved = false
+        }
         val count = device.write(pcm, offset, pcm.size - offset)
         check(count in 0..pcm.size - offset) { "播放失败" }
         if (count == 0) return 0
-        val time = now()
-        val stampInterval = if (stamp == null) 100 else 10_000
-        if (stampAt == Long.MIN_VALUE || time - stampAt >= stampInterval) {
-            stamp = device.stamp(); stampAt = time
-        }
+        if (reference != null) refreshStamp()
         val position = written; written += count
         reference?.written(pcm, offset, count, position, stamp)
         return count
+    }
+    private fun refreshStamp(force: Boolean = false) {
+        val time = now()
+        val interval = if (stamp == null) 100 else 10_000
+        if (force || stampAt == Long.MIN_VALUE || time - stampAt >= interval) {
+            stamp = device.stamp(); stampAt = time
+            reference?.clock(stamp)
+        }
     }
     private fun stopLocked(status: String) {
         if (running.compareAndSet(true, false)) {

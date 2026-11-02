@@ -15,6 +15,15 @@ internal class SampleClock(private val rate: Int) {
         }
         anchor = stamp
     }
+    fun positionAt(nanoTime: Long): Long? {
+        val stamp = anchor ?: return null
+        val delta = Math.subtractExact(nanoTime, stamp.nanoTime)
+        val whole = Math.multiplyExact(delta / 1_000_000_000L, rate.toLong())
+        val remainder = delta % 1_000_000_000L * rate
+        val fraction = Math.floorDiv(remainder + 500_000_000L, 1_000_000_000L)
+        return Math.addExact(stamp.position, Math.addExact(whole, fraction))
+    }
+
     fun timeOf(position: Long): Long? {
         require(position >= 0)
         val stamp = anchor ?: return null
@@ -26,7 +35,10 @@ internal class SampleClock(private val rate: Int) {
 /** Synchronous consumer: must copy anything retained beyond this callback. */
 internal interface PlaybackReference {
     fun written(samples: ShortArray, offset: Int, count: Int, position: Long, stamp: AudioStamp?)
-    fun paused()
+    fun clock(stamp: AudioStamp?) = Unit
+    fun starved(played: Long) = Unit
+    fun replenished() = Unit
+    fun paused(played: Long)
     fun resumed()
-    fun closed()
+    fun closed(played: Long?)
 }

@@ -13,7 +13,7 @@ class DuplexAudioSessionTest {
     private class Capture : AudioCapture {
         var frame: ((CapturedAudio) -> Unit)? = null
         var starts = 0
-        var stops = 0
+        @Volatile var stops = 0
         override fun start(frame: (ShortArray) -> Unit) = error("Must use hardware-timed capture")
         override fun startTimed(frame: (CapturedAudio) -> Unit) { starts++; this.frame = frame }
         override fun stop() { stops++ }
@@ -96,8 +96,11 @@ class DuplexAudioSessionTest {
         val worker = Thread { microphone.frame!!(CapturedAudio(samples, 0, AudioStamp(0, 1_000_000_000))) }.apply { start() }
         try {
             assertTrue(entered.await(2, java.util.concurrent.TimeUnit.SECONDS))
-            session.stopCapture(); proceed.countDown(); worker.join(2000)
-            assertFalse(worker.isAlive)
+            val stopped = Thread { session.stopCapture() }.apply { start() }
+            val until = System.nanoTime() + 1_000_000_000
+            while (microphone.stops == 0 && System.nanoTime() < until) Thread.sleep(1)
+            proceed.countDown(); worker.join(2000); stopped.join(2000)
+            assertFalse(worker.isAlive); assertFalse(stopped.isAlive)
             assertEquals(0, callbacks)
             assertArrayEquals(ShortArray(160), samples)
         } finally { proceed.countDown(); worker.join(2000); session.close() }
