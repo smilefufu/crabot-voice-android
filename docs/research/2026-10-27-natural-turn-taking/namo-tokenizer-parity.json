@@ -1,0 +1,18 @@
+[
+  {
+    "model": "Namo-Turn-Detector-v1-Chinese",
+    "cases": 40,
+    "input_ids_and_attention_mask_exact": true,
+    "official_class": "DistilBertTokenizerFast",
+    "truncation": false,
+    "padding": false
+  },
+  {
+    "model": "Namo-Turn-Detector-v1-Multilingual",
+    "cases": 40,
+    "input_ids_and_attention_mask_exact": true,
+    "official_class": "PreTrainedTokenizerFast",
+    "truncation": false,
+    "padding": false
+  }
+]

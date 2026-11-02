@@ -1,0 +1,34 @@
+{
+  "date": "2026-11-02",
+  "scope": "Quality reference on unchanged saved public ASR text, not product selection or an end-to-end endpoint test",
+  "inputs": {
+    "file": "whole-turn-asr.json",
+    "sha256": "098cdc49754ad747d3b901aa69f0c47331523903087ac14d5a6fbf27e03a598e",
+    "variants": ["full", "tail8"],
+    "selection": "All original 20 IDs and both saved ASR variants, original order and labels; no transcript corrections, suffix rules or extra prompts",
+    "original_failure_id": "0384164c-d1e3-4881-861b-1bf5494cd90e"
+  },
+  "models": [
+    {
+      "repo": "videosdk-live/Namo-Turn-Detector-v1-Chinese",
+      "revision": "b73cbe0147e11d375f0ee467efa1c35d51f69703",
+      "model_sha256": "bb6825a7b686bb9512228b0a46487d671facf1c58f0aede2ea6e4fd51de2b91d",
+      "max_tokens": 512
+    },
+    {
+      "repo": "videosdk-live/Namo-Turn-Detector-v1-Multilingual",
+      "revision": "59245aac1f0a0f170277ebecc32ddaea418083b4",
+      "model_sha256": "67be31dac7c49abd43a277a105222c9031a0e22ac37f0e22dab395f68b318fc9",
+      "max_tokens": 8192
+    }
+  ],
+  "method": "Official fast tokenizer JSON with special tokens, single text, no padding; reject capacity overflow rather than truncate; ONNX CPU single thread, original two-class argmax (0=unfinished,1=finished), no threshold tuning",
+  "repeatability": "Three consecutive fixed-order runs; report all results, changes and warm wall-time percentiles, separate first and model-load times",
+  "qualification": "Report original failure, all new premature completions and complete-utterance misses against the original labels. Any failure stops product selection; do not sweep thresholds or hide failures with averages",
+  "boundaries": [
+    "Saved ASR text is not ground truth. No new ASR calls or future transcript prefixes.",
+    "Classifier-only timing is not endpoint latency; no replay of natural pauses is claimed.",
+    "A passing reference would still require approval before replacing the confirmed device-side audio-only design.",
+    "No deployment, ADB, real recording, paid API, prompt or permission changes."
+  ]
+}
